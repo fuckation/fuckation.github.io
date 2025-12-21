@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Activities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="days.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .login-section {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #111;
+            border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        
+        .login-section h2 {
+            color: #6ab8ff;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #6ab8ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .admin-panel {
+            display: none;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .header h1 {
+            color: #6ab8ff;
+            font-size: 1em;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        
+        .day-btn {
+            padding: 12px 20px;
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            min-width: 100px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .day-btn:hover {
+            background: #333;
+        }
+        
+        .day-btn.active {
+            background: #6ab8ff;
+            border-color: #6ab8ff;
+        }
+        
+        .day-btn.today {
+            border: 2px solid #28a745;
+        }
+        
+        .activities-container {
+            background: #222;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            margin-bottom: 30px;
+        }
+        
+        .day-info {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .day-info h3 {
+            color: #6ab8ff;
+            margin-bottom: 5px;
+        }
+        
+        .day-info p {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .readonly-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: #ffc107;
+        }
+        
+        .activity-list {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .activity-item {
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #6ab8ff;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .activity-type {
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .type-link { background: rgba(106, 184, 255, 0.2); color: #6ab8ff; }
+        .type-video { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
+        .type-text { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+        
+        .activity-earnings {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .activity-content {
+            margin-bottom: 10px;
+        }
+        
+        .activity-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .edit-btn { background: #6ab8ff; color: white; }
+        .delete-btn { background: #dc3545; color: white; }
+        
+        .add-activity-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #111;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #333;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal h3 {
+            color: #6ab8ff;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .save-btn { background: #6ab8ff; color: white; }
+        .cancel-btn { background: #666; color: white; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+        
+        .activity-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #333;
+            color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .type-btn:hover {
+            background: #333;
+        }
+        
+        .type-btn.active {
+            background: #6ab8ff;
+            border-color: #6ab8ff;
+            color: white;
+        }
+        
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .error {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #222;
+            border-radius: 10px;
+            padding: 10px 2px;
+            text-align: center;
+            border: none;
+        }
+        
+        .stat-value {
+            font-size: 1em;
+            color: #6ab8ff;
+            font-weight: bold;
+            
+        }
+        
+        .stat-label {
+            color: #ccc;
+            font-size: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-section">
+        <h2>Activity Manager</h2>
+        <div id="message" class="message"></div>
+        <div class="input-group">
+            <input type="password" id="admin-password" placeholder="Enter admin password">
+        </div>
+        <button class="login-btn" onclick="adminLogin()">Login</button>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel">
+        <div class="header">
+            <h1><i class="fas fa-tasks"></i> Activity Manager</h1>
+            <button class="logout-btn" onclick="logout()">
+               Logout
+            </button>
+        </div>
+        
+        <!-- Admin Stats -->
+        <div class="admin-stats" id="admin-stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Activities</div>
+                <div class="stat-value" id="total-activities">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Submissions</div>
+                <div class="stat-value" id="pending-submissions">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-value" id="total-earnings">$0</div>
+            </div>
+        </div>
+        
+        <!-- Day Selector -->
+        <div class="day-selector" id="day-selector">
+            <!-- Days will be loaded here -->
+        </div>
+        
+        <!-- Activities Container -->
+        <div class="activities-container">
+            <div class="day-info" id="day-info">
+                <h3>Select a day to manage activities</h3>
+                <p>Click on a day above to view and edit activities</p>
+            </div>
+            
+            <div id="readonly-notice" class="readonly-notice" style="display: none;">
+                <i class="fas fa-info-circle"></i> 
+                Today's activities cannot be edited. You can only view them.
+            </div>
+            
+            <button class="add-activity-btn" id="add-activity-btn" onclick="showAddActivityModal()" style="display: none;">
+                <i class="fas fa-plus"></i> Add New Activity
+            </button>
+            
+            <div class="activity-list" id="activity-list">
+                <div class="empty-state">
+                    <i class="fas fa-tasks"></i><br>
+                    No activities for this day
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Activity Modal -->
+    <div id="activity-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Add Activity</h3>
+            
+            <div class="activity-type-selector">
+                <button class="type-btn active" data-type="link" onclick="selectActivityType('link')">
+                    <i class="fas fa-link"></i> Link
+                </button>
+                <button class="type-btn" data-type="video" onclick="selectActivityType('video')">
+                    <i class="fas fa-video"></i> Video
+                </button>
+                <button class="type-btn" data-type="text" onclick="selectActivityType('text')">
+                    <i class="fas fa-font"></i> Text
+                </button>
+            </div>
+            
+            <!-- Link Form -->
+            <div id="link-form" class="form-section active">
+                <div class="form-group">
+                    <label>Title/Description</label>
+                    <input type="text" id="link-title" class="form-control" placeholder="e.g., Watch this tutorial video">
+                </div>
+                <div class="form-group">
+                    <label>URL/Link</label>
+                    <input type="url" id="link-url" class="form-control" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>Earnings ($)</label>
+                    <input type="number" id="link-earnings" class="form-control" placeholder="0.10" step="0.01" min="0.01">
+                </div>
+            </div>
+            
+            <!-- Video Form -->
+            <div id="video-form" class="form-section">
+                <div class="form-group">
+                    <label>Video Description</label>
+                    <input type="text" id="video-title" class="form-control" placeholder="e.g., Watch this educational video">
+                </div>
+                <div class="form-group">
+                    <label>Video URL</label>
+                    <input type="url" id="video-url" class="form-control" placeholder="https://youtube.com/watch?v=...">
+                </div>
+                <div class="form-group">
+                    <label>Earnings ($)</label>
+                    <input type="number" id="video-earnings" class="form-control" placeholder="0.15" step="0.01" min="0.01">
+                </div>
+            </div>
+            
+            <!-- Text Form -->
+            <div id="text-form" class="form-section">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="text-title" class="form-control" placeholder="e.g., Read this article">
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="text-content" class="form-control" placeholder="Enter the text content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Earnings ($)</label>
+                    <input type="number" id="text-earnings" class="form-control" placeholder="0.05" step="0.01" min="0.01">
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn save-btn" onclick="saveActivity()">Save Activity</button>
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Submissions Modal -->
+    <div id="submissions-modal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-clipboard-list"></i> Activity Submissions</h3>
+            <div id="submissions-list" class="activity-list">
+                <!-- Submissions will be loaded here -->
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeModal('submissions-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // ==============================================
+        // FIREBASE CONFIGURATION
+        // ==============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJaFVETxpy8Vr5e6RXDWi3NBhEUaZEPN4",
+            authDomain: "malcolm-finance.firebaseapp.com",
+            projectId: "malcolm-finance",
+            storageBucket: "malcolm-finance.firebasestorage.app",
+            messagingSenderId: "987613399580",
+            appId: "1:987613399580:web:0237b2c8c2c7df54222dd9",
+            measurementId: "G-1CEG3BWFBP"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        const db = firebase.firestore();
+        
+        // Admin password
+        const ADMIN_PASSWORD = "23cabbage";
+        
+        // Current day
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const today = new Date().getDay();
+        const currentDay = days[today];
+        
+        let isAdminLoggedIn = false;
+        let selectedDay = null;
+        let isEditing = false;
+        let editingActivityId = null;
+        let currentActivityType = 'link';
+        
+        // ==============================================
+        // INITIALIZATION
+        // ==============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('activityAdminLoggedIn') === 'true') {
+                isAdminLoggedIn = true;
+                showAdminPanel();
+                initDaySelector();
+                loadAdminStats();
+            }
+        });
+        
+        // ==============================================
+        // ADMIN LOGIN
+        // ==============================================
+        function adminLogin() {
+            const password = document.getElementById('admin-password').value;
+            const messageDiv = document.getElementById('message');
+            
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                localStorage.setItem('activityAdminLoggedIn', 'true');
+                showAdminPanel();
+                initDaySelector();
+                loadAdminStats();
+            } else {
+                messageDiv.textContent = 'Incorrect password!';
+                messageDiv.className = 'message error';
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('activityAdminLoggedIn');
+            location.reload();
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+        }
+        
+        // ==============================================
+        // LOAD ADMIN STATS (FIXED - NO INDEX)
+        // ==============================================
+        async function loadAdminStats() {
+            try {
+                // Count total activities
+                const activitiesSnapshot = await db.collection('daily_activities').get();
+                document.getElementById('total-activities').textContent = activitiesSnapshot.size;
+                
+                // Count pending submissions (no index - manual filtering)
+                const allSubmissions = await db.collection('activity_submissions').get();
+                let pendingCount = 0;
+                allSubmissions.forEach(doc => {
+                    if (doc.data().status === 'pending') {
+                        pendingCount++;
+                    }
+                });
+                document.getElementById('pending-submissions').textContent = pendingCount;
+                
+                // Calculate total earnings from all activities
+                let totalEarnings = 0;
+                activitiesSnapshot.forEach(doc => {
+                    const activity = doc.data();
+                    totalEarnings += activity.earnings || 0;
+                });
+                document.getElementById('total-earnings').textContent = '$' + totalEarnings.toFixed(2);
+                
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        }
+        
+        // ==============================================
+        // INITIALIZE DAY SELECTOR
+        // ==============================================
+        function initDaySelector() {
+            const daySelector = document.getElementById('day-selector');
+            daySelector.innerHTML = '';
+            
+            days.forEach((day, index) => {
+                const button = document.createElement('button');
+                button.className = 'day-btn';
+                button.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+                button.dataset.day = day;
+                
+                if (day === currentDay) {
+                    button.classList.add('today');
+                }
+                
+                button.onclick = () => selectDay(day);
+                daySelector.appendChild(button);
+            });
+            
+            // Select current day by default
+            selectDay(currentDay);
+        }
+        
+        // ==============================================
+        // SELECT DAY
+        // ==============================================
+        async function selectDay(day) {
+            selectedDay = day;
+            
+            // Update UI
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.day === day) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update day info
+            const dayInfo = document.getElementById('day-info');
+            dayInfo.innerHTML = `
+                <h3>${day.charAt(0).toUpperCase() + day.slice(1)} Activities</h3>
+                <p>${day === currentDay ? 'Today\'s activities (read-only)' : 'You can edit these activities'}</p>
+                <button class="action-btn edit-btn" onclick="viewSubmissions('${day}')" style="margin-top: 10px;">
+                    <i class="fas fa-eye"></i> View Submissions
+                </button>
+            `;
+            
+            // Show/hide add button
+            const addBtn = document.getElementById('add-activity-btn');
+            if (day === currentDay) {
+                addBtn.style.display = 'none';
+                document.getElementById('readonly-notice').style.display = 'block';
+            } else {
+                addBtn.style.display = 'block';
+                document.getElementById('readonly-notice').style.display = 'none';
+            }
+            
+            // Load activities
+            await loadActivities(day);
+        }
+        
+        // ==============================================
+        // LOAD ACTIVITIES - CORRECTED VERSION
+        // ==============================================
+        async function loadActivities(day) {
+            const activityList = document.getElementById('activity-list');
+            activityList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading activities...</div>';
+            
+            try {
+                // First, let's check if the collection exists and has data
+                const activitiesRef = db.collection('daily_activities');
+                
+                // Try to get all activities first to debug
+                const allActivities = await activitiesRef.get();
+                console.log(`Total activities in collection: ${allActivities.size}`);
+                
+                // Now filter for the specific day
+                const snapshot = await activitiesRef
+                    .where('day', '==', day)
+                    .get();
+                
+                console.log(`Found ${snapshot.size} activities for ${day}`);
+                
+                if (snapshot.empty) {
+                    activityList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-tasks"></i><br>
+                            No activities found for ${day.charAt(0).toUpperCase() + day.slice(1)}<br>
+                            <small style="color: #666; margin-top: 10px;">Click "Add New Activity" to create one</small>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Clear and create activities list
+                activityList.innerHTML = '';
+                
+                // Create an array to store activities
+                const activitiesArray = [];
+                
+                snapshot.forEach((doc, index) => {
+                    const activity = { 
+                        id: doc.id, 
+                        ...doc.data(),
+                        // Ensure earnings is a number
+                        earnings: parseFloat(doc.data().earnings) || 0.10
+                    };
+                    activitiesArray.push(activity);
+                    
+                    // Create activity element
+                    createActivityElement(activity, index);
+                });
+                
+                console.log(`Displayed ${activitiesArray.length} activities for ${day}`);
+                
+            } catch (error) {
+                console.error("Error loading activities:", error);
+                
+                // Show detailed error for debugging
+                activityList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i><br>
+                        Error loading activities<br>
+                        <small style="color: #666; margin-top: 10px;">
+                            ${error.message}<br>
+                            Check console for details
+                        </small>
+                    </div>
+                `;
+            }
+        }
+        
+        // ==============================================
+        // CREATE ACTIVITY ELEMENT - CORRECTED VERSION
+        // ==============================================
+        function createActivityElement(activity, index) {
+            const activityList = document.getElementById('activity-list');
+            
+            const activityEl = document.createElement('div');
+            activityEl.className = 'activity-item';
+            activityEl.dataset.id = activity.id;
+            
+            // Validate activity data
+            const type = activity.type || 'link';
+            const title = activity.title || 'Untitled Activity';
+            const earnings = parseFloat(activity.earnings) || 0.10;
+            
+            let typeClass = '';
+            let typeText = '';
+            let content = '';
+            
+            switch(type) {
+                case 'link':
+                    typeClass = 'type-link';
+                    typeText = 'Link';
+                    content = `<a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${title}</a>`;
+                    break;
+                case 'video':
+                    typeClass = 'type-video';
+                    typeText = 'Video';
+                    content = `
+                        <div><strong>${title}</strong></div>
+                        <div style="margin-top: 5px; color: #ccc;">
+                            URL: <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL'}</a>
+                        </div>
+                    `;
+                    break;
+                case 'text':
+                    typeClass = 'type-text';
+                    typeText = 'Text';
+                    content = `
+                        <div><strong>${title}</strong></div>
+                        <div style="margin-top: 5px; color: #ccc;">
+                            ${activity.content ? 
+                                (activity.content.length > 100 ? 
+                                    activity.content.substring(0, 100) + '...' : 
+                                    activity.content) 
+                                : 'No content'}
+                        </div>
+                    `;
+                    break;
+                default:
+                    typeClass = 'type-link';
+                    typeText = 'Unknown';
+                    content = `<div><strong>${title}</strong></div>`;
+            }
+            
+            activityEl.innerHTML = `
+                <div class="activity-header">
+                    <span class="activity-type ${typeClass}">${typeText} #${index + 1}</span>
+                    <span class="activity-earnings">$${earnings.toFixed(2)}</span>
+                </div>
+                <div class="activity-content">${content}</div>
+                ${selectedDay !== currentDay ? `
+                    <div class="activity-actions">
+                        <button class="action-btn edit-btn" onclick="editActivity('${activity.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteActivity('${activity.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+            
+            activityList.appendChild(activityEl);
+        }
+        
+        // ==============================================
+        // SELECT ACTIVITY TYPE
+        // ==============================================
+        function selectActivityType(type) {
+            currentActivityType = type;
+            
+            // Update buttons
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.type === type) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show corresponding form
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${type}-form`).classList.add('active');
+        }
+        
+        // ==============================================
+        // SHOW ADD ACTIVITY MODAL
+        // ==============================================
+        function showAddActivityModal() {
+            if (selectedDay === currentDay) {
+                alert("Cannot add activities for today!");
+                return;
+            }
+            
+            isEditing = false;
+            editingActivityId = null;
+            document.getElementById('modal-title').textContent = 'Add Activity';
+            
+            // Reset form
+            document.getElementById('link-title').value = '';
+            document.getElementById('link-url').value = '';
+            document.getElementById('link-earnings').value = '0.10';
+            
+            document.getElementById('video-title').value = '';
+            document.getElementById('video-url').value = '';
+            document.getElementById('video-earnings').value = '0.15';
+            
+            document.getElementById('text-title').value = '';
+            document.getElementById('text-content').value = '';
+            document.getElementById('text-earnings').value = '0.05';
+            
+            // Reset to link type
+            selectActivityType('link');
+            
+            document.getElementById('activity-modal').style.display = 'flex';
+        }
+        
+        // ==============================================
+        // EDIT ACTIVITY
+        // ==============================================
+        async function editActivity(activityId) {
+            try {
+                const doc = await db.collection('daily_activities').doc(activityId).get();
+                if (!doc.exists) {
+                    alert('Activity not found!');
+                    return;
+                }
+                
+                const activity = doc.data();
+                isEditing = true;
+                editingActivityId = activityId;
+                document.getElementById('modal-title').textContent = 'Edit Activity';
+                
+                // Fill form based on type
+                selectActivityType(activity.type || 'link');
+                
+                switch(activity.type) {
+                    case 'link':
+                        document.getElementById('link-title').value = activity.title || '';
+                        document.getElementById('link-url').value = activity.url || '';
+                        document.getElementById('link-earnings').value = activity.earnings || 0.10;
+                        break;
+                    case 'video':
+                        document.getElementById('video-title').value = activity.title || '';
+                        document.getElementById('video-url').value = activity.url || '';
+                        document.getElementById('video-earnings').value = activity.earnings || 0.15;
+                        break;
+                    case 'text':
+                        document.getElementById('text-title').value = activity.title || '';
+                        document.getElementById('text-content').value = activity.content || '';
+                        document.getElementById('text-earnings').value = activity.earnings || 0.05;
+                        break;
+                    default:
+                        // If type is not set, default to link
+                        document.getElementById('link-title').value = activity.title || '';
+                        document.getElementById('link-url').value = activity.url || '';
+                        document.getElementById('link-earnings').value = activity.earnings || 0.10;
+                        break;
+                }
+                
+                document.getElementById('activity-modal').style.display = 'flex';
+            } catch (error) {
+                console.error("Error loading activity:", error);
+                alert("Error loading activity: " + error.message);
+            }
+        }
+        
+        // ==============================================
+        // SAVE ACTIVITY - CORRECTED VERSION
+        // ==============================================
+        async function saveActivity() {
+            if (!selectedDay || selectedDay === currentDay) {
+                alert("Cannot save activity for today!");
+                return;
+            }
+            
+            // Validate form
+            let activityData = {
+                day: selectedDay,
+                type: currentActivityType,
+                earnings: 0,
+                _adminKey: "23cabbage",
+                _timestamp: new Date().toISOString(),
+                order: 0 // Default order
+            };
+            
+            // Get form values
+            let title = '';
+            let content = '';
+            
+            switch(currentActivityType) {
+                case 'link':
+                    title = document.getElementById('link-title').value.trim();
+                    const linkUrl = document.getElementById('link-url').value.trim();
+                    const linkEarnings = parseFloat(document.getElementById('link-earnings').value);
+                    
+                    if (!title) {
+                        alert("Please enter a title/description");
+                        return;
+                    }
+                    
+                    if (!linkUrl) {
+                        alert("Please enter a URL");
+                        return;
+                    }
+                    
+                    if (!linkEarnings || linkEarnings <= 0) {
+                        alert("Please enter valid earnings amount (greater than 0)");
+                        return;
+                    }
+                    
+                    activityData.title = title;
+                    activityData.url = linkUrl;
+                    activityData.earnings = linkEarnings;
+                    break;
+                    
+                case 'video':
+                    title = document.getElementById('video-title').value.trim();
+                    const videoUrl = document.getElementById('video-url').value.trim();
+                    const videoEarnings = parseFloat(document.getElementById('video-earnings').value);
+                    
+                    if (!title) {
+                        alert("Please enter a video description");
+                        return;
+                    }
+                    
+                    if (!videoUrl) {
+                        alert("Please enter a video URL");
+                        return;
+                    }
+                    
+                    if (!videoEarnings || videoEarnings <= 0) {
+                        alert("Please enter valid earnings amount (greater than 0)");
+                        return;
+                    }
+                    
+                    activityData.title = title;
+                    activityData.url = videoUrl;
+                    activityData.earnings = videoEarnings;
+                    break;
+                    
+                case 'text':
+                    title = document.getElementById('text-title').value.trim();
+                    const textContent = document.getElementById('text-content').value.trim();
+                    const textEarnings = parseFloat(document.getElementById('text-earnings').value);
+                    
+                    if (!title) {
+                        alert("Please enter a title");
+                        return;
+                    }
+                    
+                    if (!textContent) {
+                        alert("Please enter content");
+                        return;
+                    }
+                    
+                    if (!textEarnings || textEarnings <= 0) {
+                        alert("Please enter valid earnings amount (greater than 0)");
+                        return;
+                    }
+                    
+                    activityData.title = title;
+                    activityData.content = textContent;
+                    activityData.earnings = textEarnings;
+                    break;
+            }
+            
+            try {
+                if (isEditing && editingActivityId) {
+                    // Update existing activity
+                    await db.collection('daily_activities').doc(editingActivityId).update(activityData);
+                    alert("Activity updated successfully!");
+                } else {
+                    // Get count of existing activities for this day to set order
+                    const snapshot = await db.collection('daily_activities')
+                        .where('day', '==', selectedDay)
+                        .get();
+                    
+                    activityData.order = snapshot.size;
+                    
+                    // Add new activity
+                    await db.collection('daily_activities').add(activityData);
+                    alert("Activity added successfully!");
+                }
+                
+                closeModal();
+                await loadActivities(selectedDay);
+                loadAdminStats();
+                
+            } catch (error) {
+                console.error("Error saving activity:", error);
+                alert("Error saving activity: " + error.message);
+            }
+        }
+        
+        // ==============================================
+        // DELETE ACTIVITY
+        // ==============================================
+        async function deleteActivity(activityId) {
+            if (!confirm("Are you sure you want to delete this activity?")) return;
+            
+            try {
+                await db.collection('daily_activities').doc(activityId).delete();
+                alert("Activity deleted successfully!");
+                await loadActivities(selectedDay);
+                loadAdminStats();
+            } catch (error) {
+                console.error("Error deleting activity:", error);
+                alert("Error deleting activity: " + error.message);
+            }
+        }
+        
+        // ==============================================
+        // VIEW SUBMISSIONS (FIXED - NO INDEX)
+        // ==============================================
+        async function viewSubmissions(day) {
+            try {
+                const submissionsList = document.getElementById('submissions-list');
+                submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading submissions...</div>';
+                
+                // Load ALL submissions first (no where clause to avoid index)
+                const snapshot = await db.collection('activity_submissions').get();
+                
+                submissionsList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><br>No submissions found</div>';
+                } else {
+                    // Filter by day and sort manually
+                    const allSubmissions = [];
+                    snapshot.forEach((doc) => {
+                        allSubmissions.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Filter for the selected day
+                    const daySubmissions = allSubmissions.filter(sub => sub.day === day);
+                    
+                    if (daySubmissions.length === 0) {
+                        submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><br>No submissions for ' + day + '</div>';
+                    } else {
+                        // Sort by submittedAt (descending)
+                        daySubmissions.sort((a, b) => {
+                            const dateA = a.submittedAt ? new Date(a.submittedAt) : new Date(0);
+                            const dateB = b.submittedAt ? new Date(b.submittedAt) : new Date(0);
+                            return dateB - dateA; // Descending
+                        });
+                        
+                        // Display submissions
+                        daySubmissions.forEach((submission, index) => {
+                            createSubmissionElement(submission, index);
+                        });
+                    }
+                }
+                
+                document.getElementById('submissions-modal').style.display = 'flex';
+            } catch (error) {
+                console.error("Error loading submissions:", error);
+                const submissionsList = document.getElementById('submissions-list');
+                submissionsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i><br>
+                        Error loading submissions<br>
+                        <small style="color: #666; margin-top: 10px;">${error.message}</small>
+                    </div>
+                `;
+            }
+        }
+        
+        // ==============================================
+        // CREATE SUBMISSION ELEMENT
+        // ==============================================
+        function createSubmissionElement(submission, index) {
+            const submissionsList = document.getElementById('submissions-list');
+            
+            const submissionEl = document.createElement('div');
+            submissionEl.className = 'activity-item';
+            
+            const date = new Date(submission.submittedAt).toLocaleString();
+            const statusClass = submission.status === 'approved' ? 'type-text' : 
+                               submission.status === 'rejected' ? 'type-video' : 'type-link';
+            
+            submissionEl.innerHTML = `
+                <div class="activity-header">
+                    <span class="activity-type ${statusClass}">Submission #${index + 1}</span>
+                    <span class="activity-earnings">$${submission.totalEarnings?.toFixed(2) || '0.00'}</span>
+                </div>
+                <div class="activity-content">
+                    <div><strong>User:</strong> ${submission.userName || 'Unknown'}</div>
+                    <div><strong>Submitted:</strong> ${date}</div>
+                    <div><strong>Status:</strong> ${submission.status}</div>
+                    <div><strong>Activities Completed:</strong> ${submission.activities?.length || 0}</div>
+                </div>
+                <div class="activity-actions">
+                    <button class="action-btn edit-btn" onclick="approveSubmission('${submission.id}')" 
+                            ${submission.status === 'approved' ? 'disabled' : ''}>
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="action-btn delete-btn" onclick="rejectSubmission('${submission.id}')"
+                            ${submission.status === 'rejected' ? 'disabled' : ''}>
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                </div>
+            `;
+            
+            submissionsList.appendChild(submissionEl);
+        }
+        
+        // ==============================================
+        // APPROVE SUBMISSION
+        // ==============================================
+        async function approveSubmission(submissionId) {
+            if (!confirm("Approve this submission and credit earnings to user?")) return;
+            
+            try {
+                // Get submission data
+                const doc = await db.collection('activity_submissions').doc(submissionId).get();
+                if (!doc.exists) return;
+                
+                const submission = doc.data();
+                
+                // Update submission status
+                await db.collection('activity_submissions').doc(submissionId).update({
+                    status: 'approved',
+                    reviewedAt: new Date().toISOString(),
+                    reviewedBy: 'admin',
+                    _adminKey: "23cabbage"
+                });
+                
+                // Update user balance
+                await db.collection('users').doc(submission.userId).update({
+                    balance: firebase.firestore.FieldValue.increment(submission.totalEarnings),
+                    totalEarnings: firebase.firestore.FieldValue.increment(submission.totalEarnings)
+                });
+                
+                alert(`Submission approved! $${submission.totalEarnings} credited to user.`);
+                closeModal('submissions-modal');
+                loadAdminStats();
+                
+            } catch (error) {
+                console.error("Error approving submission:", error);
+                alert("Error approving submission: " + error.message);
+            }
+        }
+        
+        // ==============================================
+        // REJECT SUBMISSION
+        // ==============================================
+        async function rejectSubmission(submissionId) {
+            if (!confirm("Reject this submission?")) return;
+            
+            try {
+                await db.collection('activity_submissions').doc(submissionId).update({
+                    status: 'rejected',
+                    reviewedAt: new Date().toISOString(),
+                    reviewedBy: 'admin',
+                    _adminKey: "23cabbage"
+                });
+                
+                alert("Submission rejected!");
+                closeModal('submissions-modal');
+                loadAdminStats();
+                
+            } catch (error) {
+                console.error("Error rejecting submission:", error);
+                alert("Error rejecting submission: " + error.message);
+            }
+        }
+        
+        // ==============================================
+        // UTILITY FUNCTIONS
+        // ==============================================
+        function closeModal(modalId = 'activity-modal') {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
