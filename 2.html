@@ -2,39 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Activities</title>
+    <title>Admin Activities Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">     <style>  *{   font-family: "Sofia Sans Condensed", sans-serif;</style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="days.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
+            }
         
         body {
-            background: #0a0a0a;
+            background: black;
             color: white;
             min-height: 100vh;
         }
-        
+        .activity-details a{
+            text-decoration: none;
+        }
         .login-section {
-            max-width: 400px;
+            max-width: 90%;
             margin: 100px auto;
-            padding: 30px;
+            padding: 20px;
             background: #111;
             border-radius: 10px;
-            border: 1px solid #333;
+            border: 0.1px solid #333;
             text-align: center;
         }
-        
-        .login-section h2 {
-            color: #6ab8ff;
-            margin-bottom: 30px;
-        }
-        
         .input-group {
             margin-bottom: 20px;
         }
@@ -43,18 +38,20 @@
             width: 100%;
             padding: 12px;
             border-radius: 5px;
-            border: 1px solid #333;
-            background: #222;
+            border: 1px solid #404040;
+            background: black;
             color: white;
             font-size: 16px;
         }
-        
+        .input-group input:focus{
+            outline: none;
+        }
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: #6ab8ff;
+            background: black;
             color: white;
-            border: none;
+            border: 0.1px solid #404040;
             border-radius: 5px;
             font-size: 16px;
             font-weight: bold;
@@ -64,165 +61,225 @@
         .admin-panel {
             display: none;
             padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #333;
+        .header{
+            background: none;
+            padding: 0;
+            border: none;
+            position: fixed;
+            top: 1px;
+            left: 2px;
+            width: 99%;
+         
         }
-        
-        .header h1 {
-            color: #6ab8ff;
-            font-size: 1em;
+        .day-header{
+            background: black;
+            border: none;
+            position: fixed;
+            top: 3em;
+            left: 2px;
+            width: auto;
+            padding: 10px;
+            border: 1px solid white;
+            border-radius: 10px;
+            opacity: 0.5;
+         }
+         .day-header h3{
+             font-size: 1em;
+             font-weight: normal;
+         }
+    .header td{
+        border: 2px solid white;
+        font-weight: 900;
+    }
+        .logo{
+            background: black;
+            color: white;
+            border-radius: 5px 0 0 5px;
         }
-        
         .logout-btn {
-            background: #dc3545;
+            border-radius: 0 5px 5px 0;
+            color: black;
+            background: white;
+            text-align: center;
+            padding: 5px;
+            }
+        .day-selector {
+            display: block;
+        }
+        
+        .day-btn, .navlink {
+            padding: 12px 24px;
+            background: black;
+            border: 1px solid #404040;
+            color: white;
+            border-radius: 5px;
+            border-left: 0;
+            border-right: 0;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .day-btn.active {
+        padding-left: 5em;
+        }
+        .day-btn .fa-circle{
+            display: none;
+            font-size: 0.6em;
+            color: yellow;
+        }
+        .day-btn.today .fa-circle{
+       display: unset;
+        }
+        
+        .activities-container {
+            background: black;
+            border-radius: 10px;
+            padding: 10px;
+            padding-top: 10px;
+            min-height: 500px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            margin-top: 3em;
+        }
+        
+        .readonly-notice {
+            background: transparent;
+            border: 1px solid #ffffff45;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .add-activity-btn {
+            background: darkgreen;
+            }
+    .view-submissions-btn, .add-activity-btn{
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-        }
-        
-        .day-selector {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-            padding: 10px 0;
-        }
-        
-        .day-btn {
-            padding: 12px 20px;
-            background: #222;
-            border: 1px solid #333;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            min-width: 100px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .day-btn:hover {
-            background: #333;
-        }
-        
-        .day-btn.active {
-            background: #6ab8ff;
-            border-color: #6ab8ff;
-        }
-        
-        .day-btn.today {
-            border: 2px solid #28a745;
-        }
-        
-        .activities-container {
-            background: #222;
-            border-radius: 10px;
-            padding: 20px;
-            min-height: 400px;
-            margin-bottom: 30px;
-        }
-        
-        .day-info {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #444;
-        }
-        
-        .day-info h3 {
-            color: #6ab8ff;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
             margin-bottom: 5px;
         }
-        
-        .day-info p {
-            color: #ccc;
-            font-size: 14px;
+        .view-submissions-btn{
+            background: #17a2b8;
+            
         }
         
-        .readonly-notice {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            color: #ffc107;
+        .add-activity-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
         }
         
         .activity-list {
             display: grid;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 20px;
+            margin-bottom: 30px;     
         }
         
         .activity-item {
-            background: #333;
-            border-radius: 8px;
-            padding: 15px;
-            border-left: 4px solid #6ab8ff;
+            background: black;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #404040;
+            transition: all 0.3s;
         }
-        
+
         .activity-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .activity-type {
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: bold;
         }
         
-        .type-link { background: rgba(106, 184, 255, 0.2); color: #6ab8ff; }
+        .type-link { background: rgba(106, 184, 255, 0.2); color: #6ab8ff;
+}
         .type-video { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
         .type-text { background: rgba(40, 167, 69, 0.2); color: #28a745; }
         
         .activity-earnings {
             color: #ffc107;
             font-weight: bold;
+            font-size: 1.2em;
         }
         
         .activity-content {
+            margin-bottom: 15px;
+        }
+        
+        .activity-title {
+            font-size: 1.2em;
+            font-weight: 600;
             margin-bottom: 10px;
+            color: white;
+        }
+        
+        .activity-details {
+            color: #ccc;
+            font-size: 0.95em;
+            line-height: 1.5;
         }
         
         .activity-actions {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
         }
         
         .action-btn {
-            padding: 5px 15px;
+            padding: 8px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
         }
         
-        .edit-btn { background: #6ab8ff; color: white; }
-        .delete-btn { background: #dc3545; color: white; }
-        
-        .add-activity-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
+        .action-btn:hover {
+            transform: translateY(-2px);
         }
         
+        .edit-btn { 
+            background: #6ab8ff; 
+            color: white; 
+        }
+        
+        .delete-btn { 
+            background: #dc3545; 
+            color: white; 
+        }
+        .act-btn{
+            display: flex;
+            justify-content: space-between;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -230,106 +287,55 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: black;
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         
         .modal-content {
-            background: #111;
-            padding: 30px;
+            background: black;
+            padding: 35px;
             border-radius: 10px;
             width: 90%;
-            max-width: 500px;
-            border: 1px solid #333;
-            max-height: 80vh;
+            max-width: 600px;
+            border: 1px solid #404040;
+            max-height: 85vh;
             overflow-y: auto;
+            position: relative;
         }
         
         .modal h3 {
             color: #6ab8ff;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #ccc;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            background: #222;
-            color: white;
-        }
-        
-        textarea.form-control {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .modal-actions {
+            margin-bottom: 25px;
+            font-size: 1em;
             display: flex;
+            align-items: center;
             gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .save-btn { background: #6ab8ff; color: white; }
-        .cancel-btn { background: #666; color: white; }
-        
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #444;
         }
         
         .activity-type-selector {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 25px;
+            width: 100%;
+            overflow-x: auto;
         }
         
         .type-btn {
-            flex: 1;
-            padding: 10px;
-            background: #222;
-            border: 1px solid #333;
-            color: #ccc;
+            padding: 2px;
+            background: black;
+            border: 1px solid #404040;
+            color: white;
             border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .type-btn:hover {
-            background: #333;
-        }
-        
         .type-btn.active {
-            background: #6ab8ff;
             border-color: #6ab8ff;
             color: white;
         }
@@ -340,116 +346,304 @@
         
         .form-section.active {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: 1px solid #404040;
+            background: black;
+            color: white;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #6ab8ff;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .save-btn { 
+            background: white;
+            color: black; 
+        }
+        
+        .cancel-btn { 
+            background: black; 
+            color: White; 
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+                
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        
+        .empty-state h4 {
+            color: #ccc;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .empty-state p {
+            color: #888;
+            line-height: 1.5;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid white;
+            border-top: 4px solid black;
+            border-right: 4px solid gray;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
         
         .message {
-            padding: 10px;
+            padding: 15px;
             border-radius: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
+            font-weight: 500;
         }
         
         .success {
-            background: rgba(40, 167, 69, 0.2);
+            background: rgba(40, 167, 69, 0.15);
             color: #28a745;
             border: 1px solid rgba(40, 167, 69, 0.3);
         }
         
         .error {
-            background: rgba(220, 53, 69, 0.2);
+            background: rgba(220, 53, 69, 0.15);
             color: #dc3545;
             border: 1px solid rgba(220, 53, 69, 0.3);
         }
         
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-            margin-bottom: 30px;
+        .submission-item {
+            background: black;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
         }
         
-        .stat-card {
-            background: #222;
-            border-radius: 10px;
-            padding: 10px 2px;
-            text-align: center;
-            border: none;
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
         
-        .stat-value {
-            font-size: 1em;
+        .submission-user {
+            font-weight: 600;
             color: #6ab8ff;
-            font-weight: bold;
-            
         }
         
-        .stat-label {
+        .submission-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .submission-details {
             color: #ccc;
-            font-size: 0.5em;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-panel {
+                padding: 15px;
+            }
+            
+            .day-selector {
+                justify-content: center;
+            }
+            
+            .day-btn {
+                min-width: 100px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .activity-actions {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .modal-content {
+                padding: 25px 20px;
+                width: 95%;
+            }
+            
+            .activity-type-selector {
+                flex-direction: column;
+            }
+            
+            .type-btn {
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+        
+        .debug-info {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <!-- Login Section -->
     <div id="login-section" class="login-section">
-        <h2>Activity Manager</h2>
         <div id="message" class="message"></div>
         <div class="input-group">
-            <input type="password" id="admin-password" placeholder="Enter admin password">
+            <input type="text" id="admin-password" placeholder="Enter admin password" autocomplete="current-password">
         </div>
-        <button class="login-btn" onclick="adminLogin()">Login</button>
+        <button class="login-btn" onclick="adminLogin()">
+            Login
+        </button>
     </div>
     
     <!-- Admin Panel -->
     <div id="admin-panel" class="admin-panel">
-        <div class="header">
-            <h1><i class="fas fa-tasks"></i> Activity Manager</h1>
-            <button class="logout-btn" onclick="logout()">
-               Logout
-            </button>
-        </div>
-        
-        <!-- Admin Stats -->
-        <div class="admin-stats" id="admin-stats">
-            <div class="stat-card">
-                <div class="stat-label">Total Activities</div>
-                <div class="stat-value" id="total-activities">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Pending Submissions</div>
-                <div class="stat-value" id="pending-submissions">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Earnings</div>
-                <div class="stat-value" id="total-earnings">$0</div>
-            </div>
-        </div>
-        
-        <!-- Day Selector -->
-        <div class="day-selector" id="day-selector">
-            <!-- Days will be loaded here -->
-        </div>
+        <!-- Header -->
+        <table class="header">
+            <tr><td class="logo">Activities Admin</td>
+            <td class="logout-btn"onclick="document.getElementById('nav-menu').classList.add('open')">
+           Menu
+            </td>
+     </tr>
+        </table>
         
         <!-- Activities Container -->
         <div class="activities-container">
-            <div class="day-info" id="day-info">
-                <h3>Select a day to manage activities</h3>
+            <!-- Day Header -->
+            <div class="day-header" id="day-header">
+                <h4>Select a day to manage activities</h4>
                 <p>Click on a day above to view and edit activities</p>
             </div>
             
+            <!-- Readonly Notice -->
             <div id="readonly-notice" class="readonly-notice" style="display: none;">
                 <i class="fas fa-info-circle"></i> 
-                Today's activities cannot be edited. You can only view them.
+              You can't edit today's activities 
             </div>
-            
-            <button class="add-activity-btn" id="add-activity-btn" onclick="showAddActivityModal()" style="display: none;">
-                <i class="fas fa-plus"></i> Add New Activity
+           <div class="act-btn">
+            <button class="view-submissions-btn" id="view-submissions-btn" onclick="viewSubmissions()" style="display: none;">
+                <i class="fas fa-clipboard-list"></i> View Submissions
             </button>
-            
+           
+            <button class="add-activity-btn" id="add-activity-btn" onclick="showAddActivityModal()" style="display: none;">
+                <i class="fas fa-plus-circle"></i> New
+            </button>
+            </div>
             <div class="activity-list" id="activity-list">
                 <div class="empty-state">
-                    <i class="fas fa-tasks"></i><br>
-                    No activities for this day
+                    <i class="fas fa-calendar-alt"></i>
+                    <h4>No activities loaded</h4>
+                    <p>Select a day from above to view or edit activities</p>
                 </div>
             </div>
         </div>
@@ -458,8 +652,10 @@
     <!-- Add/Edit Activity Modal -->
     <div id="activity-modal" class="modal">
         <div class="modal-content">
-            <h3 id="modal-title">Add Activity</h3>
+            <button class="close-btn" onclick="closeModal('activity-modal')">&times;</button>
+            <h3 id="modal-title"><i class="fas fa-plus-circle"></i> Add Activity</h3>
             
+            <!-- Activity Type Selector -->
             <div class="activity-type-selector">
                 <button class="type-btn active" data-type="link" onclick="selectActivityType('link')">
                     <i class="fas fa-link"></i> Link
@@ -484,7 +680,7 @@
                 </div>
                 <div class="form-group">
                     <label>Earnings ($)</label>
-                    <input type="number" id="link-earnings" class="form-control" placeholder="0.10" step="0.01" min="0.01">
+                    <input type="number" id="link-earnings" class="form-control" placeholder="0.10" step="0.01" min="0.01" value="0.10">
                 </div>
             </div>
             
@@ -500,7 +696,7 @@
                 </div>
                 <div class="form-group">
                     <label>Earnings ($)</label>
-                    <input type="number" id="video-earnings" class="form-control" placeholder="0.15" step="0.01" min="0.01">
+                    <input type="number" id="video-earnings" class="form-control" placeholder="0.15" step="0.01" min="0.01" value="0.15">
                 </div>
             </div>
             
@@ -516,13 +712,17 @@
                 </div>
                 <div class="form-group">
                     <label>Earnings ($)</label>
-                    <input type="number" id="text-earnings" class="form-control" placeholder="0.05" step="0.01" min="0.01">
+                    <input type="number" id="text-earnings" class="form-control" placeholder="0.05" step="0.01" min="0.01" value="0.05">
                 </div>
             </div>
             
             <div class="modal-actions">
-                <button class="modal-btn save-btn" onclick="saveActivity()">Save Activity</button>
-                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn save-btn" onclick="saveActivity()">
+                    <i class="fas fa-save"></i> Save Activity
+                </button>
+                <button class="modal-btn cancel-btn" onclick="closeModal('activity-modal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
             </div>
         </div>
     </div>
@@ -530,12 +730,15 @@
     <!-- View Submissions Modal -->
     <div id="submissions-modal" class="modal">
         <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('submissions-modal')">&times;</button>
             <h3><i class="fas fa-clipboard-list"></i> Activity Submissions</h3>
             <div id="submissions-list" class="activity-list">
                 <!-- Submissions will be loaded here -->
             </div>
             <div class="modal-actions">
-                <button class="modal-btn cancel-btn" onclick="closeModal('submissions-modal')">Close</button>
+                <button class="modal-btn cancel-btn" onclick="closeModal('submissions-modal')">
+                    <i class="fas fa-times"></i> Close
+                </button>
             </div>
         </div>
     </div>
@@ -568,21 +771,35 @@
         // Admin password
         const ADMIN_PASSWORD = "23cabbage";
         
-        // Current day
-        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-        const today = new Date().getDay();
-        const currentDay = days[today];
+        // Days configuration
+        const DAYS = [
+            { name: 'Sunday', value: 'sunday', icon: 'fa-sun' },
+            { name: 'Monday', value: 'monday', icon: 'fa-moon' },
+            { name: 'Tuesday', value: 'tuesday', icon: 'fa-star' },
+            { name: 'Wednesday', value: 'wednesday', icon: 'fa-cloud' },
+            { name: 'Thursday', value: 'thursday', icon: 'fa-bolt' },
+            { name: 'Friday', value: 'friday', icon: 'fa-heart' },
+            { name: 'Saturday', value: 'saturday', icon: 'fa-gem' }
+        ];
         
+        const today = new Date().getDay(); // 0 = Sunday
+        const currentDay = DAYS[today].value;
+        
+        // Global variables
         let isAdminLoggedIn = false;
         let selectedDay = null;
         let isEditing = false;
         let editingActivityId = null;
         let currentActivityType = 'link';
+        let allActivities = [];
         
         // ==============================================
         // INITIALIZATION
         // ==============================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin Activities Manager initialized');
+            
+            // Check if already logged in
             if (localStorage.getItem('activityAdminLoggedIn') === 'true') {
                 isAdminLoggedIn = true;
                 showAdminPanel();
@@ -592,11 +809,17 @@
         });
         
         // ==============================================
-        // ADMIN LOGIN
+        // ADMIN LOGIN/LOGOUT
         // ==============================================
         function adminLogin() {
             const password = document.getElementById('admin-password').value;
             const messageDiv = document.getElementById('message');
+            
+            if (!password) {
+                messageDiv.textContent = 'Please enter admin password';
+                messageDiv.className = 'message error';
+                return;
+            }
             
             if (password === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
@@ -604,15 +827,19 @@
                 showAdminPanel();
                 initDaySelector();
                 loadAdminStats();
+                messageDiv.textContent = '';
             } else {
                 messageDiv.textContent = 'Incorrect password!';
                 messageDiv.className = 'message error';
+                document.getElementById('admin-password').value = '';
             }
         }
         
         function logout() {
-            localStorage.removeItem('activityAdminLoggedIn');
-            location.reload();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('activityAdminLoggedIn');
+                location.reload();
+            }
         }
         
         function showAdminPanel() {
@@ -621,34 +848,50 @@
         }
         
         // ==============================================
-        // LOAD ADMIN STATS (FIXED - NO INDEX)
+        // LOAD ADMIN STATS
         // ==============================================
         async function loadAdminStats() {
             try {
-                // Count total activities
-                const activitiesSnapshot = await db.collection('daily_activities').get();
-                document.getElementById('total-activities').textContent = activitiesSnapshot.size;
+                // Show loading state
+                document.querySelectorAll('.stat-value').forEach(el => {
+                    el.textContent = '...';
+                });
                 
-                // Count pending submissions (no index - manual filtering)
-                const allSubmissions = await db.collection('activity_submissions').get();
+                // Load activities count
+                const activitiesSnapshot = await db.collection('daily_activities').get();
+                const totalActivities = activitiesSnapshot.size;
+                document.getElementById('total-activities').textContent = totalActivities;
+                
+                // Load submissions count
+                const submissionsSnapshot = await db.collection('activity_submissions').get();
                 let pendingCount = 0;
-                allSubmissions.forEach(doc => {
+                submissionsSnapshot.forEach(doc => {
                     if (doc.data().status === 'pending') {
                         pendingCount++;
                     }
                 });
                 document.getElementById('pending-submissions').textContent = pendingCount;
                 
-                // Calculate total earnings from all activities
+                // Calculate total earnings
                 let totalEarnings = 0;
+                let daysWithActivities = new Set();
+                
                 activitiesSnapshot.forEach(doc => {
                     const activity = doc.data();
-                    totalEarnings += activity.earnings || 0;
+                    totalEarnings += parseFloat(activity.earnings) || 0;
+                    if (activity.day) {
+                        daysWithActivities.add(activity.day);
+                    }
                 });
-                document.getElementById('total-earnings').textContent = '$' + totalEarnings.toFixed(2);
+                
+                document.getElementById('total-earnings').textContent = '$ ' + totalEarnings.toFixed(2);
+                document.getElementById('days-with-activities').textContent = daysWithActivities.size + ' / 7';
+                
+                console.log('Stats loaded:', { totalActivities, pendingCount, totalEarnings });
                 
             } catch (error) {
-                console.error("Error loading stats:", error);
+                console.error('Error loading stats:', error);
+                showErrorMessage('Failed to load statistics');
             }
         }
         
@@ -659,17 +902,17 @@
             const daySelector = document.getElementById('day-selector');
             daySelector.innerHTML = '';
             
-            days.forEach((day, index) => {
+            DAYS.forEach(day => {
                 const button = document.createElement('button');
                 button.className = 'day-btn';
-                button.textContent = day.charAt(0).toUpperCase() + day.slice(1);
-                button.dataset.day = day;
+                button.innerHTML = `<i class="fas ${day.icon}"></i> ${day.name} <sup class="fas fa-circle fa-fade"></sup>`;
+                button.dataset.day = day.value;
                 
-                if (day === currentDay) {
+                if (day.value === currentDay) {
                     button.classList.add('today');
                 }
                 
-                button.onclick = () => selectDay(day);
+                button.onclick = () => selectDay(day.value);
                 daySelector.appendChild(button);
             });
             
@@ -691,112 +934,134 @@
                 }
             });
             
-            // Update day info
-            const dayInfo = document.getElementById('day-info');
-            dayInfo.innerHTML = `
-                <h3>${day.charAt(0).toUpperCase() + day.slice(1)} Activities</h3>
-                <p>${day === currentDay ? 'Today\'s activities (read-only)' : 'You can edit these activities'}</p>
-                <button class="action-btn edit-btn" onclick="viewSubmissions('${day}')" style="margin-top: 10px;">
-                    <i class="fas fa-eye"></i> View Submissions
-                </button>
+            // Update day header
+            const dayObj = DAYS.find(d => d.value === day);
+            const dayHeader = document.getElementById('day-header');
+            dayHeader.innerHTML = `
+  <h3>${dayObj.name}</h3>
             `;
             
-            // Show/hide add button
+            // Show/hide add button and submissions button
             const addBtn = document.getElementById('add-activity-btn');
+            const viewSubBtn = document.getElementById('view-submissions-btn');
+            
             if (day === currentDay) {
                 addBtn.style.display = 'none';
-                document.getElementById('readonly-notice').style.display = 'block';
+                document.getElementById('readonly-notice').style.display = 'flex';
             } else {
-                addBtn.style.display = 'block';
+                addBtn.style.display = 'flex';
                 document.getElementById('readonly-notice').style.display = 'none';
             }
             
-            // Load activities
+            viewSubBtn.style.display = 'flex';
+            
+            // Load activities for this day
             await loadActivities(day);
         }
         
         // ==============================================
-        // LOAD ACTIVITIES - CORRECTED VERSION
+        // LOAD ACTIVITIES - FIXED VERSION
         // ==============================================
         async function loadActivities(day) {
             const activityList = document.getElementById('activity-list');
-            activityList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading activities...</div>';
+            
+            // Show loading state
+            activityList.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="fas fa-spinner fa-spin"></div>
+  <br><br><br>
+                    <p>Loading activities for ${day}...</p>
+                </div>
+            `;
             
             try {
-                // First, let's check if the collection exists and has data
-                const activitiesRef = db.collection('daily_activities');
+                console.log(`Loading activities for day: ${day}`);
                 
-                // Try to get all activities first to debug
-                const allActivities = await activitiesRef.get();
-                console.log(`Total activities in collection: ${allActivities.size}`);
-                
-                // Now filter for the specific day
-                const snapshot = await activitiesRef
-                    .where('day', '==', day)
-                    .get();
-                
-                console.log(`Found ${snapshot.size} activities for ${day}`);
+                // Try with Firestore query
+                let snapshot;
+                try {
+                    snapshot = await db.collection('daily_activities')
+                        .where('day', '==', day)
+                        .orderBy('order', 'asc')
+                        .get();
+                } catch (queryError) {
+                    console.warn('Firestore query failed, trying fallback:', queryError);
+                    // Fallback: Get all and filter manually
+                    const allSnapshot = await db.collection('daily_activities').get();
+                    const allActivities = [];
+                    allSnapshot.forEach(doc => {
+                        allActivities.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Filter by day and sort
+                    const filteredActivities = allActivities
+                        .filter(activity => activity.day === day)
+                        .sort((a, b) => (a.order || 0) - (b.order || 0));
+                    
+                    allActivities.length = 0; // Clear array
+                    filteredActivities.forEach(activity => allActivities.push(activity));
+                    snapshot = { 
+                        empty: filteredActivities.length === 0,
+                        forEach: (callback) => filteredActivities.forEach((activity, index) => {
+                            callback({ id: activity.id, data: () => activity });
+                        })
+                    };
+                }
                 
                 if (snapshot.empty) {
                     activityList.innerHTML = `
                         <div class="empty-state">
-                            <i class="fas fa-tasks"></i><br>
-                            No activities found for ${day.charAt(0).toUpperCase() + day.slice(1)}<br>
-                            <small style="color: #666; margin-top: 10px;">Click "Add New Activity" to create one</small>
+                            <i class="fas fa-calendar-plus"></i>
+                            <h4>No Activities Found</h4>
+                            <p>No activities have been set for ${day}. Click "Add New Activity" to create one.</p>
                         </div>
                     `;
+                    allActivities = [];
                     return;
                 }
                 
-                // Clear and create activities list
+                // Clear and display activities
                 activityList.innerHTML = '';
+                allActivities = [];
                 
-                // Create an array to store activities
-                const activitiesArray = [];
-                
-                snapshot.forEach((doc, index) => {
+                let index = 1;
+                snapshot.forEach(doc => {
                     const activity = { 
                         id: doc.id, 
                         ...doc.data(),
-                        // Ensure earnings is a number
                         earnings: parseFloat(doc.data().earnings) || 0.10
                     };
-                    activitiesArray.push(activity);
+                    allActivities.push(activity);
                     
-                    // Create activity element
-                    createActivityElement(activity, index);
+                    const activityEl = createActivityElement(activity, index);
+                    activityList.appendChild(activityEl);
+                    index++;
                 });
                 
-                console.log(`Displayed ${activitiesArray.length} activities for ${day}`);
+                console.log(`Loaded ${allActivities.length} activities for ${day}`);
                 
             } catch (error) {
-                console.error("Error loading activities:", error);
+                console.error(`Error loading activities for ${day}:`, error);
                 
-                // Show detailed error for debugging
                 activityList.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i><br>
-                        Error loading activities<br>
-                        <small style="color: #666; margin-top: 10px;">
-                            ${error.message}<br>
-                            Check console for details
-                        </small>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Error Loading Activities</h4>
+                        <p>Failed to load activities. Please try again later.</p>
+                        <div class="debug-info">Error: ${error.message}</div>
                     </div>
                 `;
             }
         }
         
         // ==============================================
-        // CREATE ACTIVITY ELEMENT - CORRECTED VERSION
+        // CREATE ACTIVITY ELEMENT
         // ==============================================
         function createActivityElement(activity, index) {
-            const activityList = document.getElementById('activity-list');
-            
             const activityEl = document.createElement('div');
             activityEl.className = 'activity-item';
             activityEl.dataset.id = activity.id;
             
-            // Validate activity data
             const type = activity.type || 'link';
             const title = activity.title || 'Untitled Activity';
             const earnings = parseFloat(activity.earnings) || 0.10;
@@ -804,49 +1069,53 @@
             let typeClass = '';
             let typeText = '';
             let content = '';
+            let details = '';
             
             switch(type) {
                 case 'link':
                     typeClass = 'type-link';
                     typeText = 'Link';
-                    content = `<a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${title}</a>`;
+                    details = `<div class="activity-details">
+                        <strong>URL:</strong> <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL provided'}</a>
+                    </div>`;
                     break;
+                    
                 case 'video':
                     typeClass = 'type-video';
                     typeText = 'Video';
-                    content = `
-                        <div><strong>${title}</strong></div>
-                        <div style="margin-top: 5px; color: #ccc;">
-                            URL: <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL'}</a>
-                        </div>
-                    `;
+                    details = `<div class="activity-details">
+                        <strong>Video URL:</strong> <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL provided'}</a>
+                    </div>`;
                     break;
+                    
                 case 'text':
                     typeClass = 'type-text';
                     typeText = 'Text';
-                    content = `
-                        <div><strong>${title}</strong></div>
-                        <div style="margin-top: 5px; color: #ccc;">
-                            ${activity.content ? 
-                                (activity.content.length > 100 ? 
-                                    activity.content.substring(0, 100) + '...' : 
-                                    activity.content) 
-                                : 'No content'}
-                        </div>
-                    `;
+                    const contentPreview = activity.content ? 
+                        (activity.content.length > 150 ? 
+                            activity.content.substring(0, 150) + '...' : 
+                            activity.content) : 
+                        'No content';
+                    details = `<div class="activity-details">
+                        <strong>Content Preview:</strong> ${contentPreview}
+                    </div>`;
                     break;
+                    
                 default:
                     typeClass = 'type-link';
-                    typeText = 'Unknown';
-                    content = `<div><strong>${title}</strong></div>`;
+                    typeText = 'Activity';
+                    details = `<div class="activity-details">No details available</div>`;
             }
             
             activityEl.innerHTML = `
                 <div class="activity-header">
-                    <span class="activity-type ${typeClass}">${typeText} #${index + 1}</span>
+                    <span class="activity-type ${typeClass}">${typeText} #${index}</span>
                     <span class="activity-earnings">$${earnings.toFixed(2)}</span>
                 </div>
-                <div class="activity-content">${content}</div>
+                <div class="activity-content">
+                    <div class="activity-title">${title}</div>
+                    ${details}
+                </div>
                 ${selectedDay !== currentDay ? `
                     <div class="activity-actions">
                         <button class="action-btn edit-btn" onclick="editActivity('${activity.id}')">
@@ -859,11 +1128,11 @@
                 ` : ''}
             `;
             
-            activityList.appendChild(activityEl);
+            return activityEl;
         }
         
         // ==============================================
-        // SELECT ACTIVITY TYPE
+        // ACTIVITY TYPE SELECTION
         // ==============================================
         function selectActivityType(type) {
             currentActivityType = type;
@@ -888,13 +1157,13 @@
         // ==============================================
         function showAddActivityModal() {
             if (selectedDay === currentDay) {
-                alert("Cannot add activities for today!");
+                alert("Cannot add activities for today! Today's activities are read-only.");
                 return;
             }
             
             isEditing = false;
             editingActivityId = null;
-            document.getElementById('modal-title').textContent = 'Add Activity';
+            document.getElementById('modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Activity';
             
             // Reset form
             document.getElementById('link-title').value = '';
@@ -929,7 +1198,7 @@
                 const activity = doc.data();
                 isEditing = true;
                 editingActivityId = activityId;
-                document.getElementById('modal-title').textContent = 'Edit Activity';
+                document.getElementById('modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Activity';
                 
                 // Fill form based on type
                 selectActivityType(activity.type || 'link');
@@ -960,17 +1229,17 @@
                 
                 document.getElementById('activity-modal').style.display = 'flex';
             } catch (error) {
-                console.error("Error loading activity:", error);
+                console.error("Error loading activity for edit:", error);
                 alert("Error loading activity: " + error.message);
             }
         }
         
         // ==============================================
-        // SAVE ACTIVITY - CORRECTED VERSION
+        // SAVE ACTIVITY
         // ==============================================
         async function saveActivity() {
             if (!selectedDay || selectedDay === currentDay) {
-                alert("Cannot save activity for today!");
+                alert("Cannot save activity for today! Today's activities are read-only.");
                 return;
             }
             
@@ -979,14 +1248,13 @@
                 day: selectedDay,
                 type: currentActivityType,
                 earnings: 0,
-                _adminKey: "23cabbage",
-                _timestamp: new Date().toISOString(),
-                order: 0 // Default order
+                updatedAt: new Date().toISOString()
             };
             
-            // Get form values
+            // Get form values based on type
             let title = '';
-            let content = '';
+            let isValid = true;
+            let errorMessage = '';
             
             switch(currentActivityType) {
                 case 'link':
@@ -995,23 +1263,19 @@
                     const linkEarnings = parseFloat(document.getElementById('link-earnings').value);
                     
                     if (!title) {
-                        alert("Please enter a title/description");
-                        return;
+                        isValid = false;
+                        errorMessage = "Please enter a title/description";
+                    } else if (!linkUrl) {
+                        isValid = false;
+                        errorMessage = "Please enter a URL";
+                    } else if (!linkEarnings || linkEarnings <= 0) {
+                        isValid = false;
+                        errorMessage = "Please enter valid earnings amount (greater than 0)";
+                    } else {
+                        activityData.title = title;
+                        activityData.url = linkUrl;
+                        activityData.earnings = linkEarnings;
                     }
-                    
-                    if (!linkUrl) {
-                        alert("Please enter a URL");
-                        return;
-                    }
-                    
-                    if (!linkEarnings || linkEarnings <= 0) {
-                        alert("Please enter valid earnings amount (greater than 0)");
-                        return;
-                    }
-                    
-                    activityData.title = title;
-                    activityData.url = linkUrl;
-                    activityData.earnings = linkEarnings;
                     break;
                     
                 case 'video':
@@ -1020,23 +1284,19 @@
                     const videoEarnings = parseFloat(document.getElementById('video-earnings').value);
                     
                     if (!title) {
-                        alert("Please enter a video description");
-                        return;
+                        isValid = false;
+                        errorMessage = "Please enter a video description";
+                    } else if (!videoUrl) {
+                        isValid = false;
+                        errorMessage = "Please enter a video URL";
+                    } else if (!videoEarnings || videoEarnings <= 0) {
+                        isValid = false;
+                        errorMessage = "Please enter valid earnings amount (greater than 0)";
+                    } else {
+                        activityData.title = title;
+                        activityData.url = videoUrl;
+                        activityData.earnings = videoEarnings;
                     }
-                    
-                    if (!videoUrl) {
-                        alert("Please enter a video URL");
-                        return;
-                    }
-                    
-                    if (!videoEarnings || videoEarnings <= 0) {
-                        alert("Please enter valid earnings amount (greater than 0)");
-                        return;
-                    }
-                    
-                    activityData.title = title;
-                    activityData.url = videoUrl;
-                    activityData.earnings = videoEarnings;
                     break;
                     
                 case 'text':
@@ -1045,47 +1305,51 @@
                     const textEarnings = parseFloat(document.getElementById('text-earnings').value);
                     
                     if (!title) {
-                        alert("Please enter a title");
-                        return;
+                        isValid = false;
+                        errorMessage = "Please enter a title";
+                    } else if (!textContent) {
+                        isValid = false;
+                        errorMessage = "Please enter content";
+                    } else if (!textEarnings || textEarnings <= 0) {
+                        isValid = false;
+                        errorMessage = "Please enter valid earnings amount (greater than 0)";
+                    } else {
+                        activityData.title = title;
+                        activityData.content = textContent;
+                        activityData.earnings = textEarnings;
                     }
-                    
-                    if (!textContent) {
-                        alert("Please enter content");
-                        return;
-                    }
-                    
-                    if (!textEarnings || textEarnings <= 0) {
-                        alert("Please enter valid earnings amount (greater than 0)");
-                        return;
-                    }
-                    
-                    activityData.title = title;
-                    activityData.content = textContent;
-                    activityData.earnings = textEarnings;
                     break;
+                    
+                default:
+                    isValid = false;
+                    errorMessage = "Unknown activity type";
+            }
+            
+            if (!isValid) {
+                alert(errorMessage);
+                return;
             }
             
             try {
                 if (isEditing && editingActivityId) {
                     // Update existing activity
                     await db.collection('daily_activities').doc(editingActivityId).update(activityData);
-                    alert("Activity updated successfully!");
+                    showSuccessMessage("Activity updated successfully!");
                 } else {
-                    // Get count of existing activities for this day to set order
-                    const snapshot = await db.collection('daily_activities')
-                        .where('day', '==', selectedDay)
-                        .get();
+                    // Add new activity - set order based on existing activities
+                    const existingActivities = allActivities.filter(a => a.day === selectedDay);
+                    activityData.order = existingActivities.length;
+                    activityData.createdAt = new Date().toISOString();
                     
-                    activityData.order = snapshot.size;
-                    
-                    // Add new activity
                     await db.collection('daily_activities').add(activityData);
-                    alert("Activity added successfully!");
+                    showSuccessMessage("Activity added successfully!");
                 }
                 
-                closeModal();
+                closeModal('activity-modal');
+                
+                // Reload activities and stats
                 await loadActivities(selectedDay);
-                loadAdminStats();
+                await loadAdminStats();
                 
             } catch (error) {
                 console.error("Error saving activity:", error);
@@ -1097,13 +1361,23 @@
         // DELETE ACTIVITY
         // ==============================================
         async function deleteActivity(activityId) {
-            if (!confirm("Are you sure you want to delete this activity?")) return;
+            if (selectedDay === currentDay) {
+                alert("Cannot delete activities for today! Today's activities are read-only.");
+                return;
+            }
+            
+            if (!confirm("Are you sure you want to delete this activity? This action cannot be undone.")) {
+                return;
+            }
             
             try {
                 await db.collection('daily_activities').doc(activityId).delete();
-                alert("Activity deleted successfully!");
+                showSuccessMessage("Activity deleted successfully!");
+                
+                // Reload activities and stats
                 await loadActivities(selectedDay);
-                loadAdminStats();
+                await loadAdminStats();
+                
             } catch (error) {
                 console.error("Error deleting activity:", error);
                 alert("Error deleting activity: " + error.message);
@@ -1111,130 +1385,236 @@
         }
         
         // ==============================================
-        // VIEW SUBMISSIONS (FIXED - NO INDEX)
+        // VIEW SUBMISSIONS - FIXED VERSION
         // ==============================================
-        async function viewSubmissions(day) {
+        async function viewSubmissions() {
+            if (!selectedDay) {
+                alert("Please select a day first");
+                return;
+            }
+            
             try {
                 const submissionsList = document.getElementById('submissions-list');
-                submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading submissions...</div>';
+                submissionsList.innerHTML = `
+                    <div class="loading-spinner">
+                        <div class="fas fa-spinner fa-spin"></div>                  </div>
+                `;
                 
-                // Load ALL submissions first (no where clause to avoid index)
-                const snapshot = await db.collection('activity_submissions').get();
+                document.getElementById('submissions-modal').style.display = 'flex';
+                
+                // Load submissions for this day
+                let snapshot;
+                try {
+                    snapshot = await db.collection('activity_submissions')
+                        .where('day', '==', selectedDay)
+                        .orderBy('submittedAt', 'desc')
+                        .get();
+                } catch (error) {
+                    console.warn('Firestore query failed, trying fallback:', error);
+                    // Fallback: Get all and filter manually
+                    const allSnapshot = await db.collection('activity_submissions').get();
+                    const allSubmissions = [];
+                    allSnapshot.forEach(doc => {
+                        allSubmissions.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Filter by day and sort
+                    const filteredSubmissions = allSubmissions
+                        .filter(submission => submission.day === selectedDay)
+                        .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+                    
+                    snapshot = { 
+                        empty: filteredSubmissions.length === 0,
+                        forEach: (callback) => filteredSubmissions.forEach((submission, index) => {
+                            callback({ id: submission.id, data: () => submission });
+                        })
+                    };
+                }
                 
                 submissionsList.innerHTML = '';
                 
                 if (snapshot.empty) {
-                    submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><br>No submissions found</div>';
-                } else {
-                    // Filter by day and sort manually
-                    const allSubmissions = [];
-                    snapshot.forEach((doc) => {
-                        allSubmissions.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    // Filter for the selected day
-                    const daySubmissions = allSubmissions.filter(sub => sub.day === day);
-                    
-                    if (daySubmissions.length === 0) {
-                        submissionsList.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><br>No submissions for ' + day + '</div>';
-                    } else {
-                        // Sort by submittedAt (descending)
-                        daySubmissions.sort((a, b) => {
-                            const dateA = a.submittedAt ? new Date(a.submittedAt) : new Date(0);
-                            const dateB = b.submittedAt ? new Date(b.submittedAt) : new Date(0);
-                            return dateB - dateA; // Descending
-                        });
-                        
-                        // Display submissions
-                        daySubmissions.forEach((submission, index) => {
-                            createSubmissionElement(submission, index);
-                        });
-                    }
+                    submissionsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h4>No Submissions Found</h4>
+                            <p>No submissions found for ${selectedDay}.</p>
+                        </div>
+                    `;
+                    return;
                 }
                 
-                document.getElementById('submissions-modal').style.display = 'flex';
+                let index = 1;
+                snapshot.forEach(doc => {
+                    const submission = { id: doc.id, ...doc.data() };
+                    const submissionEl = createSubmissionElement(submission, index);
+                    submissionsList.appendChild(submissionEl);
+                    index++;
+                });
+                
+                console.log(`Loaded ${index-1} submissions for ${selectedDay}`);
+                
             } catch (error) {
                 console.error("Error loading submissions:", error);
                 const submissionsList = document.getElementById('submissions-list');
                 submissionsList.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i><br>
-                        Error loading submissions<br>
-                        <small style="color: #666; margin-top: 10px;">${error.message}</small>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Error Loading Submissions</h4>
+                        <p>Failed to load submissions. Please try again later.</p>
+                        <div class="debug-info">Error: ${error.message}</div>
                     </div>
                 `;
             }
         }
         
         // ==============================================
-        // CREATE SUBMISSION ELEMENT
+        // CREATE SUBMISSION ELEMENT - FIXED VERSION
         // ==============================================
         function createSubmissionElement(submission, index) {
-            const submissionsList = document.getElementById('submissions-list');
-            
             const submissionEl = document.createElement('div');
-            submissionEl.className = 'activity-item';
+            submissionEl.className = 'submission-item';
             
-            const date = new Date(submission.submittedAt).toLocaleString();
-            const statusClass = submission.status === 'approved' ? 'type-text' : 
-                               submission.status === 'rejected' ? 'type-video' : 'type-link';
+            const date = submission.submittedAt ? 
+                new Date(submission.submittedAt).toLocaleString() : 
+                'No date';
+                
+            const userName = submission.userName || 
+                            submission.userEmail || 
+                            (submission.userId ? `User ${submission.userId.substring(0, 8)}` : 'Unknown User');
+            
+            const status = submission.status || 'pending';
+            const statusClass = status === 'approved' ? 'type-text' : 
+                               status === 'rejected' ? 'type-video' : 'type-link';
+            
+            const activitiesCount = submission.activities ? 
+                (Array.isArray(submission.activities) ? submission.activities.length : 1) : 
+                0;
+                
+            const totalEarnings = parseFloat(submission.totalEarnings) || 
+                                 parseFloat(submission.earnings) || 
+                                 0;
             
             submissionEl.innerHTML = `
-                <div class="activity-header">
-                    <span class="activity-type ${statusClass}">Submission #${index + 1}</span>
-                    <span class="activity-earnings">$${submission.totalEarnings?.toFixed(2) || '0.00'}</span>
+                <div class="submission-header">
+                    <div>
+                        <div class="submission-user">${userName}</div>
+                        <div class="submission-date">Submitted: ${date}</div>
+                    </div>
+                    <span class="activity-type ${statusClass}">${status}</span>
                 </div>
-                <div class="activity-content">
-                    <div><strong>User:</strong> ${submission.userName || 'Unknown'}</div>
-                    <div><strong>Submitted:</strong> ${date}</div>
-                    <div><strong>Status:</strong> ${submission.status}</div>
-                    <div><strong>Activities Completed:</strong> ${submission.activities?.length || 0}</div>
+                <div class="submission-details">
+                    <p><strong>Activities Completed:</strong> ${activitiesCount}</p>
+                    <p><strong>Total Earnings:</strong> $${totalEarnings.toFixed(2)}</p>
+                    ${submission.activityTitles ? `
+                        <p><strong>Activities:</strong> ${Array.isArray(submission.activityTitles) ? 
+                            submission.activityTitles.join(', ') : submission.activityTitles}</p>
+                    ` : ''}
+                    ${submission.comment ? `
+                        <p><strong>User Comment:</strong> ${submission.comment}</p>
+                    ` : ''}
                 </div>
-                <div class="activity-actions">
-                    <button class="action-btn edit-btn" onclick="approveSubmission('${submission.id}')" 
-                            ${submission.status === 'approved' ? 'disabled' : ''}>
-                        <i class="fas fa-check"></i> Approve
-                    </button>
-                    <button class="action-btn delete-btn" onclick="rejectSubmission('${submission.id}')"
-                            ${submission.status === 'rejected' ? 'disabled' : ''}>
-                        <i class="fas fa-times"></i> Reject
-                    </button>
-                </div>
+                ${status === 'pending' ? `
+                    <div class="activity-actions">
+                        <button class="action-btn edit-btn" onclick="approveSubmission('${submission.id}')">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="action-btn delete-btn" onclick="rejectSubmission('${submission.id}')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                ` : `
+                    <div class="activity-actions">
+                        <button class="action-btn" style="background: #666; color: white;" disabled>
+                            <i class="fas fa-${status === 'approved' ? 'check' : 'times'}"></i> 
+                            ${status === 'approved' ? 'Approved' : 'Rejected'}
+                        </button>
+                        <div style="color: #888; font-size: 0.9em;">
+                            Reviewed by: ${submission.reviewedBy || 'admin'}
+                        </div>
+                    </div>
+                `}
             `;
             
-            submissionsList.appendChild(submissionEl);
+            return submissionEl;
         }
         
         // ==============================================
-        // APPROVE SUBMISSION
+        // APPROVE SUBMISSION - FIXED VERSION
         // ==============================================
         async function approveSubmission(submissionId) {
-            if (!confirm("Approve this submission and credit earnings to user?")) return;
+            if (!confirm("Approve this submission and credit earnings to user?")) {
+                return;
+            }
             
             try {
                 // Get submission data
                 const doc = await db.collection('activity_submissions').doc(submissionId).get();
-                if (!doc.exists) return;
+                if (!doc.exists) {
+                    alert('Submission not found!');
+                    return;
+                }
                 
                 const submission = doc.data();
+                const userId = submission.userId;
+                const totalEarnings = parseFloat(submission.totalEarnings) || 
+                                     parseFloat(submission.earnings) || 
+                                     0;
+                
+                if (!userId) {
+                    alert('User ID not found in submission!');
+                    return;
+                }
                 
                 // Update submission status
                 await db.collection('activity_submissions').doc(submissionId).update({
                     status: 'approved',
                     reviewedAt: new Date().toISOString(),
-                    reviewedBy: 'admin',
-                    _adminKey: "23cabbage"
+                    reviewedBy: 'admin'
                 });
                 
                 // Update user balance
-                await db.collection('users').doc(submission.userId).update({
-                    balance: firebase.firestore.FieldValue.increment(submission.totalEarnings),
-                    totalEarnings: firebase.firestore.FieldValue.increment(submission.totalEarnings)
-                });
+                try {
+                    const userRef = db.collection('users').doc(userId);
+                    const userDoc = await userRef.get();
+                    
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        const currentBalance = parseFloat(userData.balance) || 0;
+                        
+                        await userRef.update({
+                            balance: currentBalance + totalEarnings,
+                            totalEarnings: firebase.firestore.FieldValue.increment(totalEarnings),
+                            updatedAt: new Date().toISOString()
+                        });
+                        
+                        console.log(`Updated user ${userId} balance: +$${totalEarnings.toFixed(2)}`);
+                        
+                        // Create transaction record
+                        await db.collection('transactions').add({
+                            userId: userId,
+                            type: 'earning',
+                            amount: totalEarnings,
+                            description: `Activity completion earnings for ${submission.day}`,
+                            details: `Approved submission for ${submission.day} with ${submission.activities?.length || 0} activities`,
+                            date: new Date().toISOString(),
+                            status: 'completed',
+                            submissionId: submissionId
+                        });
+                        
+                        showSuccessMessage(`Submission approved! $${totalEarnings.toFixed(2)} credited to user.`);
+                    } else {
+                        console.warn(`User ${userId} not found in users collection`);
+                        showErrorMessage('User not found. Earnings not credited, but submission marked as approved.');
+                    }
+                } catch (userError) {
+                    console.error("Error updating user balance:", userError);
+                    showErrorMessage('Error updating user balance, but submission marked as approved.');
+                }
                 
-                alert(`Submission approved! $${submission.totalEarnings} credited to user.`);
-                closeModal('submissions-modal');
-                loadAdminStats();
+                // Reload submissions
+                await viewSubmissions();
+                await loadAdminStats();
                 
             } catch (error) {
                 console.error("Error approving submission:", error);
@@ -1246,19 +1626,22 @@
         // REJECT SUBMISSION
         // ==============================================
         async function rejectSubmission(submissionId) {
-            if (!confirm("Reject this submission?")) return;
+            if (!confirm("Reject this submission?")) {
+                return;
+            }
             
             try {
                 await db.collection('activity_submissions').doc(submissionId).update({
                     status: 'rejected',
                     reviewedAt: new Date().toISOString(),
-                    reviewedBy: 'admin',
-                    _adminKey: "23cabbage"
+                    reviewedBy: 'admin'
                 });
                 
-                alert("Submission rejected!");
-                closeModal('submissions-modal');
-                loadAdminStats();
+                showSuccessMessage("Submission rejected!");
+                
+                // Reload submissions
+                await viewSubmissions();
+                await loadAdminStats();
                 
             } catch (error) {
                 console.error("Error rejecting submission:", error);
@@ -1269,9 +1652,231 @@
         // ==============================================
         // UTILITY FUNCTIONS
         // ==============================================
-        function closeModal(modalId = 'activity-modal') {
+        function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
+        
+        function showSuccessMessage(message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message success';
+            msgDiv.textContent = message;
+            msgDiv.style.position = 'fixed';
+            msgDiv.style.top = '20px';
+            msgDiv.style.right = '20px';
+            msgDiv.style.zIndex = '1001';
+            msgDiv.style.maxWidth = '300px';
+            document.body.appendChild(msgDiv);
+            
+            setTimeout(() => {
+                msgDiv.remove();
+            }, 5000);
+        }
+        
+        function showErrorMessage(message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message error';
+            msgDiv.textContent = message;
+            msgDiv.style.position = 'fixed';
+            msgDiv.style.top = '20px';
+            msgDiv.style.right = '20px';
+            msgDiv.style.zIndex = '1001';
+            msgDiv.style.maxWidth = '300px';
+            document.body.appendChild(msgDiv);
+            
+            setTimeout(() => {
+                msgDiv.remove();
+            }, 5000);
+        }
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        }
+        
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal('activity-modal');
+                closeModal('submissions-modal');
+            }
+        });
     </script>
 </body>
 </html>
+<style>
+        .nav-container {
+            position: fixed;
+            top: 3em;
+            right: -300px;
+            width: 300px;
+            height: 70%;
+            background-color: black;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            border: 0.5px solid white;
+            border-radius: 10px;
+            overflow-y: auto;
+        }
+
+        .nav-container.open {
+            right: 10px;
+        }
+
+        .nav-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-header h2 {
+            color: white;
+            font-weight: 500;
+        }
+
+        .close-btn {
+            color: white;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .navlink span{
+            color: #28ff00;
+        }
+        .king{
+            display: flex;
+            justify-content: space-between;
+        }
+        .king x{
+           opacity: 0.6;
+        }
+       </style>
+    <div class="nav-container" id="nav-menu">
+        <div class="nav-header">
+            <h2>Menu</h2>
+            <button class="close-btn" id="close-menu" hidden>
+                <i class="fas fa-times"></i>
+            </button>            
+        </div>
+        <div class="nav-links">
+<button class="navlink king" id="toggle-status-btn">
+  Status <x class="fas fa-chevron-down" id="status-icon"></x>
+</button>
+
+<div id="status-container" style="display: none; margin-left: 20px;">
+  <button class="navlink">Activities: <span id="total-activities"></span></button>
+  <button class="navlink">Submissions: <span id="pending-submissions"></span></button>
+  <button class="navlink">T/L Amount: <span id="total-earnings"></span></button>
+  <button class="navlink">Days Done: <span id="days-with-activities"></span></button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusToggleBtn = document.getElementById('toggle-status-btn');
+    const statusContainer = document.getElementById('status-container');
+    const statusIcon = document.getElementById('status-icon');
+    
+    statusToggleBtn.addEventListener('click', function() {
+      if (statusContainer.style.display === 'none') {
+        statusContainer.style.display = 'block';
+        statusIcon.classList.remove('fa-chevron-down');
+        statusIcon.classList.add('fa-chevron-up');
+      } else {
+        statusContainer.style.display = 'none';
+        statusIcon.classList.remove('fa-chevron-up');
+        statusIcon.classList.add('fa-chevron-down');
+      }
+    });
+  });
+</script>
+<button class="navlink king" id="toggle-days-btn">
+  View Days <x class="fa fa-chevron-down" id="dwn"></x>
+</button>
+
+<div class="day-selector" id="day-selector" style="display: none; margin-left: 20px;">
+  <!-- Days will be loaded here (don't edit this) -->
+</div>
+<button class="navlink" onclick="logout()">Logout
+</button>
+<script>
+  const toggleBtn = document.getElementById('toggle-days-btn');
+  const daysDiv = document.getElementById('day-selector');
+  const icon = document.getElementById('dwn');
+  
+  toggleBtn.addEventListener('click', function() {
+    if (daysDiv.style.display === 'none' || daysDiv.style.display === '') {
+      daysDiv.style.display = 'block';
+      icon.classList.remove('fa-chevron-down');
+      icon.classList.add('fa-chevron-up');
+    } else {
+      daysDiv.style.display = 'none';
+      icon.classList.remove('fa-chevron-up');
+      icon.classList.add('fa-chevron-down');
+    }
+  });
+</script>        </div>
+    </div>
+    <script>
+        const navMenu = document.getElementById('nav-menu');
+        const closeMenu = document.getElementById('close-menu');
+        
+        // Touch events for opening menu
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (!startX || !startY) return;
+            
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+            
+            const diffX = startX - currentX;
+            const diffY = startY - currentY;
+            
+            // Only trigger if swipe is mostly horizontal and from the right edge
+            if (Math.abs(diffX) > Math.abs(diffY) && diffX > 50 && startX > window.innerWidth - 50) {
+                navMenu.classList.add('open');
+                startX = null;
+                startY = null;
+            }
+        });
+        
+navMenu.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
+        
+        navMenu.addEventListener('touchmove', function(e) {
+            if (!startX) return;
+            
+            currentX = e.touches[0].clientX;
+            const diffX = currentX - startX;
+            
+            if (diffX > 50) {
+                navMenu.classList.remove('open');
+                startX = null;
+            }
+        });
+        
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
+
