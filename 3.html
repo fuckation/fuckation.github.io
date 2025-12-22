@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activities Preview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        * {
+            font-family: "Sofia Sans Condensed", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            color: white;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
+        }
+        
+        .admin-header {
+            text-align: left;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: black;
+            border-radius: 10px;
+            border: 1px solid white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0.5em;
+        }
+     .preview-day-badge{
+            text-align: left;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: black;
+            border-radius: 10px;
+            border: 1px solid white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0.5em;
+            right: 5em;
+        }
+        
+        .day-btn.active {
+            background: rgba(106, 184, 255, 0.6);
+            border-color: #6ab8ff;
+            box-shadow: 0 0 15px rgba(106, 184, 255, 0.3);
+        }
+        
+        .preview-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .preview-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .day-preview-header {
+            background: linear-gradient(135deg, rgba(106, 184, 255, 0.2), rgba(66, 153, 225, 0.1));
+            border: 1px solid rgba(106, 184, 255, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        }
+        
+        .preview-day-date {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+        
+        .admin-stats-grid {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            margin-top: 2em;
+            width: 0.1px;
+            height: 0.1px;
+            overflow: auto;
+        }
+        
+        .admin-stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-stat-icon {
+            font-size: 24px;
+            color: #6ab8ff;
+            margin-bottom: 10px;
+        }
+        
+        .admin-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .admin-stat-label {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .admin-activities-list {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .admin-activity-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .admin-activity-number {
+            background: #6ab8ff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .admin-activity-type-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .admin-activity-earnings {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .admin-activity-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .admin-activity-content {
+            margin-bottom: 15px;
+        }
+        
+        .admin-activity-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #6ab8ff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .admin-video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .admin-video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .admin-text-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .admin-text-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .admin-text-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .admin-text-content::-webkit-scrollbar-thumb {
+            background: #6ab8ff;
+            border-radius: 4px;
+        }
+        
+        .admin-controls {
+            display: none;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .admin-action-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #333;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #6ab8ff, #4a9eff);
+            color: white;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #666, #444);
+            color: white;
+        }
+        
+        .admin-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px dotted #ffffff4e;
+            border-top-color: #6ab8ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+        margin-top: 3em;
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state-title {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-text {
+            color: #888;
+            line-height: 1.5;
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .day-colors {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 768px) {
+            .day-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .day-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .admin-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .admin-action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        .admin-info-box {
+            background: rgba(106, 184, 255, 0.1);
+            border: 1px solid rgba(106, 184, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .admin-info-box h3 {
+            color: #6ab8ff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .admin-info-box p {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <button class="fas bkbt" onclick="location.href='2.html'">
+        <span class="fas fa-arrow-left"></span>
+    </button>
+    <style>
+        .bkbt{
+        background: black;
+  padding: 9px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  color: white;
+  transition: .6s;
+  border: 2px solid white;
+  position: fixed;
+  right: 5px;
+  bottom: 5em;
+  text-align: center;
+  opacity: 0.4;
+        }
+    </style>
+    <div class="admin-header">
+Admin Preview
+    </div>
+<style>
+    
+        :root {
+            --black: black;
+            --white: white;
+        }
+.dropdown-container {
+  position: fixed;
+  top: 0.5em;
+  right: 5px;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background: black;
+  border: none;
+  border-radius: 0;
+  padding: 9px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  color: white;
+  transition: .6s;
+  border: 1px solid white;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: black;
+  border: 1px solid white;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.day-btn{
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: white;
+  border: none;
+  text-align: left;
+  background: black;
+  border-bottom: 1px solid white;
+  transition: background 0.2s;
+}
+
+.day-btn:last-child {
+  border-bottom: none;
+  border-radius: 0 0 10px 10px;
+}
+.day-btn:first-of-type{
+  border-radius: 10px 10px 0 0;
+}
+</style>
+<div class="dropdown-container">
+  <button class="dropdown-toggle" id="dropdownToggle">
+    <span>☰</span>
+  </button>
+  
+  <div class="dropdown-menu" id="dropdownMenu">
+        <button class="day-btn" data-day="monday">Monday
+        </button>
+        <button class="day-btn" data-day="tuesday">Tuesday
+        </button>
+        <button class="day-btn" data-day="wednesday">Wednesday
+        </button>
+        <button class="day-btn" data-day="thursday">Thursday
+        </button>
+        <button class="day-btn" data-day="friday">Friday
+        </button>
+        <button class="day-btn" data-day="saturday">Saturday
+        </button>
+        <button class="day-btn" data-day="sunday">Sunday
+        </button>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdownToggle = document.getElementById('dropdownToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+    dropdownToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('show');
+  });
+  
+  dropdownMenu.addEventListener('click', function(e) {
+    if (e.target.classList.contains('day-btn')) {
+      dropdownMenu.classList.remove('show');
+    }
+  });
+  
+ document.addEventListener('click', function() {
+    dropdownMenu.classList.remove('show');
+  });
+  
+  dropdownMenu.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+});
+
+</script>
+    
+    <!-- Preview Containers for each day -->
+    <div id="preview-monday" class="preview-container active">
+  <div class="preview-day-badge">Monday</div>
+        <div class="admin-stats-grid" id="monday-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="monday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="monday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="monday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="monday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('monday')">
+                <i class="fas fa-edit"></i> Edit Monday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('monday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-tuesday" class="preview-container">
+            <div class="preview-day-badge">Tuesday</div>
+        <div class="admin-stats-grid" id="tuesday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="tuesday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="tuesday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="tuesday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="tuesday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('tuesday')">
+                <i class="fas fa-edit"></i> Edit Tuesday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('tuesday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-wednesday" class="preview-container">
+            <div class="preview-day-badge">Wednesday</div>
+        
+        <div class="admin-stats-grid" id="wednesday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="wednesday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="wednesday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="wednesday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="wednesday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('wednesday')">
+                <i class="fas fa-edit"></i> Edit Wednesday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('wednesday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-thursday" class="preview-container">
+            <div class="preview-day-badge">Thursday</div>
+        
+        <div class="admin-stats-grid" id="thursday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="thursday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="thursday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="thursday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="thursday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('thursday')">
+                <i class="fas fa-edit"></i> Edit Thursday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('thursday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-friday" class="preview-container">
+            <div class="preview-day-badge">Friday</div>
+        <div class="admin-stats-grid" id="friday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="friday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="friday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="friday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="friday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('friday')">
+                <i class="fas fa-edit"></i> Edit Friday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('friday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-saturday" class="preview-container">
+            <div class="preview-day-badge">Saturday</div>
+        
+        <div class="admin-stats-grid" id="saturday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="saturday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="saturday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="saturday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="saturday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('saturday')">
+                <i class="fas fa-edit"></i> Edit Saturday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('saturday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <div id="preview-sunday" class="preview-container">
+            <div class="preview-day-badge">Sunday</div>
+        <div class="admin-stats-grid" id="sunday-stats" style="display: none;">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="admin-stat-value" id="sunday-total-activities">0</div>
+                <div class="admin-stat-label">Total Activities</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="admin-stat-value" id="sunday-total-earnings">$0.00</div>
+                <div class="admin-stat-label">Total Earnings</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="admin-stat-value" id="sunday-completion-time">0 min</div>
+                <div class="admin-stat-label">Est. Time</div>
+            </div>
+        </div>
+        
+        <div class="admin-activities-list" id="sunday-activities-list"></div>
+        
+        <div class="admin-controls">
+            <button class="admin-action-btn edit-btn" onclick="editActivities('sunday')">
+                <i class="fas fa-edit"></i> Edit Sunday Activities
+            </button>
+            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('sunday')">
+                <i class="fas fa-sync-alt"></i> Refresh Preview
+            </button>
+            <button class="admin-action-btn back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJaFVETxpy8Vr5e6RXDWi3NBhEUaZEPN4",
+            authDomain: "malcolm-finance.firebaseapp.com",
+            projectId: "malcolm-finance",
+            storageBucket: "malcolm-finance.firebasestorage.app",
+            messagingSenderId: "987613399580",
+            appId: "1:987613399580:web:0237b2c8c2c7df54222dd9",
+            measurementId: "G-1CEG3BWFBP"
+        };
+
+        // Global variables
+        let auth = null;
+        let db = null;
+        let currentDay = 'monday';
+        
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+        
+        // Day color configurations
+        const DAY_COLORS = {
+            monday: { start: '#6A5ACD', end: '#4169E1' },
+            tuesday: { start: '#32CD32', end: '#228B22' },
+            wednesday: { start: '#87CEEB', end: '#4682B4' },
+            thursday: { start: '#FFA500', end: '#FF8C00' },
+            friday: { start: '#FF69B4', end: '#FF1493' },
+            saturday: { start: '#9370DB', end: '#8A2BE2' },
+            sunday: { start: '#FFD700', end: '#FFA500' }
+        };
+        
+        const DAY_NAMES = {
+            monday: 'Monday',
+            tuesday: 'Tuesday',
+            wednesday: 'Wednesday',
+            thursday: 'Thursday',
+            friday: 'Friday',
+            saturday: 'Saturday',
+            sunday: 'Sunday'
+        };
+        
+        // ==============================================
+        // INITIALIZATION
+        // ==============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up day selector buttons
+            const dayButtons = document.querySelectorAll('.day-btn');
+            dayButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const day = this.dataset.day;
+                    
+                    // Update active button
+                    dayButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Hide all preview containers
+                    document.querySelectorAll('.preview-container').forEach(container => {
+                        container.classList.remove('active');
+                    });
+                    
+                    // Show selected preview container
+                    document.getElementById(`preview-${day}`).classList.add('active');
+                    
+                    // Load activities for this day if not already loaded
+                    currentDay = day;
+                    loadDayActivities(day);
+                });
+            });
+            
+            // Initialize page
+            initializePage();
+        });
+        
+        // ==============================================
+        // PAGE INITIALIZATION
+        // ==============================================
+        async function initializePage() {
+            // Check if user is admin (optional)
+            // For now, just load Monday activities by default
+            loadDayActivities('monday');
+        }
+        
+        // ==============================================
+        // LOAD DAY ACTIVITIES
+        // ==============================================
+        async function loadDayActivities(day) {
+            try {
+                // Show loading for this specific day
+                const activitiesList = document.getElementById(`${day}-activities-list`);
+                if (activitiesList) {
+                    activitiesList.innerHTML = `
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p style="color: #ccc; margin-top: 15px;">Loading ${DAY_NAMES[day]} activities...</p>
+                        </div>
+                    `;
+                }
+                
+                // Hide stats initially
+                const statsSection = document.getElementById(`${day}-stats`);
+                if (statsSection) {
+                    statsSection.style.display = 'none';
+                }
+                
+                // Try to get activities from Firestore
+                let snapshot;
+                try {
+                    // Try with indexed query first
+                    snapshot = await db.collection('daily_activities')
+                        .where('day', '==', day)
+                        .orderBy('order', 'asc')
+                        .get();
+                } catch (queryError) {
+                    console.warn(`Indexed query failed for ${day}, trying fallback method:`, queryError);
+                    
+                    // Fallback: Get all activities and filter manually
+                    const allSnapshot = await db.collection('daily_activities').get();
+                    const allActivities = [];
+                    allSnapshot.forEach(doc => {
+                        allActivities.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Filter by day and sort
+                    const filteredActivities = allActivities
+                        .filter(activity => activity.day === day)
+                        .sort((a, b) => (a.order || 0) - (b.order || 0));
+                    
+                    snapshot = { 
+                        empty: filteredActivities.length === 0,
+                        forEach: (callback) => filteredActivities.forEach((activity, index) => {
+                            callback({ id: activity.id, data: () => activity });
+                        })
+                    };
+                }
+                
+                const activities = [];
+                
+                if (snapshot.empty) {
+                    // No activities found
+                    console.log(`No activities found for ${day}`);
+                    displayNoActivities(day);
+                    return;
+                } else {
+                    // Process activities
+                    snapshot.forEach((doc, index) => {
+                        const activityData = doc.data();
+                        const activity = {
+                            id: doc.id,
+                            type: activityData.type || 'link',
+                            title: activityData.title || 'Untitled Activity',
+                            earnings: parseFloat(activityData.earnings) || 0.10,
+                            url: activityData.url || '',
+                            content: activityData.content || '',
+                            order: activityData.order || index
+                        };
+                        activities.push(activity);
+                    });
+                    
+                    console.log(`Found ${activities.length} activities for ${day}`);
+                }
+                
+                // Display activities
+                displayActivities(day, activities);
+                
+            } catch (error) {
+                console.error(`Error loading activities for ${day}:`, error);
+                displayError(day, error.message);
+            }
+        }
+        
+        // ==============================================
+        // DISPLAY ACTIVITIES
+        // ==============================================
+        function displayActivities(day, activities) {
+            const activitiesList = document.getElementById(`${day}-activities-list`);
+            const statsSection = document.getElementById(`${day}-stats`);
+            
+            if (!activitiesList) return;
+            
+            activitiesList.innerHTML = '';
+            
+            if (activities.length === 0) {
+                displayNoActivities(day);
+                return;
+            }
+            
+            // Create activity elements
+            activities.forEach((activity, index) => {
+                createActivityElement(day, activity, index + 1);
+            });
+            
+            // Update stats
+            const totalEarnings = activities.reduce((sum, activity) => 
+                sum + (parseFloat(activity.earnings) || 0), 0);
+            
+            document.getElementById(`${day}-total-activities`).textContent = activities.length;
+            document.getElementById(`${day}-total-earnings`).textContent = '$' + totalEarnings.toFixed(2);
+            document.getElementById(`${day}-completion-time`).textContent = (activities.length * 5) + ' min';
+            
+            // Show stats section
+            if (statsSection) {
+                statsSection.style.display = 'grid';
+            }
+            
+            // Update background to match day color
+            const previewHeader = document.querySelector(`#preview-${day} .day-preview-header`);
+            if (previewHeader && DAY_COLORS[day]) {
+                previewHeader.style.background = `linear-gradient(135deg, 
+                    rgba(${hexToRgb(DAY_COLORS[day].start)}, 0.2), 
+                    rgba(${hexToRgb(DAY_COLORS[day].end)}, 0.1))`;
+                previewHeader.style.borderColor = `rgba(${hexToRgb(DAY_COLORS[day].start)}, 0.3)`;
+            }
+        }
+        
+        // ==============================================
+        // CREATE ACTIVITY ELEMENT
+        // ==============================================
+        function createActivityElement(day, activity, number) {
+            const activitiesList = document.getElementById(`${day}-activities-list`);
+            
+            if (!activitiesList) return;
+            
+            const activityCard = document.createElement('div');
+            activityCard.className = 'admin-activity-card';
+            activityCard.dataset.activityId = activity.id;
+            
+            let content = '';
+            let typeBadgeColor = '';
+            let typeBadgeText = '';
+            
+            switch (activity.type) {
+                case 'link':
+                    typeBadgeColor = 'rgba(106, 184, 255, 0.2)';
+                    typeBadgeText = 'Link';
+                    content = `
+                        <div class="admin-activity-content">
+                            <p>${activity.title}</p>
+                            <a href="${activity.url || '#'}" target="_blank" class="admin-activity-link">
+                                <i class="fas fa-external-link-alt"></i> Open Link
+                            </a>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'video':
+                    typeBadgeColor = 'rgba(220, 53, 69, 0.2)';
+                    typeBadgeText = 'Video';
+                    // Extract video ID for embed if it's a YouTube URL
+                    let videoUrl = activity.url || '#';
+                    if (videoUrl.includes('youtube.com/watch?v=')) {
+                        const videoId = videoUrl.split('v=')[1]?.split('&')[0];
+                        if (videoId) {
+                            videoUrl = `https://www.youtube.com/embed/${videoId}`;
+                        }
+                    }
+                    content = `
+                        <div class="admin-activity-content">
+                            <p>${activity.title}</p>
+                            <div class="admin-video-container">
+                                <iframe src="${videoUrl}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                            <p style="margin-top: 10px; color: #888; font-size: 14px;">
+                                <i class="fas fa-info-circle"></i> Watch the video completely
+                            </p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'text':
+                    typeBadgeColor = 'rgba(40, 167, 69, 0.2)';
+                    typeBadgeText = 'Text';
+                    content = `
+                        <div class="admin-activity-content">
+                            <p>${activity.title}</p>
+                            <div class="admin-text-content">
+                                ${(activity.content || 'No content available').replace(/\n/g, '<br>')}
+                            </div>
+                            <p style="margin-top: 10px; color: #888; font-size: 14px;">
+                                <i class="fas fa-info-circle"></i> Read all content carefully
+                            </p>
+                        </div>
+                    `;
+                    break;
+                    
+                default:
+                    typeBadgeColor = 'rgba(106, 184, 255, 0.2)';
+                    typeBadgeText = 'Activity';
+                    content = `
+                        <div class="admin-activity-content">
+                            <p>${activity.title}</p>
+                        </div>
+                    `;
+            }
+            
+            activityCard.innerHTML = `
+                <div class="admin-activity-header">
+                    <div class="admin-activity-number">${number}</div>
+                    <div>
+                        <span class="admin-activity-type-badge" style="background: ${typeBadgeColor}; color: ${typeBadgeColor === 'rgba(106, 184, 255, 0.2)' ? '#6ab8ff' : typeBadgeColor === 'rgba(220, 53, 69, 0.2)' ? '#dc3545' : '#28a745'}">
+                            ${typeBadgeText}
+                        </span>
+                        <span class="admin-activity-earnings">$${(activity.earnings || 0).toFixed(2)}</span>
+                    </div>
+                </div>
+                <div class="admin-activity-title">${activity.title}</div>
+                ${content}
+                <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; font-size: 12px; color: #888;">
+                    <i class="fas fa-database"></i> Activity ID: ${activity.id}
+                </div>
+            `;
+            
+            activitiesList.appendChild(activityCard);
+        }
+        
+        // ==============================================
+        // DISPLAY NO ACTIVITIES MESSAGE
+        // ==============================================
+        function displayNoActivities(day) {
+            const activitiesList = document.getElementById(`${day}-activities-list`);
+            if (!activitiesList) return;
+            
+            activitiesList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h3 class="empty-state-title">No Activities Yet</h3>
+                    <p class="empty-state-text">
+                        No activities have been set for ${DAY_NAMES[day]}.<br>
+                        You can create activities from the Firebase console or create sample activities.
+                    </p>
+                </div>
+            `;
+            
+            // Hide stats
+            const statsSection = document.getElementById(`${day}-stats`);
+            if (statsSection) {
+                statsSection.style.display = 'none';
+            }
+        }
+        
+        // ==============================================
+        // DISPLAY ERROR MESSAGE
+        // ==============================================
+        function displayError(day, errorMessage) {
+            const activitiesList = document.getElementById(`${day}-activities-list`);
+            if (!activitiesList) return;
+            
+            activitiesList.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Activities</h3>
+                    <p>Unable to load activities for ${DAY_NAMES[day]}. Please try again later.</p>
+                    <p style="font-size: 12px; margin-top: 10px;">Error: ${errorMessage}</p>
+                    <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('${day}')" style="margin-top: 15px;">
+                        <i class="fas fa-sync-alt"></i> Try Again
+                    </button>
+                </div>
+            `;
+            
+            // Hide stats
+            const statsSection = document.getElementById(`${day}-stats`);
+            if (statsSection) {
+                statsSection.style.display = 'none';
+            }
+        }
+        
+        // ==============================================
+        // CREATE SAMPLE ACTIVITIES
+        // ==============================================
+        async function createSampleActivities(day) {
+            if (!confirm(`Create sample activities for ${DAY_NAMES[day]}? This will add sample activities to the database.`)) {
+                return;
+            }
+            
+            try {
+                const sampleActivities = getDaySampleActivities(day);
+                
+                for (const activity of sampleActivities) {
+                    await db.collection('daily_activities').add(activity);
+                }
+                
+                // Show success message
+                const activitiesList = document.getElementById(`${day}-activities-list`);
+                if (activitiesList) {
+                    activitiesList.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Sample Activities Created</h3>
+                            <p>Sample activities for ${DAY_NAMES[day]} have been created successfully.</p>
+                            <button class="admin-action-btn refresh-btn" onclick="loadDayActivities('${day}')" style="margin-top: 15px;">
+                                <i class="fas fa-sync-alt"></i> Load Activities
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                console.log(`Sample activities created for ${day}`);
+                
+            } catch (error) {
+                console.error(`Error creating sample activities for ${day}:`, error);
+                alert(`Error creating sample activities: ${error.message}`);
+            }
+        }
+        
+        // ==============================================
+        // GET DAY SAMPLE ACTIVITIES
+        // ==============================================
+        function getDaySampleActivities(day) {
+            const baseSamples = {
+                monday: [
+                    {
+                        day: 'monday',
+                        type: 'link',
+                        title: 'Watch our beginner investment tutorial',
+                        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                        earnings: 0.15,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'monday',
+                        type: 'text',
+                        title: 'Read about financial planning basics',
+                        content: 'Financial planning is the process of taking a comprehensive look at your financial situation and building a specific financial plan to reach your goals.',
+                        earnings: 0.10,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                tuesday: [
+                    {
+                        day: 'tuesday',
+                        type: 'link',
+                        title: 'Learn about cryptocurrency basics',
+                        url: 'https://www.youtube.com/watch?v=1YyAzVmP9xQ',
+                        earnings: 0.15,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'tuesday',
+                        type: 'text',
+                        title: 'Understanding blockchain technology',
+                        content: 'Blockchain is a distributed ledger technology that maintains a secure and decentralized record of transactions.',
+                        earnings: 0.12,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                wednesday: [
+                    {
+                        day: 'wednesday',
+                        type: 'link',
+                        title: 'Learn about real estate investment',
+                        url: 'https://www.youtube.com/watch?v=q9GpZvDqB4U',
+                        earnings: 0.16,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'wednesday',
+                        type: 'text',
+                        title: 'Understanding property investment strategies',
+                        content: 'Real estate investment involves purchasing, owning, managing, renting, or selling real estate for profit.',
+                        earnings: 0.14,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                thursday: [
+                    {
+                        day: 'thursday',
+                        type: 'link',
+                        title: 'Learn about Forex trading basics',
+                        url: 'https://www.youtube.com/watch?v=8UvTqaQkG7c',
+                        earnings: 0.17,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'thursday',
+                        type: 'text',
+                        title: 'Understanding currency pairs and market hours',
+                        content: 'Forex trading involves exchanging one currency for another. The forex market is open 24 hours a day, five days a week.',
+                        earnings: 0.15,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                friday: [
+                    {
+                        day: 'friday',
+                        type: 'link',
+                        title: 'Learn about stock trading platforms',
+                        url: 'https://www.youtube.com/watch?v=98r-dRAVNwI',
+                        earnings: 0.18,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'friday',
+                        type: 'text',
+                        title: 'Understanding stock market analysis',
+                        content: 'Stock market analysis involves examining stock prices, company financials, and market trends to make investment decisions.',
+                        earnings: 0.16,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                saturday: [
+                    {
+                        day: 'saturday',
+                        type: 'link',
+                        title: 'Learn about personal finance management',
+                        url: 'https://www.youtube.com/watch?v=4-7H8uYQMp4',
+                        earnings: 0.19,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'saturday',
+                        type: 'text',
+                        title: 'Budgeting and financial planning strategies',
+                        content: 'Personal finance management involves creating a budget, tracking expenses, saving for emergencies, investing for the future.',
+                        earnings: 0.17,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                sunday: [
+                    {
+                        day: 'sunday',
+                        type: 'link',
+                        title: 'Learn about retirement planning',
+                        url: 'https://www.youtube.com/watch?v=VTv7cCuiatw',
+                        earnings: 0.20,
+                        order: 0,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        day: 'sunday',
+                        type: 'text',
+                        title: 'Understanding retirement investment options',
+                        content: 'Retirement planning involves determining retirement income goals and the actions necessary to achieve those goals.',
+                        earnings: 0.18,
+                        order: 1,
+                        createdAt: new Date().toISOString()
+                    }
+                ]
+            };
+            
+            return baseSamples[day] || baseSamples.monday;
+        }
+        
+        // ==============================================
+        // EDIT ACTIVITIES (Placeholder for future implementation)
+        // ==============================================
+        function editActivities(day) {
+            alert(`Edit functionality for ${DAY_NAMES[day]} activities would open here.\n\nFor now, you can edit activities directly in Firebase Firestore.\n\nCollection: daily_activities\nFilter by: day = "${day}"\nOrder by: order (ascending)`);
+            // In a real implementation, this would open a modal or redirect to an edit page
+        }
+        
+        // ==============================================
+        // UTILITY FUNCTIONS
+        // ==============================================
+        function hexToRgb(hex) {
+            // Convert hex color to RGB
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            if (result) {
+                return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
+            }
+            return '106, 184, 255'; // Default blue
+        }
+        
+        // ==============================================
+        // LOAD ALL DAYS (For quick preview)
+        // ==============================================
+        async function loadAllDays() {
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            for (const day of days) {
+                await loadDayActivities(day);
+            }
+        }
+        
+        // Optionally load all days on page load
+        // loadAllDays();
+    </script>
+</body>
+</html>
