@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <title>Admin </title>
+    <title>Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
     <!-- Firebase -->
@@ -35,7 +35,7 @@
         }
         
         #header {
-            width: 97%;
+            width: 99%;
             background: black;
             position: fixed;
             top: 2px;
@@ -120,7 +120,7 @@
         .password-toggle {
             position: absolute;
             right: 12px;
-            top: 35px;
+            top: 55px;
             transform: translateY(-50%);
             background: none;
             border: none;
@@ -344,8 +344,8 @@
         }
         
         .modal-btn {
-            width: 100%;
-            padding: 12px;
+            width: 90%;
+            padding: 5px;
             margin: 10px 0;
             border-radius: 5px;
             border: none;
@@ -522,6 +522,195 @@
             overflow-x: auto;
             width: 60%;
         }
+        
+        /* Profile picture styles */
+        .profile-pic-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #6ab8ff;
+        }
+        
+        /* User details modal styles */
+        .user-details-modal .modal-content {
+            height: 90%;
+            max-width: 800px;
+            overflow-y: auto;
+        }
+        
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .user-profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6ab8ff;
+        }
+        
+        .user-profile-info {
+            flex: 1;
+        }
+        
+        .user-profile-info h3 {
+            color: #6ab8ff;
+            margin-bottom: 10px;
+        }
+        
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-card {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        
+        .detail-card h4 {
+            color: #6ab8ff;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-label {
+            color: #ccc;
+            font-weight: bold;
+        }
+        
+        .detail-value {
+            color: white;
+            text-align: right;
+        }
+        
+        .referrals-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .referral-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: rgba(106, 184, 255, 0.1);
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        
+        .referral-pic {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .danger-zone {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .danger-zone h4 {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        
+        .country-flag {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        
+        /* Long press styles */
+        .long-press-active {
+            background: rgba(106, 184, 255, 0.2) !important;
+            border: 1px solid #6ab8ff !important;
+        }
+        
+        .user-row {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .user-row:active {
+            background: rgba(106, 184, 255, 0.1);
+        }
+        
+        /* Transaction stats */
+        .transaction-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(106, 184, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(106, 184, 255, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #6ab8ff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+        
+        /* Balance summary */
+        .balance-summary {
+            background: rgba(40, 167, 69, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .balance-summary h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -538,6 +727,7 @@
     <a><i class="fas fa-hand-holding-usd"></i> Withdrawals <sup id="pending-withdrawals"></sup></a>
     <a onclick="loadAllData()"><i class="fas fa-undo-alt fa-rotate-45"></i> Refresh</a>
     <a onclick="showCreateTransactionModal()"><i class="fas fa-plus-circle"></i> Create Transaction</a>
+    <a href="2.html"><i class="fas fa-edit"></i> Edit Daily Activities</a>
   <a onclick="logoutAdmin()"><i class="fas fa-sign-out"></i> Logout</a>
   </div>
 </div>
@@ -670,6 +860,7 @@ Go
                         <table id="users-table">
                             <thead>
                                 <tr>
+                                    <th>Profile</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Balance</th>
@@ -681,7 +872,7 @@ Go
                             </thead>
                             <tbody id="users-tbody">
                                 <tr>
-                                    <td colspan="7" style="text-align: center;">
+                                    <td colspan="8" style="text-align: center;">
                                         <div class="loader"></div>
                                     </td>
                                 </tr>
@@ -700,6 +891,7 @@ Go
                         <table id="referrals-table">
                             <thead>
                                 <tr>
+                                    <th>Profile</th>
                                     <th>Referred User</th>
                                     <th>Referrer</th>
                                     <th>Referral Code</th>
@@ -710,7 +902,7 @@ Go
                             </thead>
                             <tbody id="referrals-tbody">
                                 <tr>
-                                    <td colspan="6" style="text-align: center;">
+                                    <td colspan="7" style="text-align: center;">
                                         <div class="loader"></div>
                                     </td>
                                 </tr>
@@ -1000,6 +1192,167 @@ Go
             </button>
         </div>
     </div>
+    
+    <!-- User Details Modal -->
+    <div id="user-details-modal" class="modal user-details-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('user-details-modal')">&times;</button>
+            
+            <div class="user-profile-header">
+                <img src="ol3.png" alt="Profile Picture" class="user-profile-pic" id="detail-profile-pic">
+                <div class="user-profile-info">
+                    <h3 id="detail-username">Loading...</h3>
+                    <p style="color: #ccc;" id="detail-user-id">User ID: Loading...</p>
+                    <p style="color: #6ab8ff; font-size: 1.5em; margin-top: 10px;" id="detail-main-balance">$0.00</p>
+                </div>
+            </div>
+            
+            <div class="user-details-grid">
+                <div class="detail-card">
+                    <h4><i class="fas fa-user-circle"></i> Personal Information</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Full Name:</span>
+                        <span class="detail-value" id="detail-full-name">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email Address:</span>
+                        <span class="detail-value" id="detail-email">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Phone Number:</span>
+                        <span class="detail-value" id="detail-phone">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Country:</span>
+                        <span class="detail-value" id="detail-country">
+                            <span class="country-flag">🌍</span> Loading...
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">User ID:</span>
+                        <span class="detail-value" id="detail-user-id-value">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-chart-line"></i> Account Statistics</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Account Status:</span>
+                        <span class="detail-value" id="detail-account-status">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Joined Date:</span>
+                        <span class="detail-value" id="detail-joined-date">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Last Login:</span>
+                        <span class="detail-value" id="detail-last-login">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Referral Code:</span>
+                        <span class="detail-value" id="detail-referral-code">Loading...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Referrals:</span>
+                        <span class="detail-value" id="detail-total-referrals">0</span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-money-bill-wave"></i> Balance Summary</h4>
+                    <div class="balance-summary">
+                        <div class="balance-item">
+                            <span>Main Balance:</span>
+                            <span id="detail-main-balance-summary">$0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span>Earnings Balance:</span>
+                            <span id="detail-earnings-balance">$0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span>Referral Balance:</span>
+                            <span id="detail-referral-balance">$0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span>Bonuses Balance:</span>
+                            <span id="detail-bonuses-balance">$0.00</span>
+                        </div>
+                        <div class="balance-item">
+                            <span>Total Withdrawn:</span>
+                            <span id="detail-total-withdrawn">$0.00</span>
+                        </div>
+                        <div class="balance-item" style="background: rgba(106, 184, 255, 0.2); font-weight: bold;">
+                            <span>Total Earnings:</span>
+                            <span id="detail-total-earnings">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-users"></i> Referral Information</h4>
+                    <div class="detail-item">
+                        <span class="detail-label">Referrer:</span>
+                        <span class="detail-value" id="detail-referrer">No referrer</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Active Investments:</span>
+                        <span class="detail-value" id="detail-active-investments">0</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px; color: #6ab8ff;">Referred Users:</h4>
+                    <div class="referrals-list" id="detail-referrals-list">
+                        <div class="no-data" style="text-align: center; padding: 20px; color: #666;">
+                            No referrals yet
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h4><i class="fas fa-exchange-alt"></i> Transaction Statistics</h4>
+                    <div class="transaction-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="detail-total-transactions">0</div>
+                            <div class="stat-label">Total Transactions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="detail-completed-transactions">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="detail-pending-transactions">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="detail-failed-transactions">0</div>
+                            <div class="stat-label">Failed</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="modal-btn" onclick="showUserTransactions()">
+                            <i class="fas fa-list"></i> View All Transactions
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="danger-zone">
+                <h4>Danger Zone</h4>
+                <p style="color: #ffc107; margin-bottom: 15px;">These actions are irreversible. Proceed with caution.</p>
+                
+                <div style="display: flex; gap: 1px;">
+                    <button class="modal-btn secondary" onclick="editDetailUser()" style="flex: 1;">Edit</button>
+                    <button class="modal-btn secondary" onclick="suspendDetailUser()" style="flex: 1;">Suspend</button>
+                    <button class="modal-btn" onclick="deleteCompletedTransactions()" style="background: #dc3545; flex: 1;">TXNs<sup>x</sup>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="modal-btn secondary" onclick="closeModal('user-details-modal')" style="margin-top: 20px;">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
 
     <!-- Firebase Configuration and Main Script -->
     <script>
@@ -1035,9 +1388,45 @@ Go
         let allReferrals = [];
         let currentEditingUserId = null;
         let userToDelete = null;
+        let detailUserId = null;
+        let longPressTimer = null;
+        const LONG_PRESS_DURATION = 800; // milliseconds
         
         // Admin Password (Change this for security)
         const ADMIN_PASSWORD = "22cabbage";
+        
+        // Country detection from phone number
+        const COUNTRY_CODES = {
+            '+256': { name: 'Uganda', flag: '🇺🇬' },
+            '+255': { name: 'Tanzania', flag: '🇹🇿' },
+            '+254': { name: 'Kenya', flag: '🇰🇪' },
+            '+234': { name: 'Nigeria', flag: '🇳🇬' },
+            '+233': { name: 'Ghana', flag: '🇬🇭' },
+            '+27': { name: 'South Africa', flag: '🇿🇦' },
+            '+1': { name: 'USA/Canada', flag: '🇺🇸' },
+            '+44': { name: 'UK', flag: '🇬🇧' },
+            '+91': { name: 'India', flag: '🇮🇳' },
+            '+86': { name: 'China', flag: '🇨🇳' },
+            '+49': { name: 'Germany', flag: '🇩🇪' },
+            '+33': { name: 'France', flag: '🇫🇷' },
+            '+39': { name: 'Italy', flag: '🇮🇹' },
+            '+34': { name: 'Spain', flag: '🇪🇸' },
+            '+61': { name: 'Australia', flag: '🇦🇺' },
+            '+55': { name: 'Brazil', flag: '🇧🇷' },
+            '+7': { name: 'Russia', flag: '🇷🇺' }
+        };
+        
+        function detectCountryFromPhone(phone) {
+            if (!phone) return { name: 'Unknown', flag: '🌍' };
+            
+            for (const [code, country] of Object.entries(COUNTRY_CODES)) {
+                if (phone.startsWith(code)) {
+                    return country;
+                }
+            }
+            
+            return { name: 'Unknown', flag: '🌍' };
+        }
         
         // ==============================================
         // PASSWORD TOGGLE FUNCTION
@@ -1351,7 +1740,7 @@ Go
         async function loadUsers() {
             try {
                 const tbody = document.getElementById('users-tbody');
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="loader"></div></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;"><div class="loader"></div></td></tr>';
                 
                 const snapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
                 allUsers = [];
@@ -1370,7 +1759,7 @@ Go
                 const tbody = document.getElementById('users-tbody');
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; color: #ccc;">
+                        <td colspan="8" style="text-align: center; color: #ccc;">
                             <div class="empty-state">
                                 <i class="fas fa-users-slash"></i><br>
                                 No users found
@@ -1388,7 +1777,7 @@ Go
             if (allUsers.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; color: #ccc;">
+                        <td colspan="8" style="text-align: center; color: #ccc;">
                             <div class="empty-state">
                                 <i class="fas fa-users-slash"></i><br>
                                 No users found
@@ -1403,9 +1792,50 @@ Go
             
             allUsers.forEach(user => {
                 const row = tbody.insertRow();
+                row.className = 'user-row';
                 const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
+                const profilePic = user.profilePictureUrl || 'ol3.png';
+                
+                // Add long press event listeners
+                row.addEventListener('touchstart', function(e) {
+                    longPressTimer = setTimeout(() => {
+                        showUserDetails(user.id);
+                        this.classList.add('long-press-active');
+                    }, LONG_PRESS_DURATION);
+                });
+                
+                row.addEventListener('touchend', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                row.addEventListener('touchmove', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                // For desktop
+                row.addEventListener('mousedown', function(e) {
+                    longPressTimer = setTimeout(() => {
+                        showUserDetails(user.id);
+                        this.classList.add('long-press-active');
+                    }, LONG_PRESS_DURATION);
+                });
+                
+                row.addEventListener('mouseup', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                row.addEventListener('mouseleave', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
                 
                 row.innerHTML = `
+                    <td>
+                        <img src="${profilePic}" class="profile-pic-small" alt="${user.name}" onerror="this.src='ol3.png'">
+                    </td>
                     <td>
                         <strong>${user.name || 'N/A'}</strong><br>
                         <small style="color: #666;">${user.phone || 'No phone'}</small>
@@ -1439,6 +1869,238 @@ Go
                     </td>
                 `;
             });
+        }
+        
+        // ==============================================
+        // USER DETAILS MODAL
+        // ==============================================
+        async function showUserDetails(userId) {
+            detailUserId = userId;
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            // Reset modal content
+            document.getElementById('detail-profile-pic').src = user.profilePictureUrl || 'ol3.png';
+            document.getElementById('detail-username').textContent = user.name || 'N/A';
+            document.getElementById('detail-user-id').textContent = `User ID: ${user.id.substring(0, 8)}...`;
+            document.getElementById('detail-user-id-value').textContent = user.id;
+            document.getElementById('detail-full-name').textContent = user.name || 'N/A';
+            document.getElementById('detail-email').textContent = user.email || 'N/A';
+            document.getElementById('detail-phone').textContent = user.phone || 'N/A';
+            document.getElementById('detail-main-balance').textContent = `$${(user.balance || 0).toFixed(2)}`;
+            document.getElementById('detail-main-balance-summary').textContent = `$${(user.balance || 0).toFixed(2)}`;
+            
+            // Country detection
+            const country = detectCountryFromPhone(user.phone || '');
+            document.getElementById('detail-country').innerHTML = `<span class="country-flag">${country.flag}</span> ${country.name}`;
+            
+            // Account status
+            document.getElementById('detail-account-status').innerHTML = user.isActive ? 
+                '<span class="status-badge status-active">Active</span>' : 
+                '<span class="status-badge status-inactive">Inactive</span>';
+            
+            // Dates
+            document.getElementById('detail-joined-date').textContent = user.createdAt ? 
+                new Date(user.createdAt).toLocaleString() : 'N/A';
+            document.getElementById('detail-last-login').textContent = user.lastLogin ? 
+                new Date(user.lastLogin).toLocaleString() : 'Never';
+            
+            // Referral info
+            document.getElementById('detail-referral-code').textContent = user.referralCode || 'N/A';
+            document.getElementById('detail-total-referrals').textContent = user.referrals || 0;
+            
+            // Find referrer
+            if (user.referredBy) {
+                const referrer = allUsers.find(u => u.referralCode === user.referredBy);
+                document.getElementById('detail-referrer').textContent = referrer ? 
+                    `${referrer.name} (${referrer.email})` : 
+                    `Code: ${user.referredBy}`;
+            } else {
+                document.getElementById('detail-referrer').textContent = 'No referrer';
+            }
+            
+            // Load additional data
+            await loadUserDetailedData(userId);
+            
+            showModal('user-details-modal');
+        }
+        
+        async function loadUserDetailedData(userId) {
+            try {
+                // Load user's transactions for stats
+                const transactionsSnapshot = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .get();
+                
+                let totalTransactions = 0;
+                let completedTransactions = 0;
+                let pendingTransactions = 0;
+                let failedTransactions = 0;
+                
+                let earningsBalance = 0;
+                let referralBalance = 0;
+                let bonusesBalance = 0;
+                let totalWithdrawn = 0;
+                
+                transactionsSnapshot.forEach(doc => {
+                    const txn = doc.data();
+                    totalTransactions++;
+                    
+                    if (txn.status === 'completed') completedTransactions++;
+                    if (txn.status === 'pending') pendingTransactions++;
+                    if (txn.status === 'rejected' || txn.status === 'failed') failedTransactions++;
+                    
+                    if (txn.status === 'completed') {
+                        const amount = parseFloat(txn.amount) || 0;
+                        switch(txn.type) {
+                            case 'earning':
+                                earningsBalance += amount;
+                                break;
+                            case 'referral_bonus':
+                                referralBalance += amount;
+                                break;
+                            case 'bonus':
+                                bonusesBalance += amount;
+                                break;
+                            case 'withdrawal':
+                                totalWithdrawn += amount;
+                                break;
+                        }
+                    }
+                });
+                
+                // Update transaction stats
+                document.getElementById('detail-total-transactions').textContent = totalTransactions;
+                document.getElementById('detail-completed-transactions').textContent = completedTransactions;
+                document.getElementById('detail-pending-transactions').textContent = pendingTransactions;
+                document.getElementById('detail-failed-transactions').textContent = failedTransactions;
+                
+                // Update balance details
+                document.getElementById('detail-earnings-balance').textContent = `$${earningsBalance.toFixed(2)}`;
+                document.getElementById('detail-referral-balance').textContent = `$${referralBalance.toFixed(2)}`;
+                document.getElementById('detail-bonuses-balance').textContent = `$${bonusesBalance.toFixed(2)}`;
+                document.getElementById('detail-total-withdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
+                
+                const totalEarnings = earningsBalance + referralBalance + bonusesBalance;
+                document.getElementById('detail-total-earnings').textContent = `$${totalEarnings.toFixed(2)}`;
+                
+                // Load active investments
+                const activeInvestments = await db.collection('transactions')
+                    .where('userId', '==', userId)
+                    .where('type', '==', 'investment')
+                    .where('status', '==', 'completed')
+                    .get();
+                
+                document.getElementById('detail-active-investments').textContent = activeInvestments.size;
+                
+                // Load referred users
+                const user = allUsers.find(u => u.id === userId);
+                if (user && user.referralCode) {
+                    const referredUsers = allUsers.filter(u => u.referredBy === user.referralCode);
+                    const referralsList = document.getElementById('detail-referrals-list');
+                    referralsList.innerHTML = '';
+                    
+                    if (referredUsers.length > 0) {
+                        referredUsers.forEach(refUser => {
+                            const referralItem = document.createElement('div');
+                            referralItem.className = 'referral-item';
+                            referralItem.innerHTML = `
+                                <img src="${refUser.profilePictureUrl || 'ol3.png'}" class="referral-pic" alt="${refUser.name}" onerror="this.src='ol3.png'">
+                                <div style="flex: 1;">
+                                    <strong>${refUser.name}</strong><br>
+                                    <small style="color: #ccc;">${refUser.email}</small>
+                                </div>
+                                <div style="color: #6ab8ff; font-size: 0.9em;">
+                                    ${refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString() : 'N/A'}
+                                </div>
+                            `;
+                            referralsList.appendChild(referralItem);
+                        });
+                    } else {
+                        referralsList.innerHTML = '<div class="no-data" style="text-align: center; padding: 20px; color: #666;">No referrals yet</div>';
+                    }
+                }
+                
+            } catch (error) {
+                console.error("Error loading detailed user data:", error);
+            }
+        }
+        
+        function editDetailUser() {
+            if (detailUserId) {
+                editUser(detailUserId);
+                closeModal('user-details-modal');
+            }
+        }
+        
+        function suspendDetailUser() {
+            if (detailUserId) {
+                const user = allUsers.find(u => u.id === detailUserId);
+                if (user) {
+                    if (user.isActive) {
+                        suspendUser(detailUserId);
+                    } else {
+                        activateUser(detailUserId);
+                    }
+                    closeModal('user-details-modal');
+                }
+            }
+        }
+        
+        async function deleteCompletedTransactions() {
+            if (!detailUserId) return;
+            
+            if (!confirm('Are you sure you want to delete ALL completed transactions for this user? This action cannot be undone!')) {
+                return;
+            }
+            
+            const password = prompt('Enter admin password to confirm:');
+            if (password !== ADMIN_PASSWORD) {
+                alert('Invalid admin password!');
+                return;
+            }
+            
+            try {
+                // Get all completed transactions for the user
+                const transactionsSnapshot = await db.collection('transactions')
+                    .where('userId', '==', detailUserId)
+                    .where('status', '==', 'completed')
+                    .get();
+                
+                if (transactionsSnapshot.empty) {
+                    alert('No completed transactions found for this user.');
+                    return;
+                }
+                
+                // Delete each transaction
+                const deletePromises = [];
+                transactionsSnapshot.forEach(doc => {
+                    deletePromises.push(doc.ref.delete());
+                });
+                
+                await Promise.all(deletePromises);
+                
+                alert(`Successfully deleted ${deletePromises.length} completed transactions.`);
+                closeModal('user-details-modal');
+                loadAllData();
+                
+            } catch (error) {
+                console.error("Error deleting transactions:", error);
+                alert('Error deleting transactions: ' + error.message);
+            }
+        }
+        
+        function showUserTransactions() {
+            if (detailUserId) {
+                const user = allUsers.find(u => u.id === detailUserId);
+                if (user) {
+                    // Search for this user in transactions
+                    document.getElementById('search-input').value = user.email || user.name || user.id;
+                    searchTable();
+                    showTab('transactions');
+                    closeModal('user-details-modal');
+                }
+            }
         }
         
         // ==============================================
@@ -1773,7 +2435,7 @@ Go
         async function loadReferrals() {
             try {
                 const tbody = document.getElementById('referrals-tbody');
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;"><div class="loader"></div></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="loader"></div></td></tr>';
                 
                 const snapshot = await db.collection('users').get();
                 allReferrals = [];
@@ -1785,6 +2447,7 @@ Go
                             id: doc.id,
                             userName: user.name,
                             userEmail: user.email,
+                            userProfilePic: user.profilePictureUrl || 'ol3.png',
                             referredBy: user.referredBy,
                             referralCode: user.referralCode,
                             createdAt: user.createdAt,
@@ -1800,7 +2463,7 @@ Go
                 const tbody = document.getElementById('referrals-tbody');
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #ccc;">
+                        <td colspan="7" style="text-align: center; color: #ccc;">
                             <div class="empty-state">
                                 <i class="fas fa-user-friends"></i><br>
                                 No pending referrals found
@@ -1818,7 +2481,7 @@ Go
             if (allReferrals.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #ccc;">
+                        <td colspan="7" style="text-align: center; color: #ccc;">
                             <div class="empty-state">
                                 <i class="fas fa-user-friends"></i><br>
                                 No pending referrals found
@@ -1837,6 +2500,9 @@ Go
                 const date = referral.createdAt ? new Date(referral.createdAt).toLocaleDateString() : 'N/A';
                 
                 row.innerHTML = `
+                    <td>
+                        <img src="${referral.userProfilePic}" class="profile-pic-small" alt="${referral.userName}" onerror="this.src='ol3.png'">
+                    </td>
                     <td>
                         <strong>${referral.userName || 'N/A'}</strong><br>
                         <small style="color: #666;">${referral.userEmail || 'No email'}</small>
@@ -2398,7 +3064,8 @@ Go
                 (user.name && user.name.toLowerCase().includes(term)) ||
                 (user.email && user.email.toLowerCase().includes(term)) ||
                 (user.phone && user.phone.includes(term)) ||
-                (user.referralCode && user.referralCode.toLowerCase().includes(term))
+                (user.referralCode && user.referralCode.toLowerCase().includes(term)) ||
+                (user.id && user.id.toLowerCase().includes(term))
             );
             
             tbody.innerHTML = '';
@@ -2406,7 +3073,7 @@ Go
             if (filteredUsers.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; color: #ccc;">
+                        <td colspan="8" style="text-align: center; color: #ccc;">
                             <div class="no-data">
                                 <i class="fas fa-search"></i><br>
                                 No users found matching "${term}"
@@ -2419,9 +3086,50 @@ Go
             
             filteredUsers.forEach(user => {
                 const row = tbody.insertRow();
+                row.className = 'user-row';
                 const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
+                const profilePic = user.profilePictureUrl || 'ol3.png';
+                
+                // Add long press event listeners
+                row.addEventListener('touchstart', function(e) {
+                    longPressTimer = setTimeout(() => {
+                        showUserDetails(user.id);
+                        this.classList.add('long-press-active');
+                    }, LONG_PRESS_DURATION);
+                });
+                
+                row.addEventListener('touchend', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                row.addEventListener('touchmove', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                // For desktop
+                row.addEventListener('mousedown', function(e) {
+                    longPressTimer = setTimeout(() => {
+                        showUserDetails(user.id);
+                        this.classList.add('long-press-active');
+                    }, LONG_PRESS_DURATION);
+                });
+                
+                row.addEventListener('mouseup', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
+                
+                row.addEventListener('mouseleave', function(e) {
+                    clearTimeout(longPressTimer);
+                    this.classList.remove('long-press-active');
+                });
                 
                 row.innerHTML = `
+                    <td>
+                        <img src="${profilePic}" class="profile-pic-small" alt="${user.name}" onerror="this.src='ol3.png'">
+                    </td>
                     <td>
                         <strong>${user.name || 'N/A'}</strong><br>
                         <small style="color: #666;">${user.phone || 'No phone'}</small>
@@ -2476,7 +3184,7 @@ Go
             if (filteredReferrals.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #ccc;">
+                        <td colspan="7" style="text-align: center; color: #ccc;">
                             <div class="no-data">
                                 <i class="fas fa-search"></i><br>
                                 No referrals found matching "${term}"
@@ -2492,6 +3200,9 @@ Go
                 const date = referral.createdAt ? new Date(referral.createdAt).toLocaleDateString() : 'N/A';
                 
                 row.innerHTML = `
+                    <td>
+                        <img src="${referral.userProfilePic}" class="profile-pic-small" alt="${referral.userName}" onerror="this.src='ol3.png'">
+                    </td>
                     <td>
                         <strong>${referral.userName || 'N/A'}</strong><br>
                         <small style="color: #666;">${referral.userEmail || 'No email'}</small>
@@ -2545,7 +3256,8 @@ Go
                 setTimeout(() => {
                     element.style.display = 'none';
                 }, 3000);
-            } else { ;
+            } else { 
+                // Do nothing
             }
         }
         
