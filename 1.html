@@ -711,6 +711,193 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 5px;
         }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: fixed;
+            right: 0;
+            display: inline-block;
+        }
+        
+        .dropdown-toggle {
+            background: none;
+            color: white;
+            padding: 10px 2p;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 2em;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background: black;
+            min-width: 200px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+            margin-top: 5px;
+            border: 1px solid #404040;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.5s;
+            border-bottom: 1px solid #404040;
+        }
+        
+        .dropdown-menu a sup {
+            background: green;
+            padding: 0 5px;
+            border-radius: 50%;
+        }
+        
+        .dropdown-menu a i {
+            padding-right: 30px;
+        }
+        
+        .show {
+            display: block;
+        }
+        
+        .comment-content-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .comment-content-full {
+            max-width: 400px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        
+        .comment-filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            overflow-x: auto;
+        }
+        
+        .comment-filter-btn {
+            padding: 1px 20px;
+            background: #333;
+            color: #ccc;
+            border: 1px solid #444;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: auto;
+            min-width: 30%;
+        }
+        
+        .comment-filter-btn.active {
+            background: #6ab8ff;
+            color: white;
+            border-color: #6ab8ff;
+        }
+        
+        .comment-stats {
+            display: none;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .bulk-actions {
+           display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+        
+        .bulk-btn {
+            padding: 2px 20px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-weight: bold;
+            min-width: 30%;
+        }
+        
+        .bulk-select-btn {
+            background: #6ab8ff;
+            color: white;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        
+        .bulk-approve-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .bulk-reject-btn {
+            background: #ffc107;
+            color: black;
+        }
+        
+        .bulk-delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .comment-checkbox {
+            margin-right: 10px;
+        }
+        
+        .comment-row.selected {
+            background: rgba(106, 184, 255, 0.15);
+        }
+        
+        .modal-content.large {
+            max-width: 800px;
+            height: 85%;
+        }
+        
+        .comment-details {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 3px;
+            background: #222;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .comment-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .meta-label {
+            color: #6ab8ff;
+            font-size: 0.9em;
+        }
+        
+        .meta-value {
+            color: white;
+            font-weight: bold;
+        }
+        .toflow{
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
@@ -725,6 +912,7 @@
     <a><i class="fas fa-globe"></i> Users <sup id="total-users"></sup></a>
     <a><i class="fas fa-star"></i> Active Users <sup id="active-users"></sup></a>
     <a><i class="fas fa-hand-holding-usd"></i> Withdrawals <sup id="pending-withdrawals"></sup></a>
+    <a><i class="fas fa-comments"></i> Comments <sup id="pending-comments"></sup></a>
     <a onclick="loadAllData()"><i class="fas fa-undo-alt fa-rotate-45"></i> Refresh</a>
     <a onclick="showCreateTransactionModal()"><i class="fas fa-plus-circle"></i> Create Transaction</a>
     <a href="2.html"><i class="fas fa-edit"></i> Edit Daily Activities</a>
@@ -828,6 +1016,9 @@ Go
                     <button class="tab-btn active" onclick="showTab('users')">
                         <i class="fas fa-users"></i>
                     </button>
+                    <button class="tab-btn" onclick="showTab('comments')">
+                        <i class="fas fa-comments"></i>
+                    </button>
                     <button class="tab-btn" onclick="showTab('referrals')">
                         <i class="fas fa-user-friends"></i>
                     </button>
@@ -847,17 +1038,16 @@ Go
                 
                 <!-- Search Box -->
                 <div class="search-box">
-                    <input type="text" id="search-input" class="search-input" placeholder="🔍 Search users, emails, or IDs..." onkeyup="searchTable()">
+                    <input type="text" id="search-input" class="search-input" placeholder=" Search users, emails, or IDs..." onkeyup="searchTable()">
                 </div>
                 
-                <!-- Users Tab -->
                 <div id="users-tab" class="tab-content active">
                     <div class="table-container">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h3 style="color: #6ab8ff; margin: 0;">User Management</h3>
                             <span id="users-count" style="color: #ccc;">Loading...</span>
                         </div>
-                        <table id="users-table">
+<div class="toflow">                   <table id="users-table">
                             <thead>
                                 <tr>
                                     <th>Profile</th>
@@ -879,6 +1069,82 @@ Go
                             </tbody>
                         </table>
                     </div>
+                    </div>
+                </div>
+                
+                <!-- Comments Tab - NEW -->
+                <div id="comments-tab" class="tab-content">
+                    <div class="table-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="color: #6ab8ff; margin: 0;">Comments</h3>
+                            <span id="comments-count" style="color: #ccc;">Loading...</span>
+                        </div>
+<!-- should not be part of the page -->                        
+                        <div class="comment-stats" id="comment-stats" hidden>
+                            <div class="comment-stat-card">
+                                <div class="comment-stat-value" id="total-comments-stat">0</div>
+                                <div class="comment-stat-label">Total Comments</div>
+                            </div>
+                            <div class="comment-stat-card">
+                                <div class="comment-stat-value" id="pending-comments-stat">0</div>
+                                <div class="comment-stat-label">Pending Review</div>
+                            </div>
+                            <div class="comment-stat-card">
+                                <div class="comment-stat-value" id="approved-comments-stat">0</div>
+                                <div class="comment-stat-label">Approved</div>
+                            </div>
+                            <div class="comment-stat-card">
+                                <div class="comment-stat-value" id="rejected-comments-stat">0</div>
+                                <div class="comment-stat-label">Rejected</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="comment-filter-buttons">
+                            <button class="comment-filter-btn active" onclick="filterComments('all')">All</button>
+                            <button class="comment-filter-btn" onclick="filterComments('pending')">Pending</button>
+                            <button class="comment-filter-btn" onclick="filterComments('approved')">Approved</button>
+                            <button class="comment-filter-btn" onclick="filterComments('rejected')">Rejected</button>
+                            <button class="comment-filter-btn" onclick="filterComments('public')">Public</button>
+                            <button class="comment-filter-btn" onclick="filterComments('private')">Private</button>
+                        </div>
+                        
+                        <!-- Bulk Actions -->
+                        <div class="bulk-actions">
+                            <button class="bulk-btn bulk-select-btn" onclick="selectAllComments()">
+Select
+                            </button>
+                            <button class="bulk-btn bulk-approve-btn" onclick="bulkApproveComments()">
+                         Approve                             </button>
+                            <button class="bulk-btn bulk-reject-btn" onclick="bulkRejectComments()">
+                         Reject       </button>
+                            <button class="bulk-btn bulk-delete-btn" onclick="bulkDeleteComments()">
+                         Delete
+                            </button>
+                        </div>
+                        
+<div id="comments-table-div" style="overflow-x: auto;">                  <table id="comments-table">
+                            <thead>
+                                <tr>
+                                    <th width="30px"><input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()"></th>
+                                    <th>User</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Visibility</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comments-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">
+                                        <div class="loader"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Referrals Tab -->
@@ -888,13 +1154,13 @@ Go
                             <h3 style="color: #6ab8ff; margin: 0;">Pending Referrals</h3>
                             <span id="referrals-count" style="color: #ccc;">Loading...</span>
                         </div>
-                        <table id="referrals-table">
+<div class="toflow">                 <table id="referrals-table">
                             <thead>
                                 <tr>
                                     <th>Profile</th>
-                                    <th>Referred User</th>
+                                    <th>Referee</th>
                                     <th>Referrer</th>
-                                    <th>Referral Code</th>
+                                    <th>R•Code</th>
                                     <th>Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -908,14 +1174,14 @@ Go
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                  </div>  </div>
                 </div>
                 
                 <!-- Transactions Tab -->
                 <div id="transactions-tab" class="tab-content">
                     <div class="table-container">
-                        <h3 style="color: #6ab8ff; margin-bottom: 15px;">All Transactions</h3>
-                        <table id="transactions-table">
+                        <h3 style="color: #6ab8ff; margin-bottom: 15px;">Transactions</h3>
+     <div class="toflow"> <table id="transactions-table">
                             <thead>
                                 <tr>
                                     <th>User</th>
@@ -934,6 +1200,7 @@ Go
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
                 
@@ -945,7 +1212,7 @@ Go
                             <span id="withdrawals-count" style="color: #ccc;">Loading...</span>
                         </div>
                         <div id="withdrawals-container">
-                            <table id="withdrawals-table">
+                   <div class="toscroll">      <table id="withdrawals-table">
                                 <thead>
                                     <tr>
                                         <th>User</th>
@@ -964,7 +1231,7 @@ Go
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> </div>
                         </div>
                     </div>
                 </div>
@@ -977,7 +1244,7 @@ Go
                             <span id="investments-count" style="color: #ccc;">Loading...</span>
                         </div>
                         <div id="investments-container">
-                            <table id="investments-table">
+    <div class="toflow">                      <table id="investments-table">
                                 <thead>
                                     <tr>
                                         <th>User</th>
@@ -995,7 +1262,7 @@ Go
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table></div>
                         </div>
                     </div>
                 </div>
@@ -1054,7 +1321,7 @@ Go
                                 <input type="number" id="vip-returns" class="modal-input" value="40" min="0" max="100" step="0.1">
                             </div>
                             <button class="modal-btn" onclick="saveSettings()">
-                                <i class="fas fa-save"></i> Save Settings
+                         Save 
                             </button>
                         </div>
                     </div>
@@ -1353,6 +1620,73 @@ Go
             </button>
         </div>
     </div>
+    
+    <!-- View Comment Details Modal - NEW -->
+    <div id="view-comment-modal" class="modal">
+        <div class="modal-content large">
+            <button class="close-btn" onclick="closeModal('view-comment-modal')">&times;</button>
+            <h3><i class="fas fa-comment-dots"></i> Comment Details</h3>
+            
+            <div class="comment-details" id="comment-details-content">
+                <!-- Comment content will be loaded here -->
+            </div>
+            
+            <div class="comment-meta" id="comment-meta-info">
+                <!-- Meta information will be loaded here -->
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="modal-btn" onclick="approveCurrentComment()" style="background: #28a745;">
+                    <i class="fas fa-check"></i> Approve Comment
+                </button>
+                <button class="modal-btn" onclick="rejectCurrentComment()" style="background: #ffc107; color: black;">
+                    <i class="fas fa-times"></i> Reject Comment
+                </button>
+                <button class="modal-btn" onclick="deleteCurrentComment()" style="background: #dc3545;">
+                    <i class="fas fa-trash"></i> Delete Comment
+                </button>
+                <button class="modal-btn secondary" onclick="closeModal('view-comment-modal')">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Comments Confirmation Modal - NEW -->
+    <div id="delete-comments-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('delete-comments-modal')">&times;</button>
+            <h3><i class="fas fa-trash" style="color: #dc3545;"></i> Delete Comments</h3>
+            
+            <div class="input-group">
+                <label>Confirm Admin Password</label>
+                <div style="position: relative;">
+                    <input type="password" id="delete-comments-password" class="modal-input" placeholder="Enter admin password to confirm">
+                    <button type="button" class="modal-password-toggle" onclick="togglePasswordVisibility('delete-comments-password', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <p style="color: #ffc107; margin: 15px 0; text-align: center;">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <span id="delete-comments-count">0</span> comments will be permanently deleted!
+            </p>
+            
+            <div style="background: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 5px; margin: 15px 0;">
+                <p style="color: #dc3545; margin: 0; font-size: 14px;">
+                    <i class="fas fa-exclamation-circle"></i> This action cannot be undone. All selected comments will be permanently removed.
+                </p>
+            </div>
+            
+            <button class="modal-btn" onclick="confirmDeleteComments()" style="background: #dc3545;">
+                <i class="fas fa-trash"></i> Delete Selected Comments
+            </button>
+            <button class="modal-btn secondary" onclick="closeModal('delete-comments-modal')">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </div>
 
     <!-- Firebase Configuration and Main Script -->
     <script>
@@ -1386,11 +1720,17 @@ Go
         let allWithdrawals = [];
         let allInvestments = [];
         let allReferrals = [];
+        let allComments = [];
+        let filteredComments = [];
+        let selectedCommentIds = new Set();
         let currentEditingUserId = null;
         let userToDelete = null;
         let detailUserId = null;
+        let currentCommentId = null;
+        let commentsToDelete = [];
         let longPressTimer = null;
         const LONG_PRESS_DURATION = 800; // milliseconds
+        let currentFilter = 'all';
         
         // Admin Password (Change this for security)
         const ADMIN_PASSWORD = "22cabbage";
@@ -1515,6 +1855,9 @@ Go
                 case 'users':
                     if (allUsers.length === 0) loadUsers();
                     break;
+                case 'comments':
+                    if (allComments.length === 0) loadComments();
+                    break;
                 case 'referrals':
                     if (allReferrals.length === 0) loadReferrals();
                     break;
@@ -1541,8 +1884,11 @@ Go
                 await Promise.all([
                     loadDashboardStats(),
                     loadUsers(),
+                    loadComments(),
                     loadReferrals(),
-                    loadTransactions()
+                    loadTransactions(),
+                    loadWithdrawals(),
+                    loadInvestments()
                 ]);
                 showSuccessMessage(null, 'All data loaded successfully!');
             } catch (error) {
@@ -1723,11 +2069,29 @@ Go
                     });
                 }
                 
+                // Load pending comments
+                let pendingComments = 0;
+                try {
+                    const commentsSnapshot = await db.collection('comments')
+                        .where('status', '==', 'pending')
+                        .get();
+                    pendingComments = commentsSnapshot.size;
+                } catch (error) {
+                    const allCommentsSnap = await db.collection('comments').get();
+                    allCommentsSnap.forEach(doc => {
+                        const data = doc.data();
+                        if (data.status === 'pending') {
+                            pendingComments++;
+                        }
+                    });
+                }
+                
                 // Update stats
                 document.getElementById('total-users').textContent = totalUsers;
                 document.getElementById('active-users').textContent = activeUsers;
                 document.getElementById('total-balance').textContent = '$' + totalBalance.toFixed(2);
                 document.getElementById('pending-withdrawals').textContent = pendingWithdrawals;
+                document.getElementById('pending-comments').textContent = pendingComments;
                 
             } catch (error) {
                 console.error("Error loading dashboard stats:", error);
@@ -3028,6 +3392,553 @@ Go
         }
         
         // ==============================================
+        // COMMENT MANAGEMENT - NEW FUNCTIONS
+        // ==============================================
+        async function loadComments() {
+            try {
+                const tbody = document.getElementById('comments-tbody');
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="loader"></div></td></tr>';
+                
+                const snapshot = await db.collection('comments').orderBy('timestamp', 'desc').get();
+                allComments = [];
+                snapshot.forEach(doc => {
+                    allComments.push({ 
+                        id: doc.id, 
+                        ...doc.data(),
+                        timestamp: doc.data().timestamp || new Date().toISOString()
+                    });
+                });
+                
+                updateCommentStats();
+                filterComments(currentFilter);
+                
+            } catch (error) {
+                console.error("Error loading comments:", error);
+                const tbody = document.getElementById('comments-tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #ccc;">
+                            <div class="empty-state">
+                                <i class="fas fa-comment-slash"></i><br>
+                                No comments found
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        function updateCommentStats() {
+            if (allComments.length === 0) {
+                document.getElementById('total-comments-stat').textContent = '0';
+                document.getElementById('pending-comments-stat').textContent = '0';
+                document.getElementById('approved-comments-stat').textContent = '0';
+                document.getElementById('rejected-comments-stat').textContent = '0';
+                document.getElementById('comments-count').textContent = '0 comments';
+                return;
+            }
+            
+            const total = allComments.length;
+            const pending = allComments.filter(c => c.status === 'pending').length;
+            const approved = allComments.filter(c => c.status === 'approved').length;
+            const rejected = allComments.filter(c => c.status === 'rejected').length;
+            
+            document.getElementById('total-comments-stat').textContent = total;
+            document.getElementById('pending-comments-stat').textContent = pending;
+            document.getElementById('approved-comments-stat').textContent = approved;
+            document.getElementById('rejected-comments-stat').textContent = rejected;
+            document.getElementById('comments-count').textContent = `${total} comments`;
+        }
+        
+        function filterComments(filterType) {
+            currentFilter = filterType;
+            
+            // Update filter buttons
+            document.querySelectorAll('.comment-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter comments
+            switch(filterType) {
+                case 'all':
+                    filteredComments = [...allComments];
+                    break;
+                case 'pending':
+                    filteredComments = allComments.filter(c => c.status === 'pending');
+                    break;
+                case 'approved':
+                    filteredComments = allComments.filter(c => c.status === 'approved');
+                    break;
+                case 'rejected':
+                    filteredComments = allComments.filter(c => c.status === 'rejected');
+                    break;
+                case 'public':
+                    filteredComments = allComments.filter(c => c.isPublic === true);
+                    break;
+                case 'private':
+                    filteredComments = allComments.filter(c => c.isPublic === false);
+                    break;
+                default:
+                    filteredComments = [...allComments];
+            }
+            
+            updateCommentsTable();
+        }
+        
+        function updateCommentsTable() {
+            const tbody = document.getElementById('comments-tbody');
+            tbody.innerHTML = '';
+            selectedCommentIds.clear();
+            document.getElementById('select-all-checkbox').checked = false;
+            
+            if (filteredComments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #ccc;">
+                            <div class="empty-state">
+                                <i class="fas fa-comment-slash"></i><br>
+                                No comments found
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredComments.forEach(comment => {
+                const row = tbody.insertRow();
+                row.className = 'comment-row';
+                
+                const date = comment.timestamp ? new Date(comment.timestamp).toLocaleString() : 'N/A';
+                const status = comment.status || 'pending';
+                const isPublic = comment.isPublic === true ? 'Public' : 'Private';
+                
+                let statusClass = 'status-pending';
+                switch(status) {
+                    case 'approved':
+                        statusClass = 'status-active';
+                        break;
+                    case 'rejected':
+                        statusClass = 'status-suspended';
+                        break;
+                }
+                
+                const commentPreview = comment.content ? 
+                    (comment.content.length > 100 ? comment.content.substring(0, 100) + '...' : comment.content) : 
+                    'No content';
+                
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="comment-checkbox" onchange="toggleCommentSelection('${comment.id}', this)">
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${comment.userName || 'Anonymous'}</strong><br>
+                            <small style="color: #666;">${comment.userEmail || 'No email'}</small>
+                        </div>
+                    </td>
+                    <td class="comment-content-cell" title="${escapeHtml(comment.content || '')}">
+                        ${escapeHtml(commentPreview)}
+                    </td>
+                    <td><small>${date}</small></td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${isPublic === 'Public' ? 'status-active' : 'status-inactive'}">
+                            ${isPublic}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="comment-actions">
+                            <button class="action-btn view-comment-btn" onclick="viewCommentDetails('${comment.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${status !== 'approved' ? `
+                            <button class="action-btn activate-btn" onclick="approveComment('${comment.id}')" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>` : ''}
+                            ${status !== 'rejected' ? `
+                            <button class="action-btn suspend-btn" onclick="rejectComment('${comment.id}')" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>` : ''}
+                            <button class="action-btn delete-btn" onclick="deleteCommentPrompt('${comment.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+        
+        function toggleCommentSelection(commentId, checkbox) {
+            if (checkbox.checked) {
+                selectedCommentIds.add(commentId);
+                checkbox.closest('tr').classList.add('selected');
+            } else {
+                selectedCommentIds.delete(commentId);
+                checkbox.closest('tr').classList.remove('selected');
+            }
+        }
+        
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            const checkboxes = document.querySelectorAll('.comment-checkbox');
+            
+            if (selectAllCheckbox.checked) {
+                selectedCommentIds.clear();
+                filteredComments.forEach(comment => {
+                    selectedCommentIds.add(comment.id);
+                });
+                checkboxes.forEach(cb => cb.checked = true);
+                document.querySelectorAll('.comment-row').forEach(row => row.classList.add('selected'));
+            } else {
+                selectedCommentIds.clear();
+                checkboxes.forEach(cb => cb.checked = false);
+                document.querySelectorAll('.comment-row').forEach(row => row.classList.remove('selected'));
+            }
+        }
+        
+        function selectAllComments() {
+            const selectAllCheckbox = document.getElementById('select-all-checkbox');
+            selectAllCheckbox.checked = true;
+            toggleSelectAll();
+        }
+        
+        async function bulkApproveComments() {
+            if (selectedCommentIds.size === 0) {
+                alert('Please select comments to approve');
+                return;
+            }
+            
+            if (!confirm(`Approve ${selectedCommentIds.size} selected comment(s)?`)) {
+                return;
+            }
+            
+            try {
+                const updatePromises = [];
+                
+                selectedCommentIds.forEach(commentId => {
+                    const commentRef = db.collection('comments').doc(commentId);
+                    updatePromises.push(commentRef.update({
+                        status: 'approved',
+                        reviewed: true,
+                        reviewedBy: 'admin',
+                        reviewedAt: new Date().toISOString()
+                    }));
+                });
+                
+                await Promise.all(updatePromises);
+                
+                alert(`Successfully approved ${selectedCommentIds.size} comment(s)!`);
+                selectedCommentIds.clear();
+                document.getElementById('select-all-checkbox').checked = false;
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error bulk approving comments:", error);
+                alert('Error approving comments: ' + error.message);
+            }
+        }
+        
+        async function bulkRejectComments() {
+            if (selectedCommentIds.size === 0) {
+                alert('Please select comments to reject');
+                return;
+            }
+            
+            if (!confirm(`Reject ${selectedCommentIds.size} selected comment(s)?`)) {
+                return;
+            }
+            
+            try {
+                const updatePromises = [];
+                
+                selectedCommentIds.forEach(commentId => {
+                    const commentRef = db.collection('comments').doc(commentId);
+                    updatePromises.push(commentRef.update({
+                        status: 'rejected',
+                        reviewed: true,
+                        reviewedBy: 'admin',
+                        reviewedAt: new Date().toISOString()
+                    }));
+                });
+                
+                await Promise.all(updatePromises);
+                
+                alert(`Successfully rejected ${selectedCommentIds.size} comment(s)!`);
+                selectedCommentIds.clear();
+                document.getElementById('select-all-checkbox').checked = false;
+                loadComments();
+                
+            } catch (error) {
+                console.error("Error bulk rejecting comments:", error);
+                alert('Error rejecting comments: ' + error.message);
+            }
+        }
+        
+        function bulkDeleteComments() {
+            if (selectedCommentIds.size === 0) {
+                alert('Please select comments to delete');
+                return;
+            }
+            
+            commentsToDelete = Array.from(selectedCommentIds);
+            document.getElementById('delete-comments-count').textContent = commentsToDelete.length;
+            showModal('delete-comments-modal');
+            document.getElementById('delete-comments-password').value = '';
+        }
+        
+        async function confirmDeleteComments() {
+            const password = document.getElementById('delete-comments-password').value;
+            
+            if (password !== ADMIN_PASSWORD) {
+                alert('Invalid admin password!');
+                return;
+            }
+            
+            if (commentsToDelete.length === 0) {
+                alert('No comments selected for deletion');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to permanently delete ${commentsToDelete.length} comment(s)? This action cannot be undone!`)) {
+                return;
+            }
+            
+            try {
+                const deletePromises = commentsToDelete.map(commentId => 
+                    db.collection('comments').doc(commentId).delete()
+                );
+                
+                await Promise.all(deletePromises);
+                
+                alert(`Successfully deleted ${commentsToDelete.length} comment(s)!`);
+                closeModal('delete-comments-modal');
+                selectedCommentIds.clear();
+                document.getElementById('select-all-checkbox').checked = false;
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error bulk deleting comments:", error);
+                alert('Error deleting comments: ' + error.message);
+            }
+        }
+        
+        function viewCommentDetails(commentId) {
+            currentCommentId = commentId;
+            const comment = allComments.find(c => c.id === commentId);
+            if (!comment) return;
+            
+            const detailsContent = document.getElementById('comment-details-content');
+            const metaInfo = document.getElementById('comment-meta-info');
+            
+            // Format comment content
+            detailsContent.innerHTML = `
+                <h4 style="color: #6ab8ff; margin-bottom: 10px;">Comment Content:</h4>
+                <p style="white-space: pre-wrap; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 5px;">
+                    ${escapeHtml(comment.content || 'No content')}
+                </p>
+            `;
+            
+            // Format meta information
+            const date = comment.timestamp ? new Date(comment.timestamp).toLocaleString() : 'N/A';
+            const reviewedDate = comment.reviewedAt ? new Date(comment.reviewedAt).toLocaleString() : 'Not reviewed';
+            const status = comment.status || 'pending';
+            const isPublic = comment.isPublic === true ? 'Public' : 'Private';
+            const allowPost = comment.allowPost === true ? 'Yes' : 'No';
+            const likesCount = comment.likesCount || 0;
+            
+            metaInfo.innerHTML = `
+                <div class="meta-item">
+                    <div class="meta-label">User Name</div>
+                    <div class="meta-value">${comment.userName || 'Anonymous'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">User Email</div>
+                    <div class="meta-value">${comment.userEmail || 'No email'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Submitted Date</div>
+                    <div class="meta-value">${date}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Status</div>
+                    <div class="meta-value">
+                        <span class="status-badge ${status === 'approved' ? 'status-active' : status === 'rejected' ? 'status-suspended' : 'status-pending'}">
+                            ${status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Visibility</div>
+                    <div class="meta-value">${isPublic}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Post Allowed</div>
+                    <div class="meta-value">${allowPost}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Likes Count</div>
+                    <div class="meta-value">${likesCount}</div>
+                </div>
+                ${comment.reviewed ? `
+                <div class="meta-item">
+                    <div class="meta-label">Reviewed By</div>
+                    <div class="meta-value">${comment.reviewedBy || 'Admin'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Reviewed Date</div>
+                    <div class="meta-value">${reviewedDate}</div>
+                </div>` : ''}
+            `;
+            
+            showModal('view-comment-modal');
+        }
+        
+        async function approveCurrentComment() {
+            if (!currentCommentId) return;
+            
+            try {
+                await db.collection('comments').doc(currentCommentId).update({
+                    status: 'approved',
+                    reviewed: true,
+                    reviewedBy: 'admin',
+                    reviewedAt: new Date().toISOString()
+                });
+                
+                alert('Comment approved successfully!');
+                closeModal('view-comment-modal');
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error approving comment:", error);
+                alert('Error approving comment: ' + error.message);
+            }
+        }
+        
+        async function rejectCurrentComment() {
+            if (!currentCommentId) return;
+            
+            try {
+                await db.collection('comments').doc(currentCommentId).update({
+                    status: 'rejected',
+                    reviewed: true,
+                    reviewedBy: 'admin',
+                    reviewedAt: new Date().toISOString()
+                });
+                
+                alert('Comment rejected successfully!');
+                closeModal('view-comment-modal');
+                loadComments();
+                
+            } catch (error) {
+                console.error("Error rejecting comment:", error);
+                alert('Error rejecting comment: ' + error.message);
+            }
+        }
+        
+        async function deleteCurrentComment() {
+            if (!currentCommentId) return;
+            
+            if (!confirm('Are you sure you want to delete this comment? This action cannot be undone!')) {
+                return;
+            }
+            
+            const password = prompt('Enter admin password to confirm:');
+            if (password !== ADMIN_PASSWORD) {
+                alert('Invalid admin password!');
+                return;
+            }
+            
+            try {
+                await db.collection('comments').doc(currentCommentId).delete();
+                
+                alert('Comment deleted successfully!');
+                closeModal('view-comment-modal');
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error deleting comment:", error);
+                alert('Error deleting comment: ' + error.message);
+            }
+        }
+        
+        async function approveComment(commentId) {
+            if (!confirm('Approve this comment?')) return;
+            
+            try {
+                await db.collection('comments').doc(commentId).update({
+                    status: 'approved',
+                    reviewed: true,
+                    reviewedBy: 'admin',
+                    reviewedAt: new Date().toISOString()
+                });
+                
+                alert('Comment approved successfully!');
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error approving comment:", error);
+                alert('Error approving comment: ' + error.message);
+            }
+        }
+        
+        async function rejectComment(commentId) {
+            if (!confirm('Reject this comment?')) return;
+            
+            try {
+                await db.collection('comments').doc(commentId).update({
+                    status: 'rejected',
+                    reviewed: true,
+                    reviewedBy: 'admin',
+                    reviewedAt: new Date().toISOString()
+                });
+                
+                alert('Comment rejected successfully!');
+                loadComments();
+                
+            } catch (error) {
+                console.error("Error rejecting comment:", error);
+                alert('Error rejecting comment: ' + error.message);
+            }
+        }
+        
+        function deleteCommentPrompt(commentId) {
+            if (!confirm('Delete this comment?')) return;
+            
+            const password = prompt('Enter admin password to confirm:');
+            if (password !== ADMIN_PASSWORD) {
+                alert('Invalid admin password!');
+                return;
+            }
+            
+            deleteComment(commentId);
+        }
+        
+        async function deleteComment(commentId) {
+            try {
+                await db.collection('comments').doc(commentId).delete();
+                
+                alert('Comment deleted successfully!');
+                loadComments();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error("Error deleting comment:", error);
+                alert('Error deleting comment: ' + error.message);
+            }
+        }
+        
+        // ==============================================
         // SEARCH FUNCTIONALITY
         // ==============================================
         function searchTable() {
@@ -3037,6 +3948,9 @@ Go
             switch(activeTab) {
                 case 'users-tab':
                     searchUsers(searchTerm);
+                    break;
+                case 'comments-tab':
+                    searchComments(searchTerm);
                     break;
                 case 'referrals-tab':
                     searchReferrals(searchTerm);
@@ -3165,6 +4079,104 @@ Go
             });
         }
         
+        function searchComments(term) {
+            if (!term) {
+                updateCommentsTable();
+                return;
+            }
+            
+            const searchResults = filteredComments.filter(comment => 
+                (comment.userName && comment.userName.toLowerCase().includes(term)) ||
+                (comment.userEmail && comment.userEmail.toLowerCase().includes(term)) ||
+                (comment.content && comment.content.toLowerCase().includes(term)) ||
+                (comment.status && comment.status.toLowerCase().includes(term))
+            );
+            
+            const tbody = document.getElementById('comments-tbody');
+            tbody.innerHTML = '';
+            
+            if (searchResults.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #ccc;">
+                            <div class="no-data">
+                                <i class="fas fa-search"></i><br>
+                                No comments found matching "${term}"
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            searchResults.forEach(comment => {
+                const row = tbody.insertRow();
+                row.className = 'comment-row';
+                
+                const date = comment.timestamp ? new Date(comment.timestamp).toLocaleString() : 'N/A';
+                const status = comment.status || 'pending';
+                const isPublic = comment.isPublic === true ? 'Public' : 'Private';
+                
+                let statusClass = 'status-pending';
+                switch(status) {
+                    case 'approved':
+                        statusClass = 'status-active';
+                        break;
+                    case 'rejected':
+                        statusClass = 'status-suspended';
+                        break;
+                }
+                
+                const commentPreview = comment.content ? 
+                    (comment.content.length > 100 ? comment.content.substring(0, 100) + '...' : comment.content) : 
+                    'No content';
+                
+                row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="comment-checkbox" onchange="toggleCommentSelection('${comment.id}', this)">
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${comment.userName || 'Anonymous'}</strong><br>
+                            <small style="color: #666;">${comment.userEmail || 'No email'}</small>
+                        </div>
+                    </td>
+                    <td class="comment-content-cell" title="${escapeHtml(comment.content || '')}">
+                        ${escapeHtml(commentPreview)}
+                    </td>
+                    <td><small>${date}</small></td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${isPublic === 'Public' ? 'status-active' : 'status-inactive'}">
+                            ${isPublic}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="comment-actions">
+                            <button class="action-btn view-comment-btn" onclick="viewCommentDetails('${comment.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${status !== 'approved' ? `
+                            <button class="action-btn activate-btn" onclick="approveComment('${comment.id}')" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>` : ''}
+                            ${status !== 'rejected' ? `
+                            <button class="action-btn suspend-btn" onclick="rejectComment('${comment.id}')" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>` : ''}
+                            <button class="action-btn delete-btn" onclick="deleteCommentPrompt('${comment.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+        
         function searchReferrals(term) {
             const tbody = document.getElementById('referrals-tbody');
             if (!term) {
@@ -3230,6 +4242,12 @@ Go
         // ==============================================
         // UTILITY FUNCTIONS
         // ==============================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
         function showModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
