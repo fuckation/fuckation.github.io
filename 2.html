@@ -2,204 +2,401 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Activities Manager</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap" rel="stylesheet">     <style>  *{   font-family: "Sofia Sans Condensed", sans-serif;</style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <title>Daily Activities Admin - Malcom Finance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <!-- MD5 Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    
     <style>
         * {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            }
+        }
         
         body {
             background: black;
-            color: white;
             min-height: 100vh;
-        }
-        .activity-details a{
-            text-decoration: none;
-        }
-        .login-section {
-            max-width: 90%;
-            margin: 100px auto;
-            padding: 20px;
-            background: #111;
-            border-radius: 10px;
-            border: 0.1px solid #333;
-            text-align: center;
-        }
-        .input-group {
-            margin-bottom: 20px;
+            color: white;
+            padding:0;
         }
         
-        .input-group input {
+        .glass-effect {
+            background: black;
+           border: 1px solid white;
+            border-radius: 20px;
+        }
+        main {
+            margin-top: 10px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 7em;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            height: calc(100vh - 150px);
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar-card {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .date-picker-card {
+            background: black;
+        }
+        
+        .stats-card {
+            background: black;
+        }
+        
+        .quick-actions-card {
+            background: black;
+            display: flex;
+            justify-content: space-around;
+            position: fixed; bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        
+        .card-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #6ab8ff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .date-picker {
             width: 100%;
             padding: 12px;
-            border-radius: 5px;
-            border: 1px solid #404040;
-            background: black;
-            color: white;
-            font-size: 16px;
-        }
-        .input-group input:focus{
-            outline: none;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: black;
-            color: white;
-            border: 0.1px solid #404040;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .admin-panel {
-            display: none;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header{
-            background: none;
-            padding: 0;
-            border: none;
-            position: fixed;
-            top: 1px;
-            left: 2px;
-            width: 99%;
-         
-        }
-        .day-header{
-            background: black;
-            border: none;
-            position: fixed;
-            top: 3em;
-            left: 2px;
-            width: auto;
-            padding: 10px;
-            border: 1px solid white;
             border-radius: 10px;
-            opacity: 0.5;
-         }
-         .day-header h3{
-             font-size: 1em;
-             font-weight: normal;
-         }
-    .header td{
-        border: 2px solid white;
-        font-weight: 900;
-    }
-        .logo{
             background: black;
+            border: 1px solid white;
             color: white;
-            border-radius: 5px 0 0 5px;
-        }
-        .logout-btn {
-            border-radius: 0 5px 5px 0;
-            color: black;
-            background: white;
-            text-align: center;
-            padding: 5px;
-            }
-        .day-selector {
-            display: block;
+            font-size: 16px;
+            margin-bottom: 15px;
         }
         
-        .day-btn, .navlink {
-            padding: 12px 24px;
-            background: black;
-            border: 1px solid #404040;
+        .date-picker:focus {
+            outline: none;
+            border-color: #6ab8ff;
+            box-shadow: 0 0 0 2px rgba(106, 184, 255, 0.2);
+        }
+        
+        .date-display {
+            text-align: center;
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .day-name {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #6ab8ff;
+            margin-bottom: 5px;
+        }
+        
+        .current-date {
+            font-size: 1.1em;
+            color: #ccc;
+        }
+        
+        .date-navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             color: white;
-            border-radius: 5px;
-            border-left: 0;
-            border-right: 0;
             cursor: pointer;
-            width: 100%;
-            text-align: left;
             transition: all 0.3s;
             font-weight: 600;
         }
         
-        .day-btn.active {
-        padding-left: 5em;
-        }
-        .day-btn .fa-circle{
-            display: none;
-            font-size: 0.6em;
-            color: yellow;
-        }
-        .day-btn.today .fa-circle{
-       display: unset;
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
         
-        .activities-container {
-            background: black;
-            border-radius: 10px;
-            padding: 10px;
-            padding-top: 10px;
-            min-height: 500px;
-            margin-bottom: 30px;
-            border: 1px solid #333;
-            margin-top: 3em;
-        }
-        
-        .readonly-notice {
-            background: transparent;
-            border: 1px solid #ffffff45;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 5px;
+        .nav-btn.prev {
+            border-color: rgba(255, 193, 7, 0.3);
             color: #ffc107;
+        }
+        
+        .nav-btn.next {
+            border-color: rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-label {
+            color: #ccc;
+            font-size: 0.95em;
+        }
+        
+        .stat-value {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .stat-value.total {
+            color: #28a745;
+        }
+        
+        .stat-value.pending {
+            color: #ffc107;
+        }
+        
+        .stat-value.approved {
+            color: #6ab8ff;
+        }
+        
+        .quick-action-btn {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid white;
+            background: black;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .quick-action-btn.danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .quick-action-btn.danger:hover {
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .content-card {
+            padding: 0;
+            border-radius: 5px;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .content-card::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-card::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .content-card::-webkit-scrollbar-thumb {
+            background: rgba(106, 184, 255, 0.5);
+            border-radius: 4px;
+        }
+        
+        .content-card::-webkit-scrollbar-thumb:hover {
+            background: rgba(106, 184, 255, 0.7);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: 1px solid white;
+            background: black;
+            color: #ccc;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            wisth: 100%;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6ab8ff, #4a9eff);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .quote-section {
+            margin-bottom: 30px;
+        }
+        
+        .quote-input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: #6ab8ff;
+            box-shadow: 0 0 0 2px rgba(106, 184, 255, 0.2);
+        }
+        
+        textarea.modal-input {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .activities-list {
+            margin-top: 30px;
+        }
+        
+        .activities-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #6ab8ff;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
         .add-activity-btn {
-            background: darkgreen;
-            }
-    .view-submissions-btn, .add-activity-btn{
-            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .view-submissions-btn{
-            background: #17a2b8;
-            
+            gap: 10px;
         }
         
         .add-activity-btn:hover {
-            background: #218838;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
         }
         
-        .activity-list {
-            display: grid;
-            gap: 20px;
-            margin-bottom: 30px;     
+        .no-activities {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .no-activities i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #444;
         }
         
         .activity-item {
-            background: black;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
             padding: 20px;
-            border: 1px solid #404040;
+            margin-bottom: 15px;
+            border-left: 4px solid;
             transition: all 0.3s;
         }
-
+        
+        .activity-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
         .activity-header {
             display: flex;
             justify-content: space-between;
@@ -207,305 +404,135 @@
             margin-bottom: 15px;
         }
         
-        .activity-type {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        
-        .type-link { background: rgba(106, 184, 255, 0.2); color: #6ab8ff;
-}
-        .type-video { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
-        .type-text { background: rgba(40, 167, 69, 0.2); color: #28a745; }
-        
-        .activity-earnings {
-            color: #ffc107;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        
-        .activity-content {
-            margin-bottom: 15px;
-        }
-        
         .activity-title {
             font-size: 1.2em;
             font-weight: 600;
-            margin-bottom: 10px;
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .activity-details {
+        .activity-type {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .type-video { background: rgba(255, 87, 87, 0.2); color: #ff5757; }
+        .type-text { background: rgba(76, 175, 80, 0.2); color: #4CAF50; }
+        .type-link { background: rgba(33, 150, 243, 0.2); color: #2196F3; }
+        .type-share { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .type-survey { background: rgba(156, 39, 176, 0.2); color: #9C27B0; }
+        .type-blog { background: rgba(255, 152, 0, 0.2); color: #FF9800; }
+        .type-custom { background: rgba(0, 188, 212, 0.2); color: #00BCD4; }
+        
+        .activity-reward {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .activity-content {
             color: #ccc;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .activity-preview {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
             font-size: 0.95em;
-            line-height: 1.5;
+            color: #aaa;
+            max-height: 100px;
+            overflow-y: auto;
         }
         
         .activity-actions {
             display: flex;
             gap: 10px;
             margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #444;
         }
         
         .action-btn {
-            padding: 8px 20px;
+            padding: 8px 15px;
+            border-radius: 8px;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
             transition: all 0.3s;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .edit-btn { 
-            background: #6ab8ff; 
-            color: white; 
-        }
-        
-        .delete-btn { 
-            background: #dc3545; 
-            color: white; 
-        }
-        .act-btn{
             display: flex;
-            justify-content: space-between;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 1000;
-            justify-content: center;
             align-items: center;
+            gap: 5px;
         }
         
-        .modal-content {
-            background: black;
-            padding: 35px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            border: 1px solid #404040;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        .modal h3 {
+        .edit-btn {
+            background: rgba(106, 184, 255, 0.2);
             color: #6ab8ff;
-            margin-bottom: 25px;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border: 1px solid rgba(106, 184, 255, 0.3);
         }
         
-        .activity-type-selector {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 25px;
-            width: 100%;
-            overflow-x: auto;
+        .edit-btn:hover {
+            background: rgba(106, 184, 255, 0.3);
         }
         
-        .type-btn {
-            padding: 2px;
-            background: black;
-            border: 1px solid #404040;
-            color: white;
-            border-radius: 5px;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .type-btn.active {
-            border-color: #6ab8ff;
-            color: white;
-        }
-        
-        .form-section {
-            display: none;
-        }
-        
-        .form-section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 5px;
-            border: 1px solid #404040;
-            background: black;
-            color: white;
-            font-size: 15px;
-            transition: border 0.3s;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #6ab8ff;
-        }
-        
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .modal-btn {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-        
-        .modal-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .save-btn { 
-            background: white;
-            color: black; 
-        }
-        
-        .cancel-btn { 
-            background: black; 
-            color: White; 
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #ccc;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 5px;
-            transition: color 0.3s;
-        }
-                
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .empty-state i {
-            font-size: 4em;
-            margin-bottom: 20px;
-            color: #444;
-        }
-        
-        .empty-state h4 {
-            color: #ccc;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        
-        .empty-state p {
-            color: #888;
-            line-height: 1.5;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .loading-spinner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 0;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid white;
-            border-top: 4px solid black;
-            border-right: 4px solid gray;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-        }
-        
-        .success {
-            background: rgba(40, 167, 69, 0.15);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-        
-        .error {
-            background: rgba(220, 53, 69, 0.15);
+        .delete-btn {
+            background: rgba(220, 53, 69, 0.2);
             color: #dc3545;
             border: 1px solid rgba(220, 53, 69, 0.3);
         }
         
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 0.3);
+        }
+        
+        .move-up-btn {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .move-up-btn:hover {
+            background: rgba(255, 193, 7, 0.3);
+        }
+        
+        .move-down-btn {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+        
+        .move-down-btn:hover {
+            background: rgba(255, 152, 0, 0.3);
+        }
+        
+        /* Submissions Tab Styles */
+        .submissions-list {
+            max-height: 600px;
+            overflow-y: auto;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        
         .submission-item {
-            background: black;
-            border: 1px solid #404040;
-            border-radius: 8px;
+            background: darkcyan;
+            border-radius: 5px;
+            border: 1px solid white;
             padding: 20px;
             margin-bottom: 15px;
+            transition: all 0.3s;
+            width: 100%;
+            min-width: 100%;
+            mac-width: 100%;
+            overflow-x: auto;
         }
+        
         
         .submission-header {
             display: flex;
@@ -515,1371 +542,2318 @@
         }
         
         .submission-user {
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(106, 184, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
             color: #6ab8ff;
         }
         
-        .submission-date {
-            color: #888;
+        .user-info h4 {
+            color: white;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .user-info p {
+            color: #ccc;
             font-size: 0.9em;
         }
         
+        .submission-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status-approved {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .status-rejected {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        
         .submission-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            background: black;
+            padding: 10px;
+            border-radius: 8px;
+            min-width: 100%;
+            max-width: 100%;
+            width: 100%;
+        }
+        
+        .detail-label {
             color: #ccc;
-            font-size: 0.95em;
-            line-height: 1.5;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+           
+        }
+        
+        .detail-value {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .submission-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .approve-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .approve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .reject-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .reject-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+        
+        .view-btn {
+            background: rgba(106, 184, 255, 0.2);
+            color: #6ab8ff;
+            border: 1px solid rgba(106, 184, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .view-btn:hover {
+            background: rgba(106, 184, 255, 0.3);
+        }
+        
+        /* Activity Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(106, 184, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content.large {
+            max-width: 1000px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #6ab8ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        .activity-form {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
         
         @media (max-width: 768px) {
-            .admin-panel {
-                padding: 15px;
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .activity-type-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .type-option {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .type-option:hover {
+            border-color: #6ab8ff;
+            color: white;
+        }
+        
+        .type-option.selected {
+            border-color: #6ab8ff;
+            background: rgba(106, 184, 255, 0.1);
+            color: white;
+        }
+        
+        .type-icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+        
+        .type-label {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .type-fields {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .field-group {
+            margin-bottom: 15px;
+        }
+        
+        .field-label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .save-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .cancel-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .login-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+        
+        .login-card {
+            background: black;
+            border-radius: 10px;
+            padding: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid white;
+            }
+        
+        
+        .password-input-group {
+            position: relative;
+            margin-bottom: 1px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+        
+        .password-toggle:hover {
+            color: white;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid white;
+            background: black;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: orange;
+            font-size: 0.4em;
+            padding: 1px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(106, 184, 255, 0.3);
+            border-top: 4px solid #6ab8ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-online {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .status-offline {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+        
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+        
+        .alert-info {
+            background: rgba(23, 162, 184, 0.2);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            color: #17a2b8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                height: auto;
             }
             
-            .day-selector {
-                justify-content: center;
+            .sidebar {
+                order: 2;
             }
             
-            .day-btn {
-                min-width: 100px;
+            .main-content {
+                order: 1;
+            }
+            
+            .header-title {
+                font-size: 1.2em;
+            }
+            
+            .tab-buttons {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .tab-btn {
                 padding: 10px 15px;
-                font-size: 14px;
-            }
-            
-            .activity-actions {
-                flex-direction: column;
-            }
-            
-            .action-btn {
-                width: 100%;
-                justify-content: center;
+                font-size: 0.9em;
             }
             
             .modal-content {
-                padding: 25px 20px;
-                width: 95%;
-            }
-            
-            .activity-type-selector {
-                flex-direction: column;
-            }
-            
-            .type-btn {
-                padding: 12px;
+                padding: 20px;
             }
         }
         
         @media (max-width: 480px) {
-            .admin-stats {
-                grid-template-columns: 1fr;
+            main {
+                padding: 0px;
             }
             
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
+            .content-card {
+                padding: 10px;
             }
             
-            .modal-actions {
+            .form-actions {
                 flex-direction: column;
             }
-        }
-        
-        .debug-info {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #888;
+            
+            .submission-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Login Section -->
     <div id="login-section" class="login-section">
-        <div id="message" class="message"></div>
-        <div class="input-group">
-            <input type="text" id="admin-password" placeholder="Enter admin password" autocomplete="current-password">
-        </div>
-        <button class="login-btn" onclick="adminLogin()">
-            Login
-        </button>
-    </div>
-    
-    <!-- Admin Panel -->
-    <div id="admin-panel" class="admin-panel">
-        <!-- Header -->
-        <table class="header">
-            <tr><td class="logo">Activities Admin</td>
-            <td class="logout-btn"onclick="document.getElementById('nav-menu').classList.add('open')">
-           Menu
-            </td>
-     </tr>
-        </table>
-        
-        <!-- Activities Container -->
-        <div class="activities-container">
-            <!-- Day Header -->
-            <div class="day-header" id="day-header">
-                <h4>Select a day to manage activities</h4>
-                <p>Click on a day above to view and edit activities</p>
+        <div class="login-card glass-effect">
+            
+            
+            <div class="password-input-group">
+                <input type="password" id="admin-password" class="modal-input" placeholder="Access code" autocomplete="current-password" style="border: 1px solid white;">
+                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('admin-password', this)">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
             
-            <!-- Readonly Notice -->
-            <div id="readonly-notice" class="readonly-notice" style="display: none;">
-                <i class="fas fa-info-circle"></i> 
-              You can't edit today's activities 
-            </div>
-           <div class="act-btn">
-            <button class="view-submissions-btn" id="view-submissions-btn" onclick="viewSubmissions()" style="display: none;">
-                <i class="fas fa-clipboard-list"></i> View Submissions
+            <div id="login-error" class="error-message"></div>
+            
+            <button class="login-btn" onclick="adminLogin()">
+      Login 
             </button>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="admin-panel" style="display: none;">
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main>
+            <div class="dashboard-grid">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Date Picker Card -->
+                    <div class="sidebar-card glass-effect date-picker-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            Select Date
+                        </h3>
+                        
+                        <input type="date" id="date-picker" class="date-picker" onchange="loadSelectedDate()">
+                        
+                        <div class="date-display">
+                            <div class="day-name" id="selected-day">Monday</div>
+                            <div class="current-date" id="selected-date">January 1, 2024</div>
+                        </div>
+                        
+                        <div class="date-navigation">
+                            <button class="nav-btn prev" onclick="navigateDate(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                               
+                            </button>
+                            <button class="nav-btn today" onclick="goToToday()">
+                                <i class="fas fa-calendar-day"></i>
+                                Today
+                            </button>
+                            <button class="nav-btn next" onclick="navigateDate(1)">
+                               
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Card -->
+                    <div class="sidebar-card glass-effect stats-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Today's Stats
+                        </h3>
+                        
+                        <div class="stat-item">
+                            <span class="stat-label">Total Activities:</span>
+                            <span class="stat-value" id="stat-total-activities">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Reward:</span>
+                            <span class="stat-value total" id="stat-total-reward">$0.00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Submissions:</span>
+                            <span class="stat-value" id="stat-total-submissions">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pending:</span>
+                            <span class="stat-value pending" id="stat-pending-submissions">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Approved:</span>
+                            <span class="stat-value approved" id="stat-approved-submissions">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="sidebar-card glass-effect quick-actions-card">
+       
+                        
+                        <button class="quick-action-btn" onclick="saveDailyActivities()">
+                            <i class="fas fa-save"></i>
+                                      </button>
+                        
+                        <button class="quick-action-btn" onclick="copyToTomorrow()">
+                            <i class="fas fa-share"></i> </button>
+                        
+                        <button class="quick-action-btn" onclick="resetDailyActivities()">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                        
+                        <button class="quick-action-btn danger" onclick="deleteDailyActivities()">
+                            <i class="fas fa-trash"></i>                     </button>
+                            
+                <button class="quick-action-btn" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    
+                </button>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="main-content">
+                    <!-- Activities Management Card -->
+                    <div class="content-card glass-effect">
+                        <!-- Tab Buttons -->
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showTab('activities')">
+                                <i class="fas fa-tasks"></i>
+          
+                            </button>
+                            <button class="tab-btn" onclick="showTab('submissions')">
+                                <i class="fas fa-clipboard-check"></i>
            
-            <button class="add-activity-btn" id="add-activity-btn" onclick="showAddActivityModal()" style="display: none;">
-                <i class="fas fa-plus-circle"></i> New
-            </button>
-            </div>
-            <div class="activity-list" id="activity-list">
-                <div class="empty-state">
-                    <i class="fas fa-calendar-alt"></i>
-                    <h4>No activities loaded</h4>
-                    <p>Select a day from above to view or edit activities</p>
+                                <span class="status-indicator status-pending" id="pending-count">0</span>
+                            </button>
+                            <button class="tab-btn" onclick="showTab('settings')">
+                                <i class="fas fa-cog"></i>
+        
+                            </button>
+                        </div>
+
+                        <!-- Activities Tab -->
+                        <div id="activities-tab" class="tab-content active">
+                            <!-- Quote Section -->
+                            <div class="quote-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-quote-left"></i>
+                                    Quote of the Day
+                                </h3>
+                                
+                                <div class="quote-input-group">
+                                    <label class="input-label">Inspirational Quote</label>
+                                    <textarea id="quote-text" class="modal-input" placeholder="Enter today's inspirational quote..."></textarea>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="quote-input-group">
+                                        <label class="input-label">Quote Author</label>
+                                        <input type="text" id="quote-author" class="modal-input" placeholder="Author name (e.g., Admin)">
+                                    </div>
+                                    
+                                    <div class="quote-input-group">
+                                        <label class="input-label">Active Status</label>
+                                        <select id="quote-status" class="modal-input">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activities List -->
+                            <div class="activities-list">
+                                <div class="activities-header">
+                                    <h3 class="section-title">
+        Today's Activities                           </h3>
+                                    
+                                    <button class="add-activity-btn" onclick="showAddActivityModal()">
+                                        <i class="fas fa-plus"></i>
+                        
+                                    </button>
+                                </div>
+                                
+                                <div id="activities-container">
+                                    <!-- Activities will be loaded here -->
+                                    <div class="no-activities">
+                                        <i class="fas fa-tasks"></i>
+                                        <h4>No Activities Yet</h4>
+                                        <p>Click "Add New Activity" to create activities for today</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submissions Tab -->
+                        <div id="submissions-tab" class="tab-content">
+                            <div class="submissions-header">
+                                <h3 class="section-title">
+                                    <i class="fas fa-clipboard-list"></i> Submissions
+                                </h3>
+                                
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="action-btn edit-btn" onclick="loadSubmissions()">
+                                        <i class="fas fa-sync-alt"></i>
+                                        Refresh
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="clearOldSubmissions()">
+                                        <i class="fas fa-broom"></i>
+                                        Clear Old
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="submissions-container" class="submissions-list">
+                                <!-- Submissions will be loaded here -->
+                                <div class="no-activities">
+                                    <i class="fas fa-inbox"></i>
+                                    <h4>No Submissions Yet</h4>
+                                    <p>User submissions will appear here once they submit today's activities</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Tab -->
+                        <div id="settings-tab" class="tab-content">
+                            <h3 class="section-title">
+                                <i class="fas fa-sliders-h"></i>
+                                System Settings
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="field-group">
+                                    <label class="input-label">Auto-Reset Time</label>
+                                    <input type="time" id="reset-time" class="modal-input" value="00:00">
+                                </div>
+                                
+                                <div class="field-group">
+                                    <label class="input-label">Default Activity Reward</label>
+                                    <input type="number" id="default-reward" class="modal-input" value="0.10" step="0.01" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="field-group">
+                                    <label class="input-label">Auto-Approve After (hours)</label>
+                                    <input type="number" id="auto-approve-hours" class="modal-input" value="24" min="1">
+                                </div>
+                                
+                                <div class="field-group">
+                                    <label class="input-label">Max Activities Per Day</label>
+                                    <input type="number" id="max-activities" class="modal-input" value="10" min="1" max="20">
+                                </div>
+                            </div>
+                            
+                            <div class="field-group">
+                                <label class="input-label">Notification Message for Rejected Submissions</label>
+                                <textarea id="rejection-message" class="modal-input" rows="3">Your submission was rejected. Please complete all activities properly and try again tomorrow.</textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="save-btn" onclick="saveSystemSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </main>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div id="add-activity-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-plus-circle"></i>
+                    New
+                </h3>
+                <button class="close-btn" onclick="closeModal('add-activity-modal')">&times;</button>
+            </div>
+            
+            <form id="activity-form" class="activity-form" onsubmit="return false;">
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">Activity Title <span style="color: red">*</span></label>
+                        <input type="text" id="activity-title" class="modal-input" placeholder="Enter activity title" required>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">Reward Amount ($) <span style="color: red">*</span></label>
+                        <input type="number" id="activity-reward" class="modal-input" placeholder="0.00" min="0" step="0.01" value="0.10" required>
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Description (Optional)</label>
+                    <textarea id="activity-description" class="modal-input" placeholder="Describe the activity..."></textarea>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Activity Type <span style="color: red">*</span></label>
+                    <div class="activity-type-options" id="activity-type-options">
+                        <div class="type-option" data-type="video" onclick="selectActivityType('video')">
+                            <div class="type-icon"><i class="fas fa-video"></i></div>
+                            <div class="type-label">Video</div>
+                        </div>
+                        <div class="type-option" data-type="text" onclick="selectActivityType('text')">
+                            <div class="type-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="type-label">Text</div>
+                        </div>
+                        <div class="type-option" data-type="link" onclick="selectActivityType('link')">
+                            <div class="type-icon"><i class="fas fa-link"></i></div>
+                            <div class="type-label">Link</div>
+                        </div>
+                        <div class="type-option" data-type="share" onclick="selectActivityType('share')">
+                            <div class="type-icon"><i class="fas fa-share-alt"></i></div>
+                            <div class="type-label">Share</div>
+                        </div>
+                        <div class="type-option" data-type="survey" onclick="selectActivityType('survey')">
+                            <div class="type-icon"><i class="fas fa-poll"></i></div>
+                            <div class="type-label">Survey</div>
+                        </div>
+                        <div class="type-option" data-type="blog" onclick="selectActivityType('blog')">
+                            <div class="type-icon"><i class="fas fa-pen-fancy"></i></div>
+                            <div class="type-label">Blog</div>
+                        </div>
+                        <div class="type-option" data-type="custom" onclick="selectActivityType('custom')">
+                            <div class="type-icon"><i class="fas fa-code"></i></div>
+                            <div class="type-label">Custom</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type-specific fields will be loaded here -->
+                <div id="type-fields-container" class="type-fields" style="display: none;">
+                    <!-- Dynamic fields based on selected type -->
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-btn" onclick="addActivity()">
+                        <i class="fas fa-plus"></i>
+                        Add Activity
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('add-activity-modal')">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    
-    <!-- Add/Edit Activity Modal -->
-    <div id="activity-modal" class="modal">
+
+    <!-- Edit Activity Modal -->
+    <div id="edit-activity-modal" class="modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('activity-modal')">&times;</button>
-            <h3 id="modal-title"><i class="fas fa-plus-circle"></i> Add Activity</h3>
-            
-            <!-- Activity Type Selector -->
-            <div class="activity-type-selector">
-                <button class="type-btn active" data-type="link" onclick="selectActivityType('link')">
-                    <i class="fas fa-link"></i> Link
-                </button>
-                <button class="type-btn" data-type="video" onclick="selectActivityType('video')">
-                    <i class="fas fa-video"></i> Video
-                </button>
-                <button class="type-btn" data-type="text" onclick="selectActivityType('text')">
-                    <i class="fas fa-font"></i> Text
-                </button>
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Edit Activity
+                </h3>
+                <button class="close-btn" onclick="closeModal('edit-activity-modal')">&times;</button>
             </div>
             
-            <!-- Link Form -->
-            <div id="link-form" class="form-section active">
-                <div class="form-group">
-                    <label>Title/Description</label>
-                    <input type="text" id="link-title" class="form-control" placeholder="e.g., Watch this tutorial video">
+            <form id="edit-activity-form" class="activity-form" onsubmit="return false;">
+                <input type="hidden" id="edit-activity-index">
+                
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">Activity Title <span style="color: red">*</span></label>
+                        <input type="text" id="edit-activity-title" class="modal-input" required>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">Reward Amount ($) <span style="color: red">*</span></label>
+                        <input type="number" id="edit-activity-reward" class="modal-input" min="0" step="0.01" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>URL/Link</label>
-                    <input type="url" id="link-url" class="form-control" placeholder="https://example.com">
+                
+                <div class="field-group">
+                    <label class="field-label">Description (Optional)</label>
+                    <textarea id="edit-activity-description" class="modal-input"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Earnings ($)</label>
-                    <input type="number" id="link-earnings" class="form-control" placeholder="0.10" step="0.01" min="0.01" value="0.10">
+                
+                <!-- Edit type-specific fields will be loaded here -->
+                <div id="edit-type-fields-container" class="type-fields">
+                    <!-- Dynamic fields based on selected type -->
                 </div>
-            </div>
-            
-            <!-- Video Form -->
-            <div id="video-form" class="form-section">
-                <div class="form-group">
-                    <label>Video Description</label>
-                    <input type="text" id="video-title" class="form-control" placeholder="e.g., Watch this educational video">
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-btn" onclick="updateActivity()">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('edit-activity-modal')">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label>Video URL</label>
-                    <input type="url" id="video-url" class="form-control" placeholder="https://youtube.com/watch?v=...">
-                </div>
-                <div class="form-group">
-                    <label>Earnings ($)</label>
-                    <input type="number" id="video-earnings" class="form-control" placeholder="0.15" step="0.01" min="0.01" value="0.15">
-                </div>
-            </div>
-            
-            <!-- Text Form -->
-            <div id="text-form" class="form-section">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="text-title" class="form-control" placeholder="e.g., Read this article">
-                </div>
-                <div class="form-group">
-                    <label>Content</label>
-                    <textarea id="text-content" class="form-control" placeholder="Enter the text content here..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Earnings ($)</label>
-                    <input type="number" id="text-earnings" class="form-control" placeholder="0.05" step="0.01" min="0.01" value="0.05">
-                </div>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="modal-btn save-btn" onclick="saveActivity()">
-                    <i class="fas fa-save"></i> Save Activity
-                </button>
-                <button class="modal-btn cancel-btn" onclick="closeModal('activity-modal')">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-            </div>
+            </form>
         </div>
     </div>
-    
-    <!-- View Submissions Modal -->
-    <div id="submissions-modal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('submissions-modal')">&times;</button>
-            <h3><i class="fas fa-clipboard-list"></i> Activity Submissions</h3>
-            <div id="submissions-list" class="activity-list">
-                <!-- Submissions will be loaded here -->
+
+    <!-- Submission Details Modal -->
+    <div id="submission-details-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    Submission Details
+                </h3>
+                <button class="close-btn" onclick="closeModal('submission-details-modal')">&times;</button>
             </div>
-            <div class="modal-actions">
-                <button class="modal-btn cancel-btn" onclick="closeModal('submissions-modal')">
-                    <i class="fas fa-times"></i> Close
-                </button>
+            
+            <div id="submission-details-content">
+                <!-- Submission details will be loaded here -->
             </div>
         </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <script>
-        // ==============================================
-        // FIREBASE CONFIGURATION
-        // ==============================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJaFVETxpy8Vr5e6RXDWi3NBhEUaZEPN4",
-            authDomain: "malcolm-finance.firebaseapp.com",
-            projectId: "malcolm-finance",
-            storageBucket: "malcolm-finance.firebasestorage.app",
-            messagingSenderId: "987613399580",
-            appId: "1:987613399580:web:0237b2c8c2c7df54222dd9",
-            measurementId: "G-1CEG3BWFBP"
-        };
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="confirmation-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+         Confirm
+                </h4>
+                <button class="close-btn" onclick="closeModal('confirmation-modal')">&times;</button>
+            </div>
+            
+            <div style="padding: 20px; text-align: center;">
+                <p id="confirmation-message" style="color: white; font-size: 1.1em; margin-bottom: 30px;"></p>
+                
+                <div style="display: flex; gap: 15px;">
+                    <button class="save-btn" id="confirm-action-btn" onclick="confirmAction()">
+                        Confirm
+                    </button>
+                    <button class="cancel-btn" onclick="closeModal('confirmation-modal')">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+<script>
+    // ==============================================
+    // FIREBASE CONFIGURATION
+    // ==============================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJaFVETxpy8Vr5e6RXDWi3NBhEUaZEPN4",
+        authDomain: "malcolm-finance.firebaseapp.com",
+        projectId: "malcolm-finance",
+        storageBucket: "malcolm-finance.firebasestorage.app",
+        messagingSenderId: "987613399580",
+        appId: "1:987613399580:web:0237b2c8c2c7df54222dd9",
+        measurementId: "G-1CEG3BWFBP"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // ==============================================
+    // GLOBAL VARIABLES
+    // ==============================================
+    let isAdminLoggedIn = false;
+    let currentDate = new Date();
+    let dailyActivities = [];
+    let activitySubmissions = [];
+    let editingActivityIndex = -1;
+    let selectedActivityType = '';
+    let pendingAction = null;
+    
+    // Admin Password (Plain text: "Sam is true")
+    const ADMIN_PASSWORD = "dogs eat cars";
+    
+    // Days of week
+    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    
+    // Activity type configurations - FIXED VERSION
+    const ACTIVITY_TYPES = {
+        video: {
+            icon: 'fa-video',
+            color: '#ff5757',
+            fields: [
+                { id: 'video-url', label: 'Video URL', type: 'url', placeholder: 'https://example.com/video.mp4' },
+                { id: 'video-duration', label: 'Duration (minutes)', type: 'number', placeholder: '5' },
+                { id: 'video-thumbnail', label: 'Thumbnail URL (optional)', type: 'url', placeholder: 'https://example.com/thumbnail.jpg' }
+            ]
+        },
+        text: {
+            icon: 'fa-file-alt',
+            color: '#4CAF50',
+            fields: [
+                { id: 'text-content', label: 'Text Content', type: 'textarea', placeholder: 'Enter the text content here...' },
+                { id: 'text-min-words', label: 'Minimum Words (optional)', type: 'number', placeholder: '100' }
+            ]
+        },
+        link: {
+            icon: 'fa-link',
+            color: '#2196F3',
+            fields: [
+                { id: 'link-url', label: 'Link URL', type: 'url', placeholder: 'https://example.com' },
+                { id: 'link-text', label: 'Link Text', type: 'text', placeholder: 'Click here to visit' },
+                { id: 'link-target', label: 'Open in', type: 'select', options: ['_blank', '_self'] }
+            ]
+        },
+        share: {
+            icon: 'fa-share-alt',
+            color: '#ffc107',
+            fields: [
+                { id: 'share-text', label: 'Share Text', type: 'text', placeholder: 'Check this out!' },
+                { id: 'share-url', label: 'Share URL', type: 'url', placeholder: 'https://example.com' },
+                { id: 'share-min-count', label: 'Minimum Shares Required', type: 'number', value: 3 }
+            ]
+        },
+        survey: {
+            icon: 'fa-poll',
+            color: '#9C27B0',
+            fields: [
+                { id: 'survey-question', label: 'Question', type: 'text', placeholder: 'Enter your question' },
+                { id: 'survey-options', label: 'Options (one per line)', type: 'textarea', placeholder: 'Option 1\nOption 2\nOption 3' },
+                { id: 'survey-correct', label: 'Correct Answer Index (0-based, empty if none)', type: 'number', placeholder: '0' }
+            ]
+        },
+        blog: {
+            icon: 'fa-pen-fancy',
+            color: '#FF9800',
+            fields: [
+                { id: 'blog-topic', label: 'Blog Topic', type: 'text', placeholder: 'Write about...' },
+                { id: 'blog-min-words', label: 'Minimum Words', type: 'number', value: 200 },
+                { id: 'blog-platforms', label: 'Allowed Platforms (comma separated)', type: 'text', placeholder: 'Medium, Blogger, WordPress' }
+            ]
+        },
+        custom: {
+            icon: 'fa-code',
+            color: '#00BCD4',
+            fields: [
+                { id: 'custom-content', label: 'HTML Content', type: 'textarea', placeholder: '<div>Custom content here...</div>' },
+                { id: 'custom-detection', label: 'Completion Detection', type: 'select', options: ['link', 'time', 'scroll', 'click'], value: 'link' },
+                { id: 'custom-instructions', label: 'User Instructions', type: 'text', placeholder: 'Complete the activity as shown...' }
+            ]
         }
+    };
+    
+    // ==============================================
+    // INITIALIZATION
+    // ==============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Daily Activities Admin initialized");
         
-        const db = firebase.firestore();
+        // Check if already logged in
+        if (localStorage.getItem('admin2LoggedIn') === 'true') {
+            showAdminPanel();
+            setupDatePicker();
+            loadSelectedDate();
+            loadSystemSettings();
+        } else {
+            document.getElementById('login-section').style.display = 'flex';
+        }
+    });
+    
+    // ==============================================
+    // ADMIN AUTHENTICATION
+    // ==============================================
+    function adminLogin() {
+        const password = document.getElementById('admin-password').value;
+        const errorDiv = document.getElementById('login-error');
         
-        // Admin password
-        const ADMIN_PASSWORD = "23cabbage";
+        // Direct comparison with plain text password
+        if (password === ADMIN_PASSWORD) {
+            isAdminLoggedIn = true;
+            localStorage.setItem('admin2LoggedIn', 'true');
+            showAdminPanel();
+            setupDatePicker();
+            loadSelectedDate();
+            loadSystemSettings();
+        } else {
+            errorDiv.textContent = 'Invalid admin password!';
+            errorDiv.style.display = 'block';
+        }
+    }
+    
+    function logoutAdmin() {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('admin2LoggedIn');
+            location.reload();
+        }
+    }
+    
+    function showAdminPanel() {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+    }
+    
+    // ==============================================
+    // PASSWORD TOGGLE FUNCTION
+    // ==============================================
+    function togglePasswordVisibility(inputId, toggleButton) {
+        const input = document.getElementById(inputId);
+        const icon = toggleButton.querySelector('i');
         
-        // Days configuration
-        const DAYS = [
-            { name: 'Sunday', value: 'sunday', icon: 'fa-sun' },
-            { name: 'Monday', value: 'monday', icon: 'fa-moon' },
-            { name: 'Tuesday', value: 'tuesday', icon: 'fa-star' },
-            { name: 'Wednesday', value: 'wednesday', icon: 'fa-cloud' },
-            { name: 'Thursday', value: 'thursday', icon: 'fa-bolt' },
-            { name: 'Friday', value: 'friday', icon: 'fa-heart' },
-            { name: 'Saturday', value: 'saturday', icon: 'fa-gem' }
-        ];
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    // ==============================================
+    // DATE MANAGEMENT
+    // ==============================================
+    function setupDatePicker() {
+        const datePicker = document.getElementById('date-picker');
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
         
-        const today = new Date().getDay(); // 0 = Sunday
-        const currentDay = DAYS[today].value;
+        // Set min date to today (admin can only edit today and future dates)
+        datePicker.min = `${year}-${month}-${day}`;
         
-        // Global variables
-        let isAdminLoggedIn = false;
-        let selectedDay = null;
-        let isEditing = false;
-        let editingActivityId = null;
-        let currentActivityType = 'link';
-        let allActivities = [];
+        // Set default to today
+        datePicker.value = `${year}-${month}-${day}`;
         
-        // ==============================================
-        // INITIALIZATION
-        // ==============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Admin Activities Manager initialized');
-            
-            // Check if already logged in
-            if (localStorage.getItem('activityAdminLoggedIn') === 'true') {
-                isAdminLoggedIn = true;
-                showAdminPanel();
-                initDaySelector();
-                loadAdminStats();
-            }
+        // Update display
+        updateDateDisplay(now);
+    }
+    
+    function getDateString(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    function updateDateDisplay(date) {
+        const dayName = DAYS[date.getDay()];
+        const dateString = date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
         });
         
-        // ==============================================
-        // ADMIN LOGIN/LOGOUT
-        // ==============================================
-        function adminLogin() {
-            const password = document.getElementById('admin-password').value;
-            const messageDiv = document.getElementById('message');
+        document.getElementById('selected-day').textContent = dayName;
+        document.getElementById('selected-date').textContent = dateString;
+        
+        // Update date picker value
+        document.getElementById('date-picker').value = getDateString(date);
+    }
+    
+    function loadSelectedDate() {
+        const dateString = document.getElementById('date-picker').value;
+        currentDate = new Date(dateString);
+        updateDateDisplay(currentDate);
+        
+        // Load activities for selected date
+        loadDailyActivities();
+        
+        // Load submissions for selected date
+        loadSubmissions();
+    }
+    
+    function navigateDate(days) {
+        currentDate.setDate(currentDate.getDate() + days);
+        updateDateDisplay(currentDate);
+        document.getElementById('date-picker').value = getDateString(currentDate);
+        loadSelectedDate();
+    }
+    
+    function goToToday() {
+        currentDate = new Date();
+        updateDateDisplay(currentDate);
+        document.getElementById('date-picker').value = getDateString(currentDate);
+        loadSelectedDate();
+    }
+    
+    // ==============================================
+    // TAB MANAGEMENT
+    // ==============================================
+    function showTab(tabId) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+        
+        // Update tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+        
+        // Load data for tab if needed
+        if (tabId === 'submissions') {
+            loadSubmissions();
+        }
+    }
+    
+    // ==============================================
+    // LOAD DAILY ACTIVITIES
+    // ==============================================
+    async function loadDailyActivities() {
+        const dateString = getDateString(currentDate);
+        const activitiesContainer = document.getElementById('activities-container');
+        
+        // Show loading
+        activitiesContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div class="loader"></div>
+                <p style="color: #ccc; margin-top: 15px;">Loading activities...</p>
+            </div>
+        `;
+        
+        try {
+            const doc = await db.collection('daily_activities').doc(dateString).get();
             
-            if (!password) {
-                messageDiv.textContent = 'Please enter admin password';
-                messageDiv.className = 'message error';
-                return;
-            }
-            
-            if (password === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                localStorage.setItem('activityAdminLoggedIn', 'true');
-                showAdminPanel();
-                initDaySelector();
-                loadAdminStats();
-                messageDiv.textContent = '';
-            } else {
-                messageDiv.textContent = 'Incorrect password!';
-                messageDiv.className = 'message error';
-                document.getElementById('admin-password').value = '';
-            }
-        }
-        
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('activityAdminLoggedIn');
-                location.reload();
-            }
-        }
-        
-        function showAdminPanel() {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-        }
-        
-        // ==============================================
-        // LOAD ADMIN STATS
-        // ==============================================
-        async function loadAdminStats() {
-            try {
-                // Show loading state
-                document.querySelectorAll('.stat-value').forEach(el => {
-                    el.textContent = '...';
-                });
+            if (doc.exists) {
+                const data = doc.data();
+                dailyActivities = data.activities || [];
                 
-                // Load activities count
-                const activitiesSnapshot = await db.collection('daily_activities').get();
-                const totalActivities = activitiesSnapshot.size;
-                document.getElementById('total-activities').textContent = totalActivities;
-                
-                // Load submissions count
-                const submissionsSnapshot = await db.collection('activity_submissions').get();
-                let pendingCount = 0;
-                submissionsSnapshot.forEach(doc => {
-                    if (doc.data().status === 'pending') {
-                        pendingCount++;
-                    }
-                });
-                document.getElementById('pending-submissions').textContent = pendingCount;
-                
-                // Calculate total earnings
-                let totalEarnings = 0;
-                let daysWithActivities = new Set();
-                
-                activitiesSnapshot.forEach(doc => {
-                    const activity = doc.data();
-                    totalEarnings += parseFloat(activity.earnings) || 0;
-                    if (activity.day) {
-                        daysWithActivities.add(activity.day);
-                    }
-                });
-                
-                document.getElementById('total-earnings').textContent = '$ ' + totalEarnings.toFixed(2);
-                document.getElementById('days-with-activities').textContent = daysWithActivities.size + ' / 7';
-                
-                console.log('Stats loaded:', { totalActivities, pendingCount, totalEarnings });
-                
-            } catch (error) {
-                console.error('Error loading stats:', error);
-                showErrorMessage('Failed to load statistics');
-            }
-        }
-        
-        // ==============================================
-        // INITIALIZE DAY SELECTOR
-        // ==============================================
-        function initDaySelector() {
-            const daySelector = document.getElementById('day-selector');
-            daySelector.innerHTML = '';
-            
-            DAYS.forEach(day => {
-                const button = document.createElement('button');
-                button.className = 'day-btn';
-                button.innerHTML = `<i class="fas ${day.icon}"></i> ${day.name} <sup class="fas fa-circle fa-fade"></sup>`;
-                button.dataset.day = day.value;
-                
-                if (day.value === currentDay) {
-                    button.classList.add('today');
+                // Load quote
+                if (data.quote) {
+                    document.getElementById('quote-text').value = data.quote.text || '';
+                    document.getElementById('quote-author').value = data.quote.author || 'Admin';
                 }
                 
-                button.onclick = () => selectDay(day.value);
-                daySelector.appendChild(button);
-            });
-            
-            // Select current day by default
-            selectDay(currentDay);
-        }
-        
-        // ==============================================
-        // SELECT DAY
-        // ==============================================
-        async function selectDay(day) {
-            selectedDay = day;
-            
-            // Update UI
-            document.querySelectorAll('.day-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.day === day) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Update day header
-            const dayObj = DAYS.find(d => d.value === day);
-            const dayHeader = document.getElementById('day-header');
-            dayHeader.innerHTML = `
-  <h3>${dayObj.name}</h3>
-            `;
-            
-            // Show/hide add button and submissions button
-            const addBtn = document.getElementById('add-activity-btn');
-            const viewSubBtn = document.getElementById('view-submissions-btn');
-            
-            if (day === currentDay) {
-                addBtn.style.display = 'none';
-                document.getElementById('readonly-notice').style.display = 'flex';
+                // Load status
+                document.getElementById('quote-status').value = data.isActive !== false ? 'active' : 'inactive';
+                
+                // Render activities
+                renderActivities();
+                
+                // Update stats
+                updateStats();
             } else {
-                addBtn.style.display = 'flex';
-                document.getElementById('readonly-notice').style.display = 'none';
+                // No activities for this date yet
+                dailyActivities = [];
+                document.getElementById('quote-text').value = '';
+                document.getElementById('quote-author').value = 'Admin';
+                document.getElementById('quote-status').value = 'active';
+                renderActivities();
+                updateStats();
             }
-            
-            viewSubBtn.style.display = 'flex';
-            
-            // Load activities for this day
-            await loadActivities(day);
+        } catch (error) {
+            console.error("Error loading daily activities:", error);
+            showAlert('error', 'Failed to load activities. Please try again.');
+            dailyActivities = [];
+            renderActivities();
         }
+    }
+    
+    function renderActivities() {
+        const container = document.getElementById('activities-container');
         
-        // ==============================================
-        // LOAD ACTIVITIES - FIXED VERSION
-        // ==============================================
-        async function loadActivities(day) {
-            const activityList = document.getElementById('activity-list');
-            
-            // Show loading state
-            activityList.innerHTML = `
-                <div class="loading-spinner">
-                    <div class="fas fa-spinner fa-spin"></div>
-  <br><br><br>
-                    <p>Loading activities for ${day}...</p>
+        if (dailyActivities.length === 0) {
+            container.innerHTML = `
+                <div class="no-activities">
+                    <i class="fas fa-tasks"></i>
+                    <h4>No Activities Yet</h4>
+                    <p>Click "Add New Activity" to create activities for today</p>
                 </div>
             `;
+            return;
+        }
+        
+        let html = '';
+        
+        dailyActivities.forEach((activity, index) => {
+            const type = ACTIVITY_TYPES[activity.type];
+            const typeColor = type ? type.color : '#6ab8ff';
+            const typeIcon = type ? type.icon : 'fa-tasks';
             
-            try {
-                console.log(`Loading activities for day: ${day}`);
-                
-                // Try with Firestore query
-                let snapshot;
-                try {
-                    snapshot = await db.collection('daily_activities')
-                        .where('day', '==', day)
-                        .orderBy('order', 'asc')
-                        .get();
-                } catch (queryError) {
-                    console.warn('Firestore query failed, trying fallback:', queryError);
-                    // Fallback: Get all and filter manually
-                    const allSnapshot = await db.collection('daily_activities').get();
-                    const allActivities = [];
-                    allSnapshot.forEach(doc => {
-                        allActivities.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    // Filter by day and sort
-                    const filteredActivities = allActivities
-                        .filter(activity => activity.day === day)
-                        .sort((a, b) => (a.order || 0) - (b.order || 0));
-                    
-                    allActivities.length = 0; // Clear array
-                    filteredActivities.forEach(activity => allActivities.push(activity));
-                    snapshot = { 
-                        empty: filteredActivities.length === 0,
-                        forEach: (callback) => filteredActivities.forEach((activity, index) => {
-                            callback({ id: activity.id, data: () => activity });
-                        })
-                    };
-                }
-                
-                if (snapshot.empty) {
-                    activityList.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-calendar-plus"></i>
-                            <h4>No Activities Found</h4>
-                            <p>No activities have been set for ${day}. Click "Add New Activity" to create one.</p>
+            html += `
+                <div class="activity-item" style="border-left-color: ${typeColor}">
+                    <div class="activity-header">
+                        <div class="activity-title">
+                            <i class="fas ${typeIcon}"></i>
+                            ${activity.title || 'Untitled Activity'}
+                            <span class="activity-type type-${activity.type}">${activity.type}</span>
                         </div>
-                    `;
-                    allActivities = [];
-                    return;
-                }
-                
-                // Clear and display activities
-                activityList.innerHTML = '';
-                allActivities = [];
-                
-                let index = 1;
-                snapshot.forEach(doc => {
-                    const activity = { 
-                        id: doc.id, 
-                        ...doc.data(),
-                        earnings: parseFloat(doc.data().earnings) || 0.10
-                    };
-                    allActivities.push(activity);
+                        <div class="activity-reward">$${(activity.reward || 0).toFixed(2)}</div>
+                    </div>
                     
-                    const activityEl = createActivityElement(activity, index);
-                    activityList.appendChild(activityEl);
-                    index++;
-                });
-                
-                console.log(`Loaded ${allActivities.length} activities for ${day}`);
-                
-            } catch (error) {
-                console.error(`Error loading activities for ${day}:`, error);
-                
-                activityList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>Error Loading Activities</h4>
-                        <p>Failed to load activities. Please try again later.</p>
-                        <div class="debug-info">Error: ${error.message}</div>
+                    ${activity.description ? `
+                        <div class="activity-content">${activity.description}</div>
+                    ` : ''}
+                    
+                    <div class="activity-preview">
+                        ${getActivityPreview(activity)}
+                    </div>
+                    
+                    <div class="activity-actions">
+                        <button class="action-btn edit-btn" onclick="editActivity(${index})">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteActivity(${index})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                        ${index > 0 ? `
+                            <button class="action-btn move-up-btn" onclick="moveActivity(${index}, -1)">
+                                <i class="fas fa-arrow-up"></i>
+                                Up
+                            </button>
+                        ` : ''}
+                        ${index < dailyActivities.length - 1 ? `
+                            <button class="action-btn move-down-btn" onclick="moveActivity(${index}, 1)">
+                                <i class="fas fa-arrow-down"></i>
+                                Down
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    function getActivityPreview(activity) {
+        switch(activity.type) {
+            case 'video':
+                return `Video: ${activity.videoUrl?.substring(0, 50) || activity.content?.substring(0, 50) || 'No URL'}...`;
+            case 'text':
+                return `Text: ${(activity.textContent || activity.content || '').substring(0, 100)}...`;
+            case 'link':
+                return `Link: ${activity.linkText || 'Visit Link'}`;
+            case 'share':
+                return `Share: "${activity.shareText?.substring(0, 50) || 'Share content'}..."`;
+            case 'survey':
+                return `Survey: ${activity.surveyQuestion?.substring(0, 50) || activity.question?.substring(0, 50) || 'No question'}...`;
+            case 'blog':
+                return `Blog: Write about "${activity.blogTopic?.substring(0, 50) || activity.topic?.substring(0, 50) || 'Topic'}..."`;
+            case 'custom':
+                return `Custom: ${activity.customInstructions?.substring(0, 50) || activity.instructions?.substring(0, 50) || 'Complete the activity'}...`;
+            default:
+                return `Activity: ${activity.title || 'Untitled'}`;
+        }
+    }
+    
+    function updateStats() {
+        const totalActivities = dailyActivities.length;
+        const totalReward = dailyActivities.reduce((sum, activity) => sum + (activity.reward || 0), 0);
+        
+        document.getElementById('stat-total-activities').textContent = totalActivities;
+        document.getElementById('stat-total-reward').textContent = `$${totalReward.toFixed(2)}`;
+        
+        // Update pending count from submissions
+        updateSubmissionStats();
+    }
+    
+    // ==============================================
+    // ACTIVITY MANAGEMENT - FIXED FUNCTIONS
+    // ==============================================
+    function showAddActivityModal() {
+        selectedActivityType = '';
+        document.getElementById('activity-title').value = '';
+        document.getElementById('activity-reward').value = '0.10';
+        document.getElementById('activity-description').value = '';
+        
+        // Reset type selection
+        document.querySelectorAll('.type-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Clear type fields
+        document.getElementById('type-fields-container').innerHTML = '';
+        document.getElementById('type-fields-container').style.display = 'none';
+        
+        showModal('add-activity-modal');
+    }
+    
+    function selectActivityType(type) {
+        selectedActivityType = type;
+        
+        // Update UI selection
+        document.querySelectorAll('.type-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        document.querySelector(`.type-option[data-type="${type}"]`).classList.add('selected');
+        
+        // Load type-specific fields
+        loadTypeFields(type, 'type-fields-container');
+    }
+    
+    function loadTypeFields(type, containerId) {
+        const container = document.getElementById(containerId);
+        const typeConfig = ACTIVITY_TYPES[type];
+        
+        if (!typeConfig) return;
+        
+        let html = '';
+        
+        typeConfig.fields.forEach(field => {
+            if (field.type === 'textarea') {
+                html += `
+                    <div class="field-group">
+                        <label class="field-label">${field.label}</label>
+                        <textarea id="${field.id}" class="modal-input" placeholder="${field.placeholder || ''}">${field.value || ''}</textarea>
+                    </div>
+                `;
+            } else if (field.type === 'select') {
+                html += `
+                    <div class="field-group">
+                        <label class="field-label">${field.label}</label>
+                        <select id="${field.id}" class="modal-input">
+                            ${field.options.map(option => `
+                                <option value="${option}" ${field.value === option ? 'selected' : ''}>${option}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="field-group">
+                        <label class="field-label">${field.label}</label>
+                        <input type="${field.type}" id="${field.id}" class="modal-input" 
+                               placeholder="${field.placeholder || ''}" 
+                               value="${field.value || ''}">
                     </div>
                 `;
             }
+        });
+        
+        container.innerHTML = html;
+        container.style.display = 'block';
+    }
+    
+    function addActivity() {
+        const title = document.getElementById('activity-title').value.trim();
+        const reward = parseFloat(document.getElementById('activity-reward').value);
+        const description = document.getElementById('activity-description').value.trim();
+        
+        if (!title) {
+            showAlert('warning', 'Please enter an activity title');
+            return;
         }
         
-        // ==============================================
-        // CREATE ACTIVITY ELEMENT
-        // ==============================================
-        function createActivityElement(activity, index) {
-            const activityEl = document.createElement('div');
-            activityEl.className = 'activity-item';
-            activityEl.dataset.id = activity.id;
-            
-            const type = activity.type || 'link';
-            const title = activity.title || 'Untitled Activity';
-            const earnings = parseFloat(activity.earnings) || 0.10;
-            
-            let typeClass = '';
-            let typeText = '';
-            let content = '';
-            let details = '';
-            
-            switch(type) {
-                case 'link':
-                    typeClass = 'type-link';
-                    typeText = 'Link';
-                    details = `<div class="activity-details">
-                        <strong>URL:</strong> <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL provided'}</a>
-                    </div>`;
-                    break;
-                    
-                case 'video':
-                    typeClass = 'type-video';
-                    typeText = 'Video';
-                    details = `<div class="activity-details">
-                        <strong>Video URL:</strong> <a href="${activity.url || '#'}" target="_blank" style="color: #6ab8ff; word-break: break-all;">${activity.url || 'No URL provided'}</a>
-                    </div>`;
-                    break;
-                    
-                case 'text':
-                    typeClass = 'type-text';
-                    typeText = 'Text';
-                    const contentPreview = activity.content ? 
-                        (activity.content.length > 150 ? 
-                            activity.content.substring(0, 150) + '...' : 
-                            activity.content) : 
-                        'No content';
-                    details = `<div class="activity-details">
-                        <strong>Content Preview:</strong> ${contentPreview}
-                    </div>`;
-                    break;
-                    
-                default:
-                    typeClass = 'type-link';
-                    typeText = 'Activity';
-                    details = `<div class="activity-details">No details available</div>`;
+        if (isNaN(reward) || reward < 0) {
+            showAlert('warning', 'Please enter a valid reward amount');
+            return;
+        }
+        
+        if (!selectedActivityType) {
+            showAlert('warning', 'Please select an activity type');
+            return;
+        }
+        
+        const activity = {
+            type: selectedActivityType,
+            title: title,
+            reward: reward,
+            description: description || '',
+            createdAt: new Date().toISOString(),
+            createdBy: 'admin'
+        };
+        
+        // Add type-specific fields - FIXED VERSION
+        addTypeSpecificFields(activity, selectedActivityType);
+        
+        // Add to activities array
+        dailyActivities.push(activity);
+        
+        // Re-render activities
+        renderActivities();
+        updateStats();
+        
+        // Close modal and show success message
+        closeModal('add-activity-modal');
+        showAlert('success', 'Activity added successfully!');
+    }
+    
+    function addTypeSpecificFields(activity, type) {
+        const typeConfig = ACTIVITY_TYPES[type];
+        
+        if (!typeConfig) return;
+        
+        typeConfig.fields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element) {
+                let value;
+                if (field.type === 'number') {
+                    value = element.value ? parseFloat(element.value) : null;
+                } else if (field.type === 'textarea') {
+                    value = element.value.trim();
+                } else {
+                    value = element.value.trim();
+                }
+                
+                if (value !== null && value !== '' && value !== undefined) {
+                    // Convert field ID to camelCase for storage
+                    const fieldName = field.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                    activity[fieldName] = value;
+                }
             }
+        });
+    }
+    
+    function editActivity(index) {
+        editingActivityIndex = index;
+        const activity = dailyActivities[index];
+        
+        if (!activity) return;
+        
+        // Load basic fields
+        document.getElementById('edit-activity-index').value = index;
+        document.getElementById('edit-activity-title').value = activity.title || '';
+        document.getElementById('edit-activity-reward').value = activity.reward || 0;
+        document.getElementById('edit-activity-description').value = activity.description || '';
+        
+        // Set activity type
+        selectedActivityType = activity.type;
+        
+        // Load type-specific fields
+        loadTypeFields(activity.type, 'edit-type-fields-container');
+        
+        // Set field values from existing activity
+        const typeConfig = ACTIVITY_TYPES[activity.type];
+        if (typeConfig) {
+            typeConfig.fields.forEach(field => {
+                const fieldName = field.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                const element = document.getElementById(field.id);
+                if (element && activity[fieldName] !== undefined) {
+                    element.value = activity[fieldName];
+                }
+            });
+        }
+        
+        showModal('edit-activity-modal');
+    }
+    
+    function updateActivity() {
+        const index = parseInt(document.getElementById('edit-activity-index').value);
+        const activity = dailyActivities[index];
+        
+        if (!activity) return;
+        
+        // Update basic fields
+        activity.title = document.getElementById('edit-activity-title').value.trim();
+        activity.reward = parseFloat(document.getElementById('edit-activity-reward').value);
+        activity.description = document.getElementById('edit-activity-description').value.trim();
+        
+        // Update type-specific fields
+        updateTypeSpecificFields(activity, activity.type);
+        
+        // Update in array
+        dailyActivities[index] = activity;
+        
+        // Re-render activities
+        renderActivities();
+        updateStats();
+        
+        // Close modal and show success message
+        closeModal('edit-activity-modal');
+        showAlert('success', 'Activity updated successfully!');
+    }
+    
+    function updateTypeSpecificFields(activity, type) {
+        const typeConfig = ACTIVITY_TYPES[type];
+        
+        if (!typeConfig) return;
+        
+        typeConfig.fields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element) {
+                let value;
+                if (field.type === 'number') {
+                    value = element.value ? parseFloat(element.value) : null;
+                } else if (field.type === 'textarea') {
+                    value = element.value.trim();
+                } else {
+                    value = element.value.trim();
+                }
+                
+                const fieldName = field.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                activity[fieldName] = value;
+            }
+        });
+    }
+    
+    function deleteActivity(index) {
+        pendingAction = {
+            type: 'deleteActivity',
+            index: index,
+            message: `Are you sure you want to delete "${dailyActivities[index].title}"?`
+        };
+        
+        showConfirmationModal(pendingAction.message);
+    }
+    
+    function moveActivity(index, direction) {
+        if (direction === -1 && index > 0) {
+            // Move up
+            [dailyActivities[index], dailyActivities[index - 1]] = [dailyActivities[index - 1], dailyActivities[index]];
+            renderActivities();
+        } else if (direction === 1 && index < dailyActivities.length - 1) {
+            // Move down
+            [dailyActivities[index], dailyActivities[index + 1]] = [dailyActivities[index + 1], dailyActivities[index]];
+            renderActivities();
+        }
+    }
+    
+    // ==============================================
+    // SUBMISSIONS MANAGEMENT
+    // ==============================================
+    async function loadSubmissions() {
+        const dateString = getDateString(currentDate);
+        const container = document.getElementById('submissions-container');
+        
+        // Show loading
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div class="loader"></div>
+                <p style="color: #ccc; margin-top: 15px;">Loading submissions...</p>
+            </div>
+        `;
+        
+        try {
+            const snapshot = await db.collection('activity_submissions')
+                .where('date', '==', dateString)
+                .get();
             
-            activityEl.innerHTML = `
-                <div class="activity-header">
-                    <span class="activity-type ${typeClass}">${typeText} #${index}</span>
-                    <span class="activity-earnings">$${earnings.toFixed(2)}</span>
+            activitySubmissions = [];
+            snapshot.forEach(doc => {
+                activitySubmissions.push({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                });
+            });
+            
+            renderSubmissions();
+            updateSubmissionStats();
+            
+        } catch (error) {
+            console.error("Error loading submissions:", error);
+            container.innerHTML = `
+                <div class="no-activities">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Error Loading Submissions</h4>
+                    <p>Please try again</p>
                 </div>
-                <div class="activity-content">
-                    <div class="activity-title">${title}</div>
-                    ${details}
-                </div>
-                ${selectedDay !== currentDay ? `
-                    <div class="activity-actions">
-                        <button class="action-btn edit-btn" onclick="editActivity('${activity.id}')">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="action-btn delete-btn" onclick="deleteActivity('${activity.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                ` : ''}
             `;
-            
-            return activityEl;
+        }
+    }
+    
+    function renderSubmissions() {
+        const container = document.getElementById('submissions-container');
+        
+        if (activitySubmissions.length === 0) {
+            container.innerHTML = `
+                <div class="no-activities">
+                    <i class="fas fa-inbox"></i>
+                    <h4>No Submissions Yet</h4>
+                    <p>User submissions will appear here once they submit today's activities</p>
+                </div>
+            `;
+            return;
         }
         
-        // ==============================================
-        // ACTIVITY TYPE SELECTION
-        // ==============================================
-        function selectActivityType(type) {
-            currentActivityType = type;
+        let html = '';
+        let pendingCount = 0;
+        
+        activitySubmissions.forEach(submission => {
+            if (submission.status === 'pending') pendingCount++;
             
-            // Update buttons
-            document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.type === type) {
-                    btn.classList.add('active');
-                }
-            });
+            const statusClass = submission.status || 'pending';
+            const statusText = submission.status ? submission.status.charAt(0).toUpperCase() + submission.status.slice(1) : 'Pending';
             
-            // Show corresponding form
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(`${type}-form`).classList.add('active');
+            // Calculate completion percentage
+            const totalActivities = submission.activities?.length || 0;
+            const completed = Object.values(submission.completionStatus || {}).filter(v => v).length;
+            const completionPercentage = totalActivities > 0 ? Math.round((completed / totalActivities) * 100) : 0;
+            
+            html += `
+                <div class="submission-item ${statusClass}">
+                    <div class="submission-header">
+                        <div class="submission-user">
+                            <div class="user-avatar">
+                                ${submission.userName?.charAt(0) || 'U'}
+                            </div>
+                            <div class="user-info">
+                                <h4>${submission.userName || 'Unknown User'}</h4>
+                                <p>${submission.userEmail || 'No email'}</p>
+                            </div>
+                        </div>
+                        <div class="submission-status status-${statusClass}">
+                            ${statusText}
+                        </div>
+                    </div>
+                    
+                    <div class="submission-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Completion</div>
+                            <div class="detail-value">${completionPercentage}% (${completed}/${totalActivities})</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Total Reward</div>
+                            <div class="detail-value" style="color: #28a745;">$${(submission.totalReward || 0).toFixed(2)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Submitted</div>
+                            <div class="detail-value">${new Date(submission.submittedAt).toLocaleTimeString()}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="submission-actions">
+                        <button class="view-btn" onclick="viewSubmission('${submission.id}')">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                        
+                        ${submission.status === 'pending' ? `
+                            <button class="approve-btn" onclick="approveSubmission('${submission.id}')">
+                                <i class="fas fa-check"></i>
+                                Approve
+                            </button>
+                            <button class="reject-btn" onclick="rejectSubmission('${submission.id}')">
+                                <i class="fas fa-times"></i>
+                                Reject
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        // Update pending count badge
+        document.getElementById('pending-count').textContent = pendingCount;
+    }
+    
+    function updateSubmissionStats() {
+        const total = activitySubmissions.length;
+        const pending = activitySubmissions.filter(s => s.status === 'pending').length;
+        const approved = activitySubmissions.filter(s => s.status === 'approved').length;
+        
+        document.getElementById('stat-total-submissions').textContent = total;
+        document.getElementById('stat-pending-submissions').textContent = pending;
+        document.getElementById('stat-approved-submissions').textContent = approved;
+    }
+    
+    async function viewSubmission(submissionId) {
+        const submission = activitySubmissions.find(s => s.id === submissionId);
+        if (!submission) return;
+        
+        let detailsHTML = `
+            <div style="background: #222; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <div style="color: #ccc; font-size: 0.9em;">User</div>
+                        <div style="color: white; font-weight: bold;">${submission.userName}</div>
+                    </div>
+                    <div>
+                        <div style="color: #ccc; font-size: 0.9em;">Email</div>
+                        <div style="color: white; font-weight: bold;">${submission.userEmail}</div>
+                    </div>
+                    <div>
+                        <div style="color: #ccc; font-size: 0.9em;">Status</div>
+                        <div><span class="status-indicator status-${submission.status}">${submission.status}</span></div>
+                    </div>
+                    <div>
+                        <div style="color: #ccc; font-size: 0.9em;">Total Reward</div>
+                        <div style="color: #28a745; font-weight: bold;">$${(submission.totalReward || 0).toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <div style="color: #ccc; margin-bottom: 15px;">
+                    Submitted at: ${new Date(submission.submittedAt).toLocaleString()}
+                </div>
+            </div>
+            
+            <h4 style="color: #6ab8ff; margin-bottom: 15px;">Activities Completed</h4>
+        `;
+        
+        // Add activities list
+        submission.activities?.forEach((activity, index) => {
+            const completed = submission.completionStatus?.[index];
+            const typeConfig = ACTIVITY_TYPES[activity.type];
+            const typeColor = typeConfig ? typeConfig.color : '#6ab8ff';
+            
+            detailsHTML += `
+                <div style="background: #333; border-radius: 8px; padding: 15px; margin-bottom: 10px; border-left: 4px solid ${completed ? typeColor : '#dc3545'}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <strong style="color: white;">${activity.title || 'Untitled Activity'}</strong>
+                            <span style="color: #ccc; margin-left: 10px;">
+                                <i class="fas ${typeConfig?.icon || 'fa-tasks'}"></i> ${activity.type}
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="color: #28a745; font-weight: bold;">$${(activity.reward || 0).toFixed(2)}</span>
+                            <span class="status-indicator ${completed ? 'status-online' : 'status-offline'}" style="padding: 3px 8px;">
+                                ${completed ? '✓ Completed' : '✗ Incomplete'}
+                            </span>
+                        </div>
+                    </div>
+                    ${activity.description ? `<div style="color: #ccc; margin-bottom: 10px;">${activity.description}</div>` : ''}
+                </div>
+            `;
+        });
+        
+        // Add action buttons if pending
+        if (submission.status === 'pending') {
+            detailsHTML += `
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button class="save-btn" onclick="approveSubmission('${submission.id}')">
+                        <i class="fas fa-check"></i>
+                        Approve Submission
+                    </button>
+                    <button class="cancel-btn" onclick="rejectSubmission('${submission.id}')">
+                        <i class="fas fa-times"></i>
+                        Reject Submission
+                    </button>
+                </div>
+            `;
         }
         
-        // ==============================================
-        // SHOW ADD ACTIVITY MODAL
-        // ==============================================
-        function showAddActivityModal() {
-            if (selectedDay === currentDay) {
-                alert("Cannot add activities for today! Today's activities are read-only.");
+        document.getElementById('submission-details-content').innerHTML = detailsHTML;
+        showModal('submission-details-modal');
+    }
+    
+    async function approveSubmission(submissionId) {
+        if (!confirm('Approve this submission and add rewards to user account?')) {
+            return;
+        }
+        
+        try {
+            const submission = activitySubmissions.find(s => s.id === submissionId);
+            if (!submission) return;
+            
+            // Update submission status
+            await db.collection('activity_submissions').doc(submissionId).update({
+                status: 'approved',
+                reviewedBy: 'admin',
+                reviewedAt: new Date().toISOString(),
+                approvedAt: new Date().toISOString()
+            });
+            
+            // Add reward to user's balance
+            const userRef = db.collection('users').doc(submission.userId);
+            const userDoc = await userRef.get();
+            
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                const currentBalance = userData.balance || 0;
+                const newBalance = currentBalance + (submission.totalReward || 0);
+                
+                await userRef.update({
+                    balance: newBalance,
+                    totalEarnings: firebase.firestore.FieldValue.increment(submission.totalReward || 0)
+                });
+                
+                // Create transaction record
+                await db.collection('transactions').add({
+                    userId: submission.userId,
+                    type: 'earning',
+                    amount: submission.totalReward || 0,
+                    description: `Daily activities reward for ${submission.date}`,
+                    status: 'completed',
+                    date: new Date().toISOString(),
+                    createdBy: 'admin'
+                });
+            }
+            
+            // Refresh submissions list
+            await loadSubmissions();
+            
+            // Close modal if open
+            closeModal('submission-details-modal');
+            
+            showAlert('success', 'Submission approved and rewards added to user account!');
+            
+        } catch (error) {
+            console.error("Error approving submission:", error);
+            showAlert('error', 'Error approving submission: ' + error.message);
+        }
+    }
+    
+    async function rejectSubmission(submissionId) {
+        const rejectionReason = prompt('Enter reason for rejection (optional):', 'Incomplete or invalid activities');
+        
+        if (rejectionReason === null) return; // User cancelled
+        
+        try {
+            const submission = activitySubmissions.find(s => s.id === submissionId);
+            if (!submission) return;
+            
+            // Update submission status
+            await db.collection('activity_submissions').doc(submissionId).update({
+                status: 'rejected',
+                reviewedBy: 'admin',
+                reviewedAt: new Date().toISOString(),
+                rejectionReason: rejectionReason || 'No reason provided'
+            });
+            
+            // Refresh submissions list
+            await loadSubmissions();
+            
+            // Close modal if open
+            closeModal('submission-details-modal');
+            
+            showAlert('warning', 'Submission rejected. User has been notified to try again tomorrow.');
+            
+        } catch (error) {
+            console.error("Error rejecting submission:", error);
+            showAlert('error', 'Error rejecting submission: ' + error.message);
+        }
+    }
+    
+    async function clearOldSubmissions() {
+        if (!confirm('Clear submissions older than 7 days? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            
+            const snapshot = await db.collection('activity_submissions')
+                .where('submittedAt', '<', sevenDaysAgo.toISOString())
+                .get();
+            
+            const deletePromises = [];
+            snapshot.forEach(doc => {
+                deletePromises.push(doc.ref.delete());
+            });
+            
+            await Promise.all(deletePromises);
+            
+            // Refresh current submissions
+            await loadSubmissions();
+            
+            showAlert('success', `Cleared ${deletePromises.length} old submissions`);
+            
+        } catch (error) {
+            console.error("Error clearing old submissions:", error);
+            showAlert('error', 'Error clearing old submissions: ' + error.message);
+        }
+    }
+    
+    // ==============================================
+    // SAVE DAILY ACTIVITIES - FIXED FUNCTION
+    // ==============================================
+    async function saveDailyActivities() {
+        const dateString = getDateString(currentDate);
+        const quoteText = document.getElementById('quote-text').value.trim();
+        const quoteAuthor = document.getElementById('quote-author').value.trim();
+        const isActive = document.getElementById('quote-status').value === 'active';
+        
+        if (!quoteText) {
+            showAlert('warning', 'Please enter a quote for the day');
+            return;
+        }
+        
+        try {
+            const dailyActivityData = {
+                date: dateString,
+                day: DAYS[currentDate.getDay()],
+                quote: {
+                    text: quoteText,
+                    author: quoteAuthor || 'Admin'
+                },
+                activities: dailyActivities,
+                isActive: isActive,
+                totalReward: dailyActivities.reduce((sum, activity) => sum + (activity.reward || 0), 0),
+                updatedAt: new Date().toISOString(),
+                updatedBy: 'admin'
+            };
+            
+            await db.collection('daily_activities').doc(dateString).set(dailyActivityData, { merge: true });
+            
+            showAlert('success', 'Daily activities saved successfully!');
+            
+        } catch (error) {
+            console.error("Error saving daily activities:", error);
+            showAlert('error', 'Error saving activities: ' + error.message);
+        }
+    }
+    
+    // ==============================================
+    // QUICK ACTIONS
+    // ==============================================
+    async function copyToTomorrow() {
+        const todayString = getDateString(currentDate);
+        const tomorrow = new Date(currentDate);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowString = getDateString(tomorrow);
+        
+        try {
+            // Get today's activities
+            const doc = await db.collection('daily_activities').doc(todayString).get();
+            
+            if (!doc.exists) {
+                showAlert('warning', 'No activities found for today to copy');
                 return;
             }
             
-            isEditing = false;
-            editingActivityId = null;
-            document.getElementById('modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Activity';
+            const data = doc.data();
             
-            // Reset form
-            document.getElementById('link-title').value = '';
-            document.getElementById('link-url').value = '';
-            document.getElementById('link-earnings').value = '0.10';
-            
-            document.getElementById('video-title').value = '';
-            document.getElementById('video-url').value = '';
-            document.getElementById('video-earnings').value = '0.15';
-            
-            document.getElementById('text-title').value = '';
-            document.getElementById('text-content').value = '';
-            document.getElementById('text-earnings').value = '0.05';
-            
-            // Reset to link type
-            selectActivityType('link');
-            
-            document.getElementById('activity-modal').style.display = 'flex';
-        }
-        
-        // ==============================================
-        // EDIT ACTIVITY
-        // ==============================================
-        async function editActivity(activityId) {
-            try {
-                const doc = await db.collection('daily_activities').doc(activityId).get();
-                if (!doc.exists) {
-                    alert('Activity not found!');
-                    return;
-                }
-                
-                const activity = doc.data();
-                isEditing = true;
-                editingActivityId = activityId;
-                document.getElementById('modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Activity';
-                
-                // Fill form based on type
-                selectActivityType(activity.type || 'link');
-                
-                switch(activity.type) {
-                    case 'link':
-                        document.getElementById('link-title').value = activity.title || '';
-                        document.getElementById('link-url').value = activity.url || '';
-                        document.getElementById('link-earnings').value = activity.earnings || 0.10;
-                        break;
-                    case 'video':
-                        document.getElementById('video-title').value = activity.title || '';
-                        document.getElementById('video-url').value = activity.url || '';
-                        document.getElementById('video-earnings').value = activity.earnings || 0.15;
-                        break;
-                    case 'text':
-                        document.getElementById('text-title').value = activity.title || '';
-                        document.getElementById('text-content').value = activity.content || '';
-                        document.getElementById('text-earnings').value = activity.earnings || 0.05;
-                        break;
-                    default:
-                        // If type is not set, default to link
-                        document.getElementById('link-title').value = activity.title || '';
-                        document.getElementById('link-url').value = activity.url || '';
-                        document.getElementById('link-earnings').value = activity.earnings || 0.10;
-                        break;
-                }
-                
-                document.getElementById('activity-modal').style.display = 'flex';
-            } catch (error) {
-                console.error("Error loading activity for edit:", error);
-                alert("Error loading activity: " + error.message);
-            }
-        }
-        
-        // ==============================================
-        // SAVE ACTIVITY
-        // ==============================================
-        async function saveActivity() {
-            if (!selectedDay || selectedDay === currentDay) {
-                alert("Cannot save activity for today! Today's activities are read-only.");
-                return;
-            }
-            
-            // Validate form
-            let activityData = {
-                day: selectedDay,
-                type: currentActivityType,
-                earnings: 0,
+            // Create tomorrow's activities with same data
+            const tomorrowData = {
+                ...data,
+                date: tomorrowString,
+                day: DAYS[tomorrow.getDay()],
                 updatedAt: new Date().toISOString()
             };
             
-            // Get form values based on type
-            let title = '';
-            let isValid = true;
-            let errorMessage = '';
+            await db.collection('daily_activities').doc(tomorrowString).set(tomorrowData, { merge: true });
             
-            switch(currentActivityType) {
-                case 'link':
-                    title = document.getElementById('link-title').value.trim();
-                    const linkUrl = document.getElementById('link-url').value.trim();
-                    const linkEarnings = parseFloat(document.getElementById('link-earnings').value);
-                    
-                    if (!title) {
-                        isValid = false;
-                        errorMessage = "Please enter a title/description";
-                    } else if (!linkUrl) {
-                        isValid = false;
-                        errorMessage = "Please enter a URL";
-                    } else if (!linkEarnings || linkEarnings <= 0) {
-                        isValid = false;
-                        errorMessage = "Please enter valid earnings amount (greater than 0)";
-                    } else {
-                        activityData.title = title;
-                        activityData.url = linkUrl;
-                        activityData.earnings = linkEarnings;
-                    }
-                    break;
-                    
-                case 'video':
-                    title = document.getElementById('video-title').value.trim();
-                    const videoUrl = document.getElementById('video-url').value.trim();
-                    const videoEarnings = parseFloat(document.getElementById('video-earnings').value);
-                    
-                    if (!title) {
-                        isValid = false;
-                        errorMessage = "Please enter a video description";
-                    } else if (!videoUrl) {
-                        isValid = false;
-                        errorMessage = "Please enter a video URL";
-                    } else if (!videoEarnings || videoEarnings <= 0) {
-                        isValid = false;
-                        errorMessage = "Please enter valid earnings amount (greater than 0)";
-                    } else {
-                        activityData.title = title;
-                        activityData.url = videoUrl;
-                        activityData.earnings = videoEarnings;
-                    }
-                    break;
-                    
-                case 'text':
-                    title = document.getElementById('text-title').value.trim();
-                    const textContent = document.getElementById('text-content').value.trim();
-                    const textEarnings = parseFloat(document.getElementById('text-earnings').value);
-                    
-                    if (!title) {
-                        isValid = false;
-                        errorMessage = "Please enter a title";
-                    } else if (!textContent) {
-                        isValid = false;
-                        errorMessage = "Please enter content";
-                    } else if (!textEarnings || textEarnings <= 0) {
-                        isValid = false;
-                        errorMessage = "Please enter valid earnings amount (greater than 0)";
-                    } else {
-                        activityData.title = title;
-                        activityData.content = textContent;
-                        activityData.earnings = textEarnings;
-                    }
-                    break;
-                    
-                default:
-                    isValid = false;
-                    errorMessage = "Unknown activity type";
-            }
+            showAlert('success', 'Activities copied to tomorrow successfully!');
             
-            if (!isValid) {
-                alert(errorMessage);
-                return;
-            }
-            
-            try {
-                if (isEditing && editingActivityId) {
-                    // Update existing activity
-                    await db.collection('daily_activities').doc(editingActivityId).update(activityData);
-                    showSuccessMessage("Activity updated successfully!");
-                } else {
-                    // Add new activity - set order based on existing activities
-                    const existingActivities = allActivities.filter(a => a.day === selectedDay);
-                    activityData.order = existingActivities.length;
-                    activityData.createdAt = new Date().toISOString();
-                    
-                    await db.collection('daily_activities').add(activityData);
-                    showSuccessMessage("Activity added successfully!");
+        } catch (error) {
+            console.error("Error copying activities:", error);
+            showAlert('error', 'Error copying activities: ' + error.message);
+        }
+    }
+    
+    function resetDailyActivities() {
+        pendingAction = {
+            type: 'resetActivities',
+            message: 'Reset all activities for today? This will clear all current activities.'
+        };
+        
+        showConfirmationModal(pendingAction.message);
+    }
+    
+    function deleteDailyActivities() {
+        pendingAction = {
+            type: 'deleteDailyActivities',
+            message: 'Delete all activities and submissions for today? This action cannot be undone!'
+        };
+        
+        showConfirmationModal(pendingAction.message);
+    }
+    
+    async function confirmAction() {
+        const action = pendingAction;
+        closeModal('confirmation-modal');
+        
+        if (!action) return;
+        
+        switch(action.type) {
+            case 'deleteActivity':
+                if (action.index !== undefined) {
+                    dailyActivities.splice(action.index, 1);
+                    renderActivities();
+                    updateStats();
+                    showAlert('success', 'Activity deleted successfully!');
                 }
+                break;
                 
-                closeModal('activity-modal');
+            case 'resetActivities':
+                dailyActivities = [];
+                renderActivities();
+                updateStats();
+                showAlert('success', 'All activities have been reset!');
+                break;
                 
-                // Reload activities and stats
-                await loadActivities(selectedDay);
-                await loadAdminStats();
+            case 'deleteDailyActivities':
+                const dateString = getDateString(currentDate);
                 
-            } catch (error) {
-                console.error("Error saving activity:", error);
-                alert("Error saving activity: " + error.message);
-            }
-        }
-        
-        // ==============================================
-        // DELETE ACTIVITY
-        // ==============================================
-        async function deleteActivity(activityId) {
-            if (selectedDay === currentDay) {
-                alert("Cannot delete activities for today! Today's activities are read-only.");
-                return;
-            }
-            
-            if (!confirm("Are you sure you want to delete this activity? This action cannot be undone.")) {
-                return;
-            }
-            
-            try {
-                await db.collection('daily_activities').doc(activityId).delete();
-                showSuccessMessage("Activity deleted successfully!");
-                
-                // Reload activities and stats
-                await loadActivities(selectedDay);
-                await loadAdminStats();
-                
-            } catch (error) {
-                console.error("Error deleting activity:", error);
-                alert("Error deleting activity: " + error.message);
-            }
-        }
-        
-        // ==============================================
-        // VIEW SUBMISSIONS - FIXED VERSION
-        // ==============================================
-        async function viewSubmissions() {
-            if (!selectedDay) {
-                alert("Please select a day first");
-                return;
-            }
-            
-            try {
-                const submissionsList = document.getElementById('submissions-list');
-                submissionsList.innerHTML = `
-                    <div class="loading-spinner">
-                        <div class="fas fa-spinner fa-spin"></div>                  </div>
-                `;
-                
-                document.getElementById('submissions-modal').style.display = 'flex';
-                
-                // Load submissions for this day
-                let snapshot;
                 try {
-                    snapshot = await db.collection('activity_submissions')
-                        .where('day', '==', selectedDay)
-                        .orderBy('submittedAt', 'desc')
+                    // Delete activities
+                    await db.collection('daily_activities').doc(dateString).delete();
+                    
+                    // Delete submissions for this date
+                    const submissionsSnapshot = await db.collection('activity_submissions')
+                        .where('date', '==', dateString)
                         .get();
-                } catch (error) {
-                    console.warn('Firestore query failed, trying fallback:', error);
-                    // Fallback: Get all and filter manually
-                    const allSnapshot = await db.collection('activity_submissions').get();
-                    const allSubmissions = [];
-                    allSnapshot.forEach(doc => {
-                        allSubmissions.push({ id: doc.id, ...doc.data() });
+                    
+                    const deletePromises = [];
+                    submissionsSnapshot.forEach(doc => {
+                        deletePromises.push(doc.ref.delete());
                     });
                     
-                    // Filter by day and sort
-                    const filteredSubmissions = allSubmissions
-                        .filter(submission => submission.day === selectedDay)
-                        .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+                    await Promise.all(deletePromises);
                     
-                    snapshot = { 
-                        empty: filteredSubmissions.length === 0,
-                        forEach: (callback) => filteredSubmissions.forEach((submission, index) => {
-                            callback({ id: submission.id, data: () => submission });
-                        })
+                    // Reset local data
+                    dailyActivities = [];
+                    renderActivities();
+                    updateStats();
+                    await loadSubmissions();
+                    
+                    showAlert('success', `Deleted activities and ${deletePromises.length} submissions for today!`);
+                    
+                } catch (error) {
+                    console.error("Error deleting daily activities:", error);
+                    showAlert('error', 'Error deleting activities: ' + error.message);
+                }
+                break;
+        }
+        
+        pendingAction = null;
+    }
+    
+    // ==============================================
+    // SYSTEM SETTINGS - FIXED FUNCTIONS
+    // ==============================================
+    async function loadSystemSettings() {
+        try {
+            const doc = await db.collection('system_settings').doc('daily_activities').get();
+            
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('reset-time').value = data.resetTime || '00:00';
+                document.getElementById('default-reward').value = data.defaultReward || 0.10;
+                document.getElementById('auto-approve-hours').value = data.autoApproveHours || 24;
+                document.getElementById('max-activities').value = data.maxActivities || 10;
+                document.getElementById('rejection-message').value = data.rejectionMessage || 'Your submission was rejected. Please complete all activities properly and try again tomorrow.';
+            }
+        } catch (error) {
+            console.error("Error loading system settings:", error);
+        }
+    }
+    
+    async function saveSystemSettings() {
+        const resetTime = document.getElementById('reset-time').value;
+        const defaultReward = parseFloat(document.getElementById('default-reward').value);
+        const autoApproveHours = parseInt(document.getElementById('auto-approve-hours').value);
+        const maxActivities = parseInt(document.getElementById('max-activities').value);
+        const rejectionMessage = document.getElementById('rejection-message').value.trim();
+        
+        // Validate inputs
+        if (isNaN(defaultReward) || defaultReward < 0) {
+            showAlert('warning', 'Please enter a valid default reward amount');
+            return;
+        }
+        
+        if (isNaN(autoApproveHours) || autoApproveHours < 1) {
+            showAlert('warning', 'Please enter a valid auto-approve hours value');
+            return;
+        }
+        
+        if (isNaN(maxActivities) || maxActivities < 1 || maxActivities > 20) {
+            showAlert('warning', 'Please enter a valid max activities value (1-20)');
+            return;
+        }
+        
+        try {
+            await db.collection('system_settings').doc('daily_activities').set({
+                resetTime: resetTime,
+                defaultReward: defaultReward,
+                autoApproveHours: autoApproveHours,
+                maxActivities: maxActivities,
+                rejectionMessage: rejectionMessage,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+            
+            showAlert('success', 'System settings saved successfully!');
+            
+        } catch (error) {
+            console.error("Error saving system settings:", error);
+            showAlert('error', 'Error saving settings: ' + error.message);
+        }
+    }
+    
+    // ==============================================
+    // UTILITY FUNCTIONS
+    // ==============================================
+    function showModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    function showConfirmationModal(message) {
+        document.getElementById('confirmation-message').textContent = message;
+        showModal('confirmation-modal');
+    }
+    
+    function showAlert(type, message) {
+        // Remove any existing alerts
+        document.querySelectorAll('.alert').forEach(alert => alert.remove());
+        
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add to the top of the main content
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.insertBefore(alertDiv, mainContent.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    }
+    
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+    
+    // Prevent form submission
+    document.addEventListener('submit', function(e) {
+        e.preventDefault();
+    });
+    
+    // ==============================================
+    // AUTO-RESET AT MIDNIGHT
+    // ==============================================
+    function setupMidnightReset() {
+        const now = new Date();
+        const midnight = new Date();
+        midnight.setHours(24, 0, 0, 0);
+        
+        const timeUntilMidnight = midnight - now;
+        
+        // Schedule reset for midnight
+        setTimeout(() => {
+            checkAndResetActivities();
+            // Then schedule for every 24 hours
+            setInterval(checkAndResetActivities, 24 * 60 * 60 * 1000);
+        }, timeUntilMidnight);
+    }
+    
+    async function checkAndResetActivities() {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        const yesterdayString = getDateString(yesterday);
+        const todayString = getDateString(today);
+        
+        try {
+            // Check if today's activities already exist
+            const todayDoc = await db.collection('daily_activities').doc(todayString).get();
+            
+            if (!todayDoc.exists) {
+                // Check if yesterday's activities exist to copy
+                const yesterdayDoc = await db.collection('daily_activities').doc(yesterdayString).get();
+                
+                if (yesterdayDoc.exists) {
+                    // Copy yesterday's activities to today
+                    const data = yesterdayDoc.data();
+                    const todayData = {
+                        ...data,
+                        date: todayString,
+                        day: DAYS[today.getDay()],
+                        updatedAt: new Date().toISOString()
                     };
-                }
-                
-                submissionsList.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    submissionsList.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-inbox"></i>
-                            <h4>No Submissions Found</h4>
-                            <p>No submissions found for ${selectedDay}.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let index = 1;
-                snapshot.forEach(doc => {
-                    const submission = { id: doc.id, ...doc.data() };
-                    const submissionEl = createSubmissionElement(submission, index);
-                    submissionsList.appendChild(submissionEl);
-                    index++;
-                });
-                
-                console.log(`Loaded ${index-1} submissions for ${selectedDay}`);
-                
-            } catch (error) {
-                console.error("Error loading submissions:", error);
-                const submissionsList = document.getElementById('submissions-list');
-                submissionsList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>Error Loading Submissions</h4>
-                        <p>Failed to load submissions. Please try again later.</p>
-                        <div class="debug-info">Error: ${error.message}</div>
-                    </div>
-                `;
-            }
-        }
-        
-        // ==============================================
-        // CREATE SUBMISSION ELEMENT - FIXED VERSION
-        // ==============================================
-        function createSubmissionElement(submission, index) {
-            const submissionEl = document.createElement('div');
-            submissionEl.className = 'submission-item';
-            
-            const date = submission.submittedAt ? 
-                new Date(submission.submittedAt).toLocaleString() : 
-                'No date';
-                
-            const userName = submission.userName || 
-                            submission.userEmail || 
-                            (submission.userId ? `User ${submission.userId.substring(0, 8)}` : 'Unknown User');
-            
-            const status = submission.status || 'pending';
-            const statusClass = status === 'approved' ? 'type-text' : 
-                               status === 'rejected' ? 'type-video' : 'type-link';
-            
-            const activitiesCount = submission.activities ? 
-                (Array.isArray(submission.activities) ? submission.activities.length : 1) : 
-                0;
-                
-            const totalEarnings = parseFloat(submission.totalEarnings) || 
-                                 parseFloat(submission.earnings) || 
-                                 0;
-            
-            submissionEl.innerHTML = `
-                <div class="submission-header">
-                    <div>
-                        <div class="submission-user">${userName}</div>
-                        <div class="submission-date">Submitted: ${date}</div>
-                    </div>
-                    <span class="activity-type ${statusClass}">${status}</span>
-                </div>
-                <div class="submission-details">
-                    <p><strong>Activities Completed:</strong> ${activitiesCount}</p>
-                    <p><strong>Total Earnings:</strong> $${totalEarnings.toFixed(2)}</p>
-                    ${submission.activityTitles ? `
-                        <p><strong>Activities:</strong> ${Array.isArray(submission.activityTitles) ? 
-                            submission.activityTitles.join(', ') : submission.activityTitles}</p>
-                    ` : ''}
-                    ${submission.comment ? `
-                        <p><strong>User Comment:</strong> ${submission.comment}</p>
-                    ` : ''}
-                </div>
-                ${status === 'pending' ? `
-                    <div class="activity-actions">
-                        <button class="action-btn edit-btn" onclick="approveSubmission('${submission.id}')">
-                            <i class="fas fa-check"></i> Approve
-                        </button>
-                        <button class="action-btn delete-btn" onclick="rejectSubmission('${submission.id}')">
-                            <i class="fas fa-times"></i> Reject
-                        </button>
-                    </div>
-                ` : `
-                    <div class="activity-actions">
-                        <button class="action-btn" style="background: #666; color: white;" disabled>
-                            <i class="fas fa-${status === 'approved' ? 'check' : 'times'}"></i> 
-                            ${status === 'approved' ? 'Approved' : 'Rejected'}
-                        </button>
-                        <div style="color: #888; font-size: 0.9em;">
-                            Reviewed by: ${submission.reviewedBy || 'admin'}
-                        </div>
-                    </div>
-                `}
-            `;
-            
-            return submissionEl;
-        }
-        
-        // ==============================================
-        // APPROVE SUBMISSION - FIXED VERSION
-        // ==============================================
-        async function approveSubmission(submissionId) {
-            if (!confirm("Approve this submission and credit earnings to user?")) {
-                return;
-            }
-            
-            try {
-                // Get submission data
-                const doc = await db.collection('activity_submissions').doc(submissionId).get();
-                if (!doc.exists) {
-                    alert('Submission not found!');
-                    return;
-                }
-                
-                const submission = doc.data();
-                const userId = submission.userId;
-                const totalEarnings = parseFloat(submission.totalEarnings) || 
-                                     parseFloat(submission.earnings) || 
-                                     0;
-                
-                if (!userId) {
-                    alert('User ID not found in submission!');
-                    return;
-                }
-                
-                // Update submission status
-                await db.collection('activity_submissions').doc(submissionId).update({
-                    status: 'approved',
-                    reviewedAt: new Date().toISOString(),
-                    reviewedBy: 'admin'
-                });
-                
-                // Update user balance
-                try {
-                    const userRef = db.collection('users').doc(userId);
-                    const userDoc = await userRef.get();
                     
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        const currentBalance = parseFloat(userData.balance) || 0;
-                        
-                        await userRef.update({
-                            balance: currentBalance + totalEarnings,
-                            totalEarnings: firebase.firestore.FieldValue.increment(totalEarnings),
-                            updatedAt: new Date().toISOString()
-                        });
-                        
-                        console.log(`Updated user ${userId} balance: +$${totalEarnings.toFixed(2)}`);
-                        
-                        // Create transaction record
-                        await db.collection('transactions').add({
-                            userId: userId,
-                            type: 'earning',
-                            amount: totalEarnings,
-                            description: `Activity completion earnings for ${submission.day}`,
-                            details: `Approved submission for ${submission.day} with ${submission.activities?.length || 0} activities`,
-                            date: new Date().toISOString(),
-                            status: 'completed',
-                            submissionId: submissionId
-                        });
-                        
-                        showSuccessMessage(`Submission approved! $${totalEarnings.toFixed(2)} credited to user.`);
-                    } else {
-                        console.warn(`User ${userId} not found in users collection`);
-                        showErrorMessage('User not found. Earnings not credited, but submission marked as approved.');
-                    }
-                } catch (userError) {
-                    console.error("Error updating user balance:", userError);
-                    showErrorMessage('Error updating user balance, but submission marked as approved.');
+                    await db.collection('daily_activities').doc(todayString).set(todayData, { merge: true });
+                    console.log('Activities automatically copied for new day');
+                } else {
+                    // Create empty activities for today
+                    const todayData = {
+                        date: todayString,
+                        day: DAYS[today.getDay()],
+                        quote: {
+                            text: "The best time to start was yesterday. The next best time is now.",
+                            author: "Admin"
+                        },
+                        activities: [],
+                        isActive: true,
+                        totalReward: 0,
+                        updatedAt: new Date().toISOString(),
+                        updatedBy: 'system'
+                    };
+                    
+                    await db.collection('daily_activities').doc(todayString).set(todayData, { merge: true });
+                    console.log('Empty activities created for new day');
                 }
-                
-                // Reload submissions
-                await viewSubmissions();
-                await loadAdminStats();
-                
-            } catch (error) {
-                console.error("Error approving submission:", error);
-                alert("Error approving submission: " + error.message);
             }
+        } catch (error) {
+            console.error("Error in auto-reset:", error);
         }
-        
-        // ==============================================
-        // REJECT SUBMISSION
-        // ==============================================
-        async function rejectSubmission(submissionId) {
-            if (!confirm("Reject this submission?")) {
-                return;
-            }
-            
-            try {
-                await db.collection('activity_submissions').doc(submissionId).update({
-                    status: 'rejected',
-                    reviewedAt: new Date().toISOString(),
-                    reviewedBy: 'admin'
-                });
-                
-                showSuccessMessage("Submission rejected!");
-                
-                // Reload submissions
-                await viewSubmissions();
-                await loadAdminStats();
-                
-            } catch (error) {
-                console.error("Error rejecting submission:", error);
-                alert("Error rejecting submission: " + error.message);
-            }
-        }
-        
-        // ==============================================
-        // UTILITY FUNCTIONS
-        // ==============================================
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        function showSuccessMessage(message) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message success';
-            msgDiv.textContent = message;
-            msgDiv.style.position = 'fixed';
-            msgDiv.style.top = '20px';
-            msgDiv.style.right = '20px';
-            msgDiv.style.zIndex = '1001';
-            msgDiv.style.maxWidth = '300px';
-            document.body.appendChild(msgDiv);
-            
-            setTimeout(() => {
-                msgDiv.remove();
-            }, 5000);
-        }
-        
-        function showErrorMessage(message) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message error';
-            msgDiv.textContent = message;
-            msgDiv.style.position = 'fixed';
-            msgDiv.style.top = '20px';
-            msgDiv.style.right = '20px';
-            msgDiv.style.zIndex = '1001';
-            msgDiv.style.maxWidth = '300px';
-            document.body.appendChild(msgDiv);
-            
-            setTimeout(() => {
-                msgDiv.remove();
-            }, 5000);
-        }
-        
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                closeModal(event.target.id);
-            }
-        }
-        
-        // Close modals with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal('activity-modal');
-                closeModal('submissions-modal');
-            }
-        });
-    </script>
+    }
+    
+    // Initialize auto-reset when admin logs in
+    if (localStorage.getItem('admin2LoggedIn') === 'true') {
+        setTimeout(setupMidnightReset, 1000);
+    }
+</script>
 </body>
 </html>
-<style>
-        .nav-container {
-            position: fixed;
-            top: 3em;
-            right: -300px;
-            width: 300px;
-            height: 70%;
-            background-color: black;
-            z-index: 1000;
-            transition: right 0.3s ease;
-            border: 0.5px solid white;
-            border-radius: 10px;
-            overflow-y: auto;
-        }
-
-        .nav-container.open {
-            right: 10px;
-        }
-
-        .nav-header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-header h2 {
-            color: white;
-            font-weight: 500;
-        }
-
-        .close-btn {
-            color: white;
-            font-size: 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .navlink span{
-            color: #28ff00;
-        }
-        .king{
-            display: flex;
-            justify-content: space-between;
-        }
-        .king x{
-           opacity: 0.6;
-        }
-       </style>
-    <div class="nav-container" id="nav-menu">
-        <div class="nav-header">
-            <h2>Menu</h2>
-            <button class="close-btn" id="close-menu" hidden>
-                <i class="fas fa-times"></i>
-            </button>            
-        </div>
-        <div class="nav-links">
-<button class="navlink king" id="toggle-status-btn">
-  Status <x class="fas fa-chevron-down" id="status-icon"></x>
-</button>
-
-<div id="status-container" style="display: none; margin-left: 20px;">
-  <button class="navlink">Activities: <span id="total-activities"></span></button>
-  <button class="navlink">Submissions: <span id="pending-submissions"></span></button>
-  <button class="navlink">T/L Amount: <span id="total-earnings"></span></button>
-  <button class="navlink">Days Done: <span id="days-with-activities"></span></button>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const statusToggleBtn = document.getElementById('toggle-status-btn');
-    const statusContainer = document.getElementById('status-container');
-    const statusIcon = document.getElementById('status-icon');
-    
-    statusToggleBtn.addEventListener('click', function() {
-      if (statusContainer.style.display === 'none') {
-        statusContainer.style.display = 'block';
-        statusIcon.classList.remove('fa-chevron-down');
-        statusIcon.classList.add('fa-chevron-up');
-      } else {
-        statusContainer.style.display = 'none';
-        statusIcon.classList.remove('fa-chevron-up');
-        statusIcon.classList.add('fa-chevron-down');
-      }
-    });
-  });
-</script>
-<button class="navlink king" id="toggle-days-btn">
-  View Days <x class="fa fa-chevron-down" id="dwn"></x>
-</button>
-
-<div class="day-selector" id="day-selector" style="display: none; margin-left: 20px;">
-  <!-- Days will be loaded here (don't edit this) -->
-</div>
-            
-<a href="3.html"><button class="navlink">Preview Activities 
-</button></a>
-<button class="navlink" onclick="logout()">Logout
-</button>
-<script>
-  const toggleBtn = document.getElementById('toggle-days-btn');
-  const daysDiv = document.getElementById('day-selector');
-  const icon = document.getElementById('dwn');
-  
-  toggleBtn.addEventListener('click', function() {
-    if (daysDiv.style.display === 'none' || daysDiv.style.display === '') {
-      daysDiv.style.display = 'block';
-      icon.classList.remove('fa-chevron-down');
-      icon.classList.add('fa-chevron-up');
-    } else {
-      daysDiv.style.display = 'none';
-      icon.classList.remove('fa-chevron-up');
-      icon.classList.add('fa-chevron-down');
-    }
-  });
-</script>        </div>
-    </div>
-    <script>
-        const navMenu = document.getElementById('nav-menu');
-        const closeMenu = document.getElementById('close-menu');
-        
-        // Touch events for opening menu
-        let startX = 0;
-        let startY = 0;
-        let currentX = 0;
-        
-        document.addEventListener('touchstart', function(e) {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
-        
-        document.addEventListener('touchmove', function(e) {
-            if (!startX || !startY) return;
-            
-            const currentX = e.touches[0].clientX;
-            const currentY = e.touches[0].clientY;
-            
-            const diffX = startX - currentX;
-            const diffY = startY - currentY;
-            
-            // Only trigger if swipe is mostly horizontal and from the right edge
-            if (Math.abs(diffX) > Math.abs(diffY) && diffX > 50 && startX > window.innerWidth - 50) {
-                navMenu.classList.add('open');
-                startX = null;
-                startY = null;
-            }
-        });
-        
-navMenu.addEventListener('touchstart', function(e) {
-            startX = e.touches[0].clientX;
-        });
-        
-        navMenu.addEventListener('touchmove', function(e) {
-            if (!startX) return;
-            
-            currentX = e.touches[0].clientX;
-            const diffX = currentX - startX;
-            
-            if (diffX > 50) {
-                navMenu.classList.remove('open');
-                startX = null;
-            }
-        });
-        
-        const canvas = document.getElementById('background-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-    </script>
-
